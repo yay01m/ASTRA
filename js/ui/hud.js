@@ -5,13 +5,13 @@
 function drawHUD() {
 
     drawStatus(
-        25,
-        20,
+        canvas.width * 0.02,
+        canvas.height * 0.02,
         player
     );
 
     drawStatus(
-        canvas.width - 260,
+        canvas.width * 0.8,
         20,
         cpu
     );

@@ -19,7 +19,7 @@ function drawKO() {
     ctx.textAlign = "center";
 
     ctx.fillStyle = "#fff";
-    ctx.font = "bold 54px Arial";
+    ctx.font = `bold ${canvas.width * 0.045}px Arial`
 
     ctx.fillText(
         player.stocks > 0

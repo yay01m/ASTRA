@@ -5,6 +5,35 @@
 let frameCount = 0;
 
 /* =========================
+   CANVAS RESIZE
+========================= */
+
+const canvas =
+  document.getElementById(
+    "gameCanvas"
+  );
+
+const ctx =
+  canvas.getContext("2d");
+
+function resizeCanvas() {
+
+  canvas.width =
+    window.innerWidth;
+
+  canvas.height =
+    window.innerHeight;
+
+}
+
+resizeCanvas();
+
+window.addEventListener(
+  "resize",
+  resizeCanvas
+);
+
+/* =========================
    画面遷移フェード
 ========================= */
 
@@ -67,10 +96,17 @@ function shouldShowBackButton() {
 function drawBackButton() {
   if (!shouldShowBackButton()) return;
 
-  const x = 30;
-  const y = 28;
-  const w = 130;
-  const h = 44;
+  const x =
+    canvas.width * 0.02;
+
+  const y =
+    canvas.height * 0.03;
+
+  const w =
+    canvas.width * 0.1;
+
+  const h =
+    canvas.height * 0.055;
 
   ctx.save();
 
@@ -94,12 +130,25 @@ function drawBackButton() {
 }
 
 function isBackButtonHit(x, y) {
+
+  const bx =
+    canvas.width * 0.02;
+
+  const by =
+    canvas.height * 0.03;
+
+  const bw =
+    canvas.width * 0.1;
+
+  const bh =
+    canvas.height * 0.055;
+
   return (
     shouldShowBackButton() &&
-    x >= 30 &&
-    x <= 160 &&
-    y >= 28 &&
-    y <= 72
+    x >= bx &&
+    x <= bx + bw &&
+    y >= by &&
+    y <= by + bh
   );
 }
 
@@ -319,9 +368,9 @@ function setupGame() {
 
   const randomCpuChar =
     cpuChars[
-      Math.floor(
-        Math.random() * cpuChars.length
-      )
+    Math.floor(
+      Math.random() * cpuChars.length
+    )
     ];
 
   cpu = new Fighter(

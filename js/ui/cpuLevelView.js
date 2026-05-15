@@ -64,9 +64,13 @@ function drawCpuLevelSelect() {
     // =========================
     // レベルカード
     // =========================
-    const cardW = 90;
-    const cardH = 100;
-    const gap = 18;
+    const cardW =
+        canvas.width * 0.07;
+
+    const cardH =
+        canvas.height * 0.12;
+    const gap =
+        canvas.width * 0.012;
 
     const totalW =
         cardW * 9 + gap * 8;

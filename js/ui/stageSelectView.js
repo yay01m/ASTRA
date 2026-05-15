@@ -37,8 +37,8 @@ function drawStageSelect() {
         "cyber_core",
         canvas.width / 2 - 160,
         140,
-        320,
-        190
+        canvas.width * 0.3,
+        canvas.height * 0.24
     );
 
     drawButton(

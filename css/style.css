@@ -1,187 +1,187 @@
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  -webkit-user-select:none;
-  user-select:none;
-  touch-action:none;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
 }
 
-body{
-  overflow:hidden;
-  background:#080818;
-  font-family:Arial,sans-serif;
+body {
+  overflow: hidden;
+  background: #080818;
+  font-family: Arial, sans-serif;
 }
 
-canvas{
-  display:block;
-  width:100vw;
-  height:100vh;
-  background:#101026;
+canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  background: #101026;
 }
 
-#mobileControls{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
+#mobileControls {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
 }
 
 /* 左スティック */
-#stickArea{
-  position:absolute;
-  left:20px;
-  bottom:22px;
-  width:105px;
-  height:105px;
-  border-radius:50%;
-  background:rgba(255,255,255,0.12);
-  border:3px solid rgba(255,255,255,0.25);
-  pointer-events:auto;
+#stickArea {
+  position: absolute;
+  left: 20px;
+  bottom: 22px;
+  width: 105px;
+  height: 105px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  pointer-events: auto;
 }
 
-#stick{
-  position:absolute;
-  left:32px;
-  top:32px;
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  background:rgba(255,255,255,0.82);
+#stick {
+  position: absolute;
+  left: 32px;
+  top: 32px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.82);
 }
 
 /* 右ボタン */
-#buttons{
-  position:absolute;
-  right:20px;
-  bottom:18px;
-  width:230px;
-  height:175px;
-  pointer-events:auto;
+#buttons {
+  position: absolute;
+  right: 20px;
+  bottom: 18px;
+  width: 230px;
+  height: 175px;
+  pointer-events: auto;
 }
 
-#buttons button{
-  position:absolute;
-  border-radius:50%;
-  border:3px solid rgba(255,255,255,0.8);
-  color:white;
-  font-weight:bold;
+#buttons button {
+  position: absolute;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  color: white;
+  font-weight: bold;
   box-shadow:
-    0 4px 12px rgba(0,0,0,0.45),
-    inset 0 -5px rgba(0,0,0,0.25);
+    0 4px 12px rgba(0, 0, 0, 0.45),
+    inset 0 -5px rgba(0, 0, 0, 0.25);
 }
 
-#buttons button:active{
-  transform:scale(0.92);
+#buttons button:active {
+  transform: scale(0.92);
 }
 
 /* メイン攻撃：一番押しやすい右下 */
-#btnAttack{
-  right:58px;
-  bottom:35px;
-  width:72px;
-  height:72px;
-  font-size:28px;
-  background:#2f80ff;
+#btnAttack {
+  right: 58px;
+  bottom: 35px;
+  width: 72px;
+  height: 72px;
+  font-size: 28px;
+  background: #2f80ff;
 }
 
 /* ジャンプ：攻撃の左上 */
-#btnJump{
-  right:140px;
-  bottom:72px;
-  width:60px;
-  height:60px;
-  font-size:22px;
-  background:#2ecc71;
+#btnJump {
+  right: 140px;
+  bottom: 72px;
+  width: 60px;
+  height: 60px;
+  font-size: 22px;
+  background: #2ecc71;
 }
 
 /* 必殺：攻撃の右上 */
-#btnSpecial{
-  right:18px;
-  bottom:105px;
-  width:62px;
-  height:62px;
-  font-size:23px;
-  background:#ff3b3b;
+#btnSpecial {
+  right: 18px;
+  bottom: 105px;
+  width: 62px;
+  height: 62px;
+  font-size: 23px;
+  background: #ff3b3b;
 }
 
 /* ガード：攻撃の下 */
-#btnGuard{
-  right:145px;
-  bottom:5px;
-  width:56px;
-  height:56px;
-  font-size:20px;
-  background:#9b59b6;
+#btnGuard {
+  right: 145px;
+  bottom: 5px;
+  width: 56px;
+  height: 56px;
+  font-size: 20px;
+  background: #9b59b6;
 }
 
 /* 小さいスマホ用 */
-@media (max-width:700px){
-  #stickArea{
-    left:14px;
-    bottom:14px;
-    width:90px;
-    height:90px;
+@media (max-width:700px) {
+  #stickArea {
+    left: 14px;
+    bottom: 14px;
+    width: 90px;
+    height: 90px;
   }
 
-  #stick{
-    left:27px;
-    top:27px;
-    width:32px;
-    height:32px;
+  #stick {
+    left: 27px;
+    top: 27px;
+    width: 32px;
+    height: 32px;
   }
 
-  #buttons{
-    right:10px;
-    bottom:8px;
-    width:210px;
-    height:160px;
+  #buttons {
+    right: 10px;
+    bottom: 8px;
+    width: 210px;
+    height: 160px;
   }
 
-  #btnAttack{
-    right:54px;
-    bottom:32px;
-    width:66px;
-    height:66px;
-    font-size:26px;
+  #btnAttack {
+    right: 54px;
+    bottom: 32px;
+    width: 66px;
+    height: 66px;
+    font-size: 26px;
   }
 
-  #btnJump{
-    right:130px;
-    bottom:68px;
-    width:54px;
-    height:54px;
-    font-size:20px;
+  #btnJump {
+    right: 130px;
+    bottom: 68px;
+    width: 54px;
+    height: 54px;
+    font-size: 20px;
   }
 
-  #btnSpecial{
-    right:12px;
-    bottom:98px;
-    width:56px;
-    height:56px;
-    font-size:21px;
+  #btnSpecial {
+    right: 12px;
+    bottom: 98px;
+    width: 56px;
+    height: 56px;
+    font-size: 21px;
   }
 
-  #btnGuard{
-    right:132px;
-    bottom:4px;
-    width:52px;
-    height:52px;
-    font-size:18px;
-  }
-}
-
-@media (min-width:900px){
-  #mobileControls{
-    opacity:0.45;
+  #btnGuard {
+    right: 132px;
+    bottom: 4px;
+    width: 52px;
+    height: 52px;
+    font-size: 18px;
   }
 }
 
-/* 最初はスマホ操作UIを非表示 */
-.mobile-controls {
-    display: none;
+@media (min-width:900px) {
+  #mobileControls {
+    opacity: 0.45;
+  }
+}
+
+/* 最初は非表示 */
+#mobileControls {
+  display: none;
 }
 
 /* ゲーム中だけ表示 */
-body.playing .mobile-controls {
-    display: flex;
+body.playing #mobileControls {
+  display: block;
 }

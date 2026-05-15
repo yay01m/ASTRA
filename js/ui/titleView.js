@@ -32,7 +32,7 @@ function drawTitle() {
     ctx.fillStyle = "white";
 
     ctx.font =
-        "bold 42px Arial";
+        `bold ${canvas.width * 0.035}px Arial`;
 
     ctx.textAlign = "center";
 
@@ -52,7 +52,7 @@ function drawTitle() {
         "rgba(255,255,255,0.7)";
 
     ctx.font =
-        "20px Arial";
+        `${canvas.width * 0.016}px Arial`;
 
     ctx.fillText(
         "v1.0",

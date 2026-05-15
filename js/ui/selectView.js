@@ -46,18 +46,33 @@ function drawSelect() {
     ctx.shadowBlur = 0;
 
     /* キャラカード */
+    const cardW =
+        canvas.width * 0.18;
+
+    const cardH =
+        canvas.height * 0.5;
+
+    const gap =
+        canvas.width * 0.03;
+
+    const totalW =
+        cardW * 3 + gap * 2;
+
+    const startX =
+        canvas.width / 2 - totalW / 2;
+
     const cards = [
         {
             key: "balance",
-            x: canvas.width / 2 - 360
+            x: startX
         },
         {
             key: "power",
-            x: canvas.width / 2 - 110
+            x: startX + cardW + gap
         },
         {
             key: "speed",
-            x: canvas.width / 2 + 140
+            x: startX + (cardW + gap) * 2
         }
     ];
 
@@ -66,9 +81,9 @@ function drawSelect() {
         drawCharCard(
             c.key,
             c.x,
-            145,
-            220,
-            330
+            canvas.height * 0.2,
+            cardW,
+            cardH
         );
     }
 
