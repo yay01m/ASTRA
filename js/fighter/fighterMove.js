@@ -319,10 +319,25 @@ Fighter.prototype.update = function () {
         }
     }
 
+    const gameH =
+        typeof getGameAreaHeight === "function"
+            ? getGameAreaHeight()
+            : canvas.height;
+
+    const koMarginX =
+        isPortraitMobile()
+            ? 520
+            : 220;
+
+    const koMarginY =
+        isPortraitMobile()
+            ? 520
+            : 260;
+
     if (
-        this.x < -220 ||
-        this.x > canvas.width + 220 ||
-        this.y > canvas.height + 260
+        this.x < -koMarginX ||
+        this.x > canvas.width + koMarginX ||
+        this.y > gameH + koMarginY
     ) {
 
         this.stocks--;
