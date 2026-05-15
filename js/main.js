@@ -10,11 +10,18 @@ let frameCount = 0;
 
 function resizeCanvas() {
 
-  canvas.width =
-    window.innerWidth;
+  const w =
+    window.visualViewport
+      ? window.visualViewport.width
+      : window.innerWidth;
 
-  canvas.height =
-    window.innerHeight;
+  const h =
+    window.visualViewport
+      ? window.visualViewport.height
+      : window.innerHeight;
+
+  canvas.width = w;
+  canvas.height = h;
 
 }
 
@@ -24,6 +31,15 @@ window.addEventListener(
   "resize",
   resizeCanvas
 );
+
+if (window.visualViewport) {
+
+  window.visualViewport.addEventListener(
+    "resize",
+    resizeCanvas
+  );
+
+}
 
 /* =========================
    画面遷移フェード
