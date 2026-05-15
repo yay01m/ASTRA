@@ -11,12 +11,13 @@ body {
   overflow: hidden;
   background: #080818;
   font-family: Arial, sans-serif;
+  overscroll-behavior:none;
 }
 
 canvas {
   display: block;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   background: #101026;
 }
 
