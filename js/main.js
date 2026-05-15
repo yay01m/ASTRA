@@ -10,19 +10,38 @@ let frameCount = 0;
 
 function resizeCanvas() {
 
+  const viewport =
+    window.visualViewport;
+
   const w =
-    window.visualViewport
-      ? window.visualViewport.width
-      : window.innerWidth;
+    viewport ? viewport.width : window.innerWidth;
 
   const h =
-    window.visualViewport
-      ? window.visualViewport.height
-      : window.innerHeight;
+    viewport ? viewport.height : window.innerHeight;
 
-  canvas.width = w;
-  canvas.height = h;
+  const offsetX =
+    viewport ? viewport.offsetLeft : 0;
 
+  const offsetY =
+    viewport ? viewport.offsetTop : 0;
+
+  canvas.style.left =
+    offsetX + "px";
+
+  canvas.style.top =
+    offsetY + "px";
+
+  canvas.style.width =
+    w + "px";
+
+  canvas.style.height =
+    h + "px";
+
+  canvas.width =
+    Math.floor(w);
+
+  canvas.height =
+    Math.floor(h);
 }
 
 resizeCanvas();
@@ -31,6 +50,25 @@ window.addEventListener(
   "resize",
   resizeCanvas
 );
+
+window.addEventListener(
+  "orientationchange",
+  () => {
+    setTimeout(resizeCanvas, 300);
+  }
+);
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener(
+    "resize",
+    resizeCanvas
+  );
+
+  window.visualViewport.addEventListener(
+    "scroll",
+    resizeCanvas
+  );
+}
 
 if (window.visualViewport) {
 
