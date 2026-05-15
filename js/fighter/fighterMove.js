@@ -324,26 +324,48 @@ Fighter.prototype.update = function () {
             ? getGameAreaHeight()
             : canvas.height;
 
-    const koMarginX =
+    const scale =
         isPortraitMobile()
-            ? 520
-            : 220;
+            ? 0.31
+            : CAMERA && CAMERA.scale
+                ? CAMERA.scale
+                : 1;
 
-    const koMarginY =
-        isPortraitMobile()
-            ? 520
-            : 260;
+    const viewW =
+        canvas.width / scale;
+
+    const viewH =
+        gameH / scale;
+
+    const centerX =
+        stage.x + stage.w / 2;
+
+    const centerY =
+        stage.y - viewH * 0.45;
+
+    const leftLimit =
+        centerX - viewW / 2;
+
+    const rightLimit =
+        centerX + viewW / 2;
+
+    const topLimit =
+        centerY - viewH / 2;
+
+    const bottomLimit =
+        centerY + viewH / 2;
 
     if (
-        this.x < -koMarginX ||
-        this.x > canvas.width + koMarginX ||
-        this.y > gameH + koMarginY
+        this.x + this.w < leftLimit ||
+        this.x > rightLimit ||
+        this.y + this.h < topLimit ||
+        this.y > bottomLimit
     ) {
 
         this.stocks--;
 
         this.reset(
-            canvas.width / 2,
+            stage.x + stage.w / 2,
             stage.y - 120
         );
 

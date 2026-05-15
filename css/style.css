@@ -77,19 +77,13 @@ body.playing #mobileControls {
 }
 
 #stick {
-  position: absolute;
+  left: 0;
+  top: 0;
 
-  left: 50%;
-  top: 50%;
+  width: 38%;
+  height: 38%;
 
-  width: 38px;
-  height: 38px;
-
-  border-radius: 50%;
-
-  background: rgba(255,255,255,0.82);
-
-  transform: translate(-50%, -50%);
+  transform: none;
 }
 
 #buttons {

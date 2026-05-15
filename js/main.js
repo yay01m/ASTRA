@@ -376,10 +376,14 @@ function setupGame() {
   stage.x =
     canvas.width / 2 - stage.w / 2;
 
-  stage.y =
+  const visibleBottom =
     isPortraitMobile()
-      ? gameH * 0.74
-      : canvas.height * 0.68;
+      ? gameH
+      : canvas.height;
+
+  // 床を画面下ギリギリへ
+  stage.y =
+    visibleBottom - stage.h - 8;
 
   updatePlatformPositions();
 
