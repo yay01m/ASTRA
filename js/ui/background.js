@@ -50,16 +50,16 @@ function drawBackground() {
 
 function drawBattleBackground() {
 
+    const gameH =
+        typeof getGameAreaHeight === "function"
+            ? getGameAreaHeight()
+            : canvas.height;
+
     if (
         backgroundImage &&
         backgroundImage.complete &&
         backgroundImage.naturalWidth > 0
     ) {
-        const gameH =
-            typeof getGameAreaHeight === "function"
-                ? getGameAreaHeight()
-                : canvas.height;
-
         ctx.drawImage(
             backgroundImage,
             0,
@@ -74,9 +74,9 @@ function drawBattleBackground() {
     const darkGrad =
         ctx.createLinearGradient(
             0,
-            canvas.height * 0.55,
+            gameH * 0.55,
             0,
-            canvas.height
+            gameH
         );
 
     darkGrad.addColorStop(0, "rgba(0,0,0,0)");
