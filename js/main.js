@@ -9,74 +9,34 @@ let frameCount = 0;
 ========================= */
 
 function resizeCanvas() {
+  const viewport = window.visualViewport;
 
-  const viewport =
-    window.visualViewport;
+  const w = viewport ? viewport.width : window.innerWidth;
+  const h = viewport ? viewport.height : window.innerHeight;
 
-  const w =
-    viewport ? viewport.width : window.innerWidth;
+  const offsetX = viewport ? viewport.offsetLeft : 0;
+  const offsetY = viewport ? viewport.offsetTop : 0;
 
-  const h =
-    viewport ? viewport.height : window.innerHeight;
+  canvas.style.left = offsetX + "px";
+  canvas.style.top = offsetY + "px";
+  canvas.style.width = w + "px";
+  canvas.style.height = h + "px";
 
-  const offsetX =
-    viewport ? viewport.offsetLeft : 0;
-
-  const offsetY =
-    viewport ? viewport.offsetTop : 0;
-
-  canvas.style.left =
-    offsetX + "px";
-
-  canvas.style.top =
-    offsetY + "px";
-
-  canvas.style.width =
-    w + "px";
-
-  canvas.style.height =
-    h + "px";
-
-  canvas.width =
-    Math.floor(w);
-
-  canvas.height =
-    Math.floor(h);
+  canvas.width = Math.floor(w);
+  canvas.height = Math.floor(h);
 }
 
 resizeCanvas();
 
-window.addEventListener(
-  "resize",
-  resizeCanvas
-);
+window.addEventListener("resize", resizeCanvas);
 
-window.addEventListener(
-  "orientationchange",
-  () => {
-    setTimeout(resizeCanvas, 300);
-  }
-);
+window.addEventListener("orientationchange", () => {
+  setTimeout(resizeCanvas, 300);
+});
 
 if (window.visualViewport) {
-  window.visualViewport.addEventListener(
-    "resize",
-    resizeCanvas
-  );
-
-  window.visualViewport.addEventListener(
-    "scroll",
-    resizeCanvas
-  );
-}
-
-if (window.visualViewport) {
-
-  window.visualViewport.addEventListener(
-    "resize",
-    resizeCanvas
-  );
-
+  window.visualViewport.addEventListener("resize", resizeCanvas);
+  window.visualViewport.addEventListener("scroll", resizeCanvas);
 }
 
 /* =========================
@@ -109,7 +69,6 @@ function updateFade() {
       nextState = null;
       fadeMode = "in";
     }
-
   } else {
     fadeAlpha -= 0.08;
 
@@ -142,17 +101,10 @@ function shouldShowBackButton() {
 function drawBackButton() {
   if (!shouldShowBackButton()) return;
 
-  const x =
-    canvas.width * 0.02;
-
-  const y =
-    canvas.height * 0.03;
-
-  const w =
-    canvas.width * 0.1;
-
-  const h =
-    canvas.height * 0.055;
+  const x = canvas.width * 0.02;
+  const y = canvas.height * 0.03;
+  const w = canvas.width * 0.1;
+  const h = canvas.height * 0.055;
 
   ctx.save();
 
@@ -176,18 +128,10 @@ function drawBackButton() {
 }
 
 function isBackButtonHit(x, y) {
-
-  const bx =
-    canvas.width * 0.02;
-
-  const by =
-    canvas.height * 0.03;
-
-  const bw =
-    canvas.width * 0.1;
-
-  const bh =
-    canvas.height * 0.055;
+  const bx = canvas.width * 0.02;
+  const by = canvas.height * 0.03;
+  const bw = canvas.width * 0.1;
+  const bh = canvas.height * 0.055;
 
   return (
     shouldShowBackButton() &&
@@ -391,11 +335,8 @@ function drawRespawnText() {
 ========================= */
 
 function setupGame() {
-  stage.x =
-    canvas.width / 2 - stage.w / 2;
-
-  stage.y =
-    canvas.height * 0.68;
+  stage.x = canvas.width / 2 - stage.w / 2;
+  stage.y = canvas.height * 0.68;
 
   updatePlatformPositions();
 
@@ -414,9 +355,7 @@ function setupGame() {
 
   const randomCpuChar =
     cpuChars[
-    Math.floor(
-      Math.random() * cpuChars.length
-    )
+      Math.floor(Math.random() * cpuChars.length)
     ];
 
   cpu = new Fighter(
@@ -464,18 +403,22 @@ function updateGame() {
 
   if (
     playerRespawnTimer <= 0 &&
-    keys["a"] ||
-    keys["A"] ||
-    keys["ArrowLeft"]
+    (
+      keys["a"] ||
+      keys["A"] ||
+      keys["ArrowLeft"]
+    )
   ) {
     inputX -= 1;
   }
 
   if (
     playerRespawnTimer <= 0 &&
-    keys["d"] ||
-    keys["D"] ||
-    keys["ArrowRight"]
+    (
+      keys["d"] ||
+      keys["D"] ||
+      keys["ArrowRight"]
+    )
   ) {
     inputX += 1;
   }
@@ -484,8 +427,7 @@ function updateGame() {
     playerRespawnTimer <= 0 &&
     Math.abs(stickX) > 0.25
   ) {
-    inputX +=
-      stickX > 0 ? 1 : -1;
+    inputX += stickX > 0 ? 1 : -1;
   }
 
   inputX =
@@ -565,11 +507,8 @@ function applyCamera() {
       ? CAMERA.scale
       : 1;
 
-  const centerX =
-    canvas.width / 2;
-
-  const centerY =
-    canvas.height / 2;
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
 
   ctx.translate(centerX, centerY);
   ctx.scale(scale, scale);
@@ -689,20 +628,40 @@ function loop() {
 loop();
 
 /* =========================
+   クリック座標変換
+========================= */
+
+function getCanvasPoint(event) {
+  const rect =
+    canvas.getBoundingClientRect();
+
+  const scaleX =
+    canvas.width / rect.width;
+
+  const scaleY =
+    canvas.height / rect.height;
+
+  return {
+    x: (event.clientX - rect.left) * scaleX,
+    y: (event.clientY - rect.top) * scaleY
+  };
+}
+
+/* =========================
    クリック操作
 ========================= */
 
 canvas.addEventListener("click", (event) => {
   if (isFading) return;
 
-  const rect =
-    canvas.getBoundingClientRect();
+  const point =
+    getCanvasPoint(event);
 
   const mouseX =
-    event.clientX - rect.left;
+    point.x;
 
   const mouseY =
-    event.clientY - rect.top;
+    point.y;
 
   if (isBackButtonHit(mouseX, mouseY)) {
     goBackState();
@@ -713,5 +672,35 @@ canvas.addEventListener("click", (event) => {
     changeState(STATE.SELECT);
     return;
   }
+
+  if (
+    gameState === STATE.SELECT &&
+    typeof handleSelectClick === "function"
+  ) {
+    handleSelectClick(mouseX, mouseY);
+    return;
+  }
+
+  if (
+    gameState === STATE.STAGE_SELECT &&
+    typeof handleStageSelectClick === "function"
+  ) {
+    handleStageSelectClick(mouseX, mouseY);
+    return;
+  }
+
+  if (
+    gameState === STATE.CPU_LEVEL &&
+    typeof handleCpuLevelClick === "function"
+  ) {
+    handleCpuLevelClick(mouseX, mouseY);
+    return;
+  }
+
+  if (
+    gameState === STATE.KO
+  ) {
+    changeState(STATE.TITLE);
+    return;
+  }
 });
-//a
