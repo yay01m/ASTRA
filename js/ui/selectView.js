@@ -1,91 +1,41 @@
 /* =========================
-   キャラ選択画面
+   キャラ選択レイアウト
 ========================= */
 
-function isSelectMobile() {
-    return (
-        canvas.width < 900 &&
-        canvas.height > canvas.width
-    );
-}
-
 function getSelectLayout() {
-
-    const mobile =
-        isSelectMobile();
-
-    if (mobile) {
-
-        const cardW =
-            canvas.width * 0.82;
-
-        const cardH =
-            canvas.height * 0.16;
-
-        const gap =
-            canvas.height * 0.025;
-
-        const startX =
-            canvas.width / 2 - cardW / 2;
-
-        const startY =
-            canvas.height * 0.18;
-
-        const buttonW =
-            canvas.width * 0.62;
-
-        const buttonH =
-            canvas.height * 0.07;
-
-        const buttonX =
-            canvas.width / 2 - buttonW / 2;
-
-        const buttonY =
-            canvas.height * 0.82;
-
-        return {
-            mobile,
-            cardW,
-            cardH,
-            gap,
-            startX,
-            startY,
-            buttonX,
-            buttonY,
-            buttonW,
-            buttonH
-        };
-    }
-
-    const cardW =
-        canvas.width * 0.18;
-
-    const cardH =
-        canvas.height * 0.5;
-
-    const gap =
-        canvas.width * 0.03;
+    const cardW = 250;
+    const cardH = 390;
+    const gap = 50;
 
     const totalW =
-        cardW * 3 + gap * 2;
+        cardW * 3 +
+        gap * 2;
 
     const startX =
-        canvas.width / 2 - totalW / 2;
+        GAME_W / 2 -
+        totalW / 2;
 
-    const startY =
-        canvas.height * 0.2;
+    const startY = 160;
+
+    const buttonW = 300;
+    const buttonH = 64;
+
+    const buttonX =
+        GAME_W / 2 -
+        buttonW / 2;
+
+    const buttonY = 600;
 
     return {
-        mobile,
         cardW,
         cardH,
         gap,
         startX,
         startY,
-        buttonX: canvas.width / 2 - 140,
-        buttonY: canvas.height - 95,
-        buttonW: 280,
-        buttonH: 62
+        buttonX,
+        buttonY,
+        buttonW,
+        buttonH
     };
 }
 
@@ -94,7 +44,6 @@ function getSelectLayout() {
 ========================= */
 
 function drawSelect() {
-
     if (
         menuBg &&
         menuBg.complete &&
@@ -104,8 +53,8 @@ function drawSelect() {
             menuBg,
             0,
             0,
-            canvas.width,
-            canvas.height
+            GAME_W,
+            GAME_H
         );
     } else {
         drawBackground();
@@ -117,8 +66,8 @@ function drawSelect() {
     ctx.fillRect(
         0,
         0,
-        canvas.width,
-        canvas.height
+        GAME_W,
+        GAME_H
     );
 
     const layout =
@@ -128,23 +77,15 @@ function drawSelect() {
     ctx.textBaseline = "alphabetic";
 
     ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 56px Arial";
 
-    ctx.font =
-        layout.mobile
-            ? "bold 30px Arial"
-            : "bold 52px Arial";
-
-    ctx.shadowColor =
-        "#7a5cff";
-
+    ctx.shadowColor = "#7a5cff";
     ctx.shadowBlur = 25;
 
     ctx.fillText(
         "CHARACTER SELECT",
-        canvas.width / 2,
-        layout.mobile
-            ? canvas.height * 0.11
-            : 90
+        GAME_W / 2,
+        105
     );
 
     ctx.shadowBlur = 0;
@@ -156,24 +97,19 @@ function drawSelect() {
     ];
 
     keys.forEach((key, i) => {
-
         const x =
-            layout.mobile
-                ? layout.startX
-                : layout.startX + i * (layout.cardW + layout.gap);
+            layout.startX +
+            i * (layout.cardW + layout.gap);
 
         const y =
-            layout.mobile
-                ? layout.startY + i * (layout.cardH + layout.gap)
-                : layout.startY;
+            layout.startY;
 
         drawCharCard(
             key,
             x,
             y,
             layout.cardW,
-            layout.cardH,
-            layout.mobile
+            layout.cardH
         );
     });
 
@@ -182,8 +118,7 @@ function drawSelect() {
         layout.buttonY,
         layout.buttonW,
         layout.buttonH,
-        "NEXT",
-        layout.mobile
+        "NEXT"
     );
 
     ctx.textAlign = "left";
@@ -199,36 +134,33 @@ function drawCyberButton(
     y,
     w,
     h,
-    text,
-    mobile = false
+    text
 ) {
-
     ctx.fillStyle =
         "rgba(20,20,40,0.75)";
 
-    ctx.fillRect(x, y, w, h);
+    ctx.fillRect(
+        x,
+        y,
+        w,
+        h
+    );
 
-    ctx.strokeStyle =
-        "#7a5cff";
+    ctx.strokeStyle = "#7a5cff";
+    ctx.lineWidth = 3;
 
-    ctx.lineWidth =
-        mobile ? 2 : 3;
+    ctx.strokeRect(
+        x,
+        y,
+        w,
+        h
+    );
 
-    ctx.strokeRect(x, y, w, h);
-
-    ctx.shadowColor =
-        "#7a5cff";
-
-    ctx.shadowBlur =
-        mobile ? 14 : 20;
+    ctx.shadowColor = "#7a5cff";
+    ctx.shadowBlur = 20;
 
     ctx.fillStyle = "#fff";
-
-    ctx.font =
-        mobile
-            ? "bold 18px Arial"
-            : "bold 28px Arial";
-
+    ctx.font = "bold 28px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
@@ -250,10 +182,8 @@ function drawCharCard(
     x,
     y,
     w,
-    h,
-    mobile = false
+    h
 ) {
-
     const ch =
         CHARACTERS[key];
 
@@ -273,9 +203,7 @@ function drawCharCard(
     );
 
     if (active) {
-        ctx.shadowColor =
-            ch.color;
-
+        ctx.shadowColor = ch.color;
         ctx.shadowBlur = 25;
     }
 
@@ -296,113 +224,18 @@ function drawCharCard(
 
     ctx.shadowBlur = 0;
 
-    if (mobile) {
-        drawMobileCharCardContent(
-            key,
-            x,
-            y,
-            w,
-            h,
-            ch
-        );
-    } else {
-        drawDesktopCharCardContent(
-            key,
-            x,
-            y,
-            w,
-            h,
-            ch
-        );
-    }
-}
-
-/* =========================
-   スマホ用カード中身
-========================= */
-
-function drawMobileCharCardContent(
-    key,
-    x,
-    y,
-    w,
-    h,
-    ch
-) {
-
-    drawPreviewCharacter(
+    drawDesktopCharCardContent(
         key,
-        x + 18,
-        y + h / 2 - 42,
-        ch,
-        64,
-        84
-    );
-
-    ctx.textAlign = "left";
-    ctx.textBaseline = "alphabetic";
-
-    ctx.fillStyle =
-        ch.color;
-
-    ctx.font =
-        "bold 24px Arial";
-
-    ctx.fillText(
-        ch.name,
-        x + 100,
-        y + 34
-    );
-
-    ctx.fillStyle =
-        "#d9d9ff";
-
-    ctx.font =
-        "14px Arial";
-
-    ctx.fillText(
-        ch.type,
-        x + 100,
-        y + 56
-    );
-
-    ctx.fillStyle =
-        "#ffffff";
-
-    ctx.font =
-        "13px Arial";
-
-    const jumpText =
-        ch.maxJumps >= 3
-            ? "Triple Jump"
-            : ch.maxJumps >= 2
-                ? "Double Jump"
-                : "Single Jump";
-
-    const specialText =
-        ch.specialType === "novaShot"
-            ? "Energy Shot"
-            : ch.specialType === "blazeBurst"
-                ? "Burst Explosion"
-                : ch.specialType === "voltSlash"
-                    ? "Dash Slash"
-                    : "Special";
-
-    ctx.fillText(
-        `SPD ${ch.speed} / ATK ${ch.attackDamage} / ${jumpText}`,
-        x + 100,
-        y + 82
-    );
-
-    ctx.fillText(
-        `SPECIAL : ${specialText}`,
-        x + 100,
-        y + 104
+        x,
+        y,
+        w,
+        h,
+        ch
     );
 }
 
 /* =========================
-   PC用カード中身
+   カード中身
 ========================= */
 
 function drawDesktopCharCardContent(
@@ -413,13 +246,8 @@ function drawDesktopCharCardContent(
     h,
     ch
 ) {
-
-    ctx.fillStyle =
-        ch.color;
-
-    ctx.font =
-        "bold 34px Arial";
-
+    ctx.fillStyle = ch.color;
+    ctx.font = "bold 34px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
 
@@ -429,11 +257,8 @@ function drawDesktopCharCardContent(
         y + 42
     );
 
-    ctx.fillStyle =
-        "#d9d9ff";
-
-    ctx.font =
-        "18px Arial";
+    ctx.fillStyle = "#d9d9ff";
+    ctx.font = "18px Arial";
 
     ctx.fillText(
         ch.type,
@@ -443,20 +268,17 @@ function drawDesktopCharCardContent(
 
     drawPreviewCharacter(
         key,
-        x + w / 2 - 40,
-        y + 85,
+        x + w / 2 - 44,
+        y + 88,
         ch,
-        82,
-        104
+        88,
+        112
     );
 
     ctx.textAlign = "left";
 
-    ctx.fillStyle =
-        "#ffffff";
-
-    ctx.font =
-        "14px Arial";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "14px Arial";
 
     const jumpText =
         ch.maxJumps >= 3
@@ -487,8 +309,8 @@ function drawDesktopCharCardContent(
     lines.forEach((t, i) => {
         ctx.fillText(
             t,
-            x + 20,
-            y + 205 + i * 17
+            x + 24,
+            y + 225 + i * 19
         );
     });
 }
@@ -505,7 +327,6 @@ function drawPreviewCharacter(
     w = 82,
     h = 104
 ) {
-
     const img =
         characterImages[key];
 
@@ -525,8 +346,7 @@ function drawPreviewCharacter(
         return;
     }
 
-    ctx.fillStyle =
-        ch.color;
+    ctx.fillStyle = ch.color;
 
     ctx.fillRect(
         x + w * 0.25,
@@ -541,7 +361,6 @@ function drawPreviewCharacter(
 ========================= */
 
 function handleSelectClick(mouseX, mouseY) {
-
     const layout =
         getSelectLayout();
 
@@ -552,16 +371,12 @@ function handleSelectClick(mouseX, mouseY) {
     ];
 
     for (let i = 0; i < keys.length; i++) {
-
         const x =
-            layout.mobile
-                ? layout.startX
-                : layout.startX + i * (layout.cardW + layout.gap);
+            layout.startX +
+            i * (layout.cardW + layout.gap);
 
         const y =
-            layout.mobile
-                ? layout.startY + i * (layout.cardH + layout.gap)
-                : layout.startY;
+            layout.startY;
 
         if (
             inside(
@@ -590,8 +405,6 @@ function handleSelectClick(mouseX, mouseY) {
             layout.buttonH
         )
     ) {
-        changeState(
-            STATE.STAGE_SELECT
-        );
+        changeState(STATE.STAGE_SELECT);
     }
 }

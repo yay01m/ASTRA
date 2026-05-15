@@ -45,12 +45,10 @@ Fighter.prototype.move = function (inputX, dashInput = false) {
             this.onGround &&
             !this.isGuarding
         ) {
-
             this.isDashing = true;
             this.dashTimer++;
 
             if (this.dashTimer % 6 === 0) {
-
                 addDashEffect(
                     this.x + this.w / 2 - this.dir * 18,
                     this.y + this.h - 5,
@@ -60,7 +58,6 @@ Fighter.prototype.move = function (inputX, dashInput = false) {
         }
 
     } else {
-
         this.dashTimer = 0;
     }
 };
@@ -81,13 +78,10 @@ Fighter.prototype.jump = function () {
     if (this.jumpCount >= this.maxJumps) return;
 
     this.vy = -this.data.jump;
-
     this.onGround = false;
-
     this.jumpCount++;
 
     if (this.jumpCount >= 2) {
-
         addAirJumpRingEffect(
             this.x + this.w / 2,
             this.y + this.h * 0.7,
@@ -113,7 +107,6 @@ Fighter.prototype.airDodge = function (inputX = 0) {
     ) return;
 
     this.airDodgeUsed = true;
-
     this.airDodgeTimer = 14;
 
     this.invincible =
@@ -127,9 +120,7 @@ Fighter.prototype.airDodge = function (inputX = 0) {
             ? inputX > 0 ? 1 : -1
             : this.dir;
 
-    this.vx =
-        dodgeDir * 9;
-
+    this.vx = dodgeDir * 9;
     this.vy = -2;
 
     addDashEffect(
@@ -176,28 +167,17 @@ Fighter.prototype.checkLandingOn = function (
             isOverlappingX &&
             hitStageBody
         ) {
-
             if (this.vy >= 0) {
-
-                this.y =
-                    s.y - this.h;
-
+                this.y = s.y - this.h;
                 this.onGround = true;
-
                 this.jumpCount = 0;
-
                 this.airDodgeUsed = false;
-
             } else {
-
-                this.y =
-                    s.y + s.h;
-
+                this.y = s.y + s.h;
                 this.onGround = false;
             }
 
             this.vy = 0;
-
             return true;
         }
 
@@ -222,22 +202,75 @@ Fighter.prototype.checkLandingOn = function (
         crossedTop &&
         notTooLow
     ) {
-
-        this.y =
-            s.y - this.h;
-
+        this.y = s.y - this.h;
         this.vy = 0;
-
         this.onGround = true;
-
         this.jumpCount = 0;
-
         this.airDodgeUsed = false;
 
         return true;
     }
 
     return false;
+};
+
+/* =========================
+   撃墜判定
+========================= */
+
+Fighter.prototype.checkKO = function () {
+
+    const scale =
+        CAMERA && CAMERA.scale
+            ? CAMERA.scale
+            : 1;
+
+    const viewW =
+        GAME_W / scale;
+
+    const viewH =
+        GAME_H / scale;
+
+    const centerX =
+        stage.x + stage.w / 2;
+
+    const floorScreenY =
+        GAME_H - 8;
+
+    const viewCenterY =
+        GAME_H / 2;
+
+    const centerY =
+        stage.y -
+        (floorScreenY - viewCenterY) / scale;
+
+    const leftLimit =
+        centerX - viewW / 2;
+
+    const rightLimit =
+        centerX + viewW / 2;
+
+    const topLimit =
+        centerY - viewH / 2;
+
+    const bottomLimit =
+        centerY + viewH / 2;
+
+    if (
+        this.x + this.w < leftLimit ||
+        this.x > rightLimit ||
+        this.y + this.h < topLimit ||
+        this.y > bottomLimit
+    ) {
+        this.stocks--;
+
+        this.reset(
+            stage.x + stage.w / 2,
+            stage.y - this.h - 20
+        );
+
+        addScreenShake(16, 18);
+    }
 };
 
 /* =========================
@@ -284,18 +317,14 @@ Fighter.prototype.update = function () {
 
     updatePlatformPositions();
 
-    let landed = false;
-
-    landed =
+    let landed =
         this.checkLandingOn(stage, true);
 
     if (
         !landed &&
         typeof platforms !== "undefined"
     ) {
-
         for (const p of platforms) {
-
             if (this.checkLandingOn(p)) {
                 landed = true;
                 break;
@@ -307,9 +336,7 @@ Fighter.prototype.update = function () {
         this.attackCharging &&
         this.attackCharge > 12
     ) {
-
         if (frameCount % 4 === 0) {
-
             addEffect(
                 this.x + this.w / 2 + this.dir * 25,
                 this.y + this.h / 2,
@@ -319,56 +346,5 @@ Fighter.prototype.update = function () {
         }
     }
 
-    const gameH =
-        typeof getGameAreaHeight === "function"
-            ? getGameAreaHeight()
-            : canvas.height;
-
-    const scale =
-        isPortraitMobile()
-            ? 0.31
-            : CAMERA && CAMERA.scale
-                ? CAMERA.scale
-                : 1;
-
-    const viewW =
-        canvas.width / scale;
-
-    const viewH =
-        gameH / scale;
-
-    const centerX =
-        stage.x + stage.w / 2;
-
-    const centerY =
-        stage.y - viewH * 0.45;
-
-    const leftLimit =
-        centerX - viewW / 2;
-
-    const rightLimit =
-        centerX + viewW / 2;
-
-    const topLimit =
-        centerY - viewH / 2;
-
-    const bottomLimit =
-        centerY + viewH / 2;
-
-    if (
-        this.x + this.w < leftLimit ||
-        this.x > rightLimit ||
-        this.y + this.h < topLimit ||
-        this.y > bottomLimit
-    ) {
-
-        this.stocks--;
-
-        this.reset(
-            stage.x + stage.w / 2,
-            stage.y - 120
-        );
-
-        addScreenShake(16, 18);
-    }
+    this.checkKO();
 };

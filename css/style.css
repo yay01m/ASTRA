@@ -2,7 +2,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-
   -webkit-user-select: none;
   user-select: none;
 }
@@ -11,26 +10,16 @@ html,
 body {
   width: 100%;
   height: 100%;
-
   overflow: hidden;
-
   background: #080818;
-
   font-family: Arial, sans-serif;
-
   overscroll-behavior: none;
 }
 
 canvas {
   position: fixed;
-
-  left: 0;
-  top: 0;
-
   display: block;
-
   background: #101026;
-
   touch-action: none;
 }
 
@@ -40,15 +29,10 @@ canvas {
 
 #mobileControls {
   position: fixed;
-
   display: none;
-
   pointer-events: none;
-
   z-index: 10;
 }
-
-/* ゲーム中だけ表示 */
 
 body.playing #mobileControls {
   display: block;
@@ -60,55 +44,42 @@ body.playing #mobileControls {
 
 #stickArea {
   position: absolute;
-
   left: 20px;
   bottom: 22px;
-
   width: 105px;
   height: 105px;
-
   border-radius: 50%;
-
   background: rgba(255,255,255,0.12);
-
   border: 3px solid rgba(255,255,255,0.25);
-
   pointer-events: auto;
 }
 
 #stick {
+  position: absolute;
   left: 0;
   top: 0;
-
   width: 38%;
   height: 38%;
-
+  border-radius: 50%;
+  background: rgba(255,255,255,0.82);
   transform: none;
 }
 
 #buttons {
   position: absolute;
-
   right: 20px;
   bottom: 18px;
-
   width: 230px;
   height: 175px;
-
   pointer-events: auto;
 }
 
 #buttons button {
   position: absolute;
-
   border-radius: 50%;
-
   border: 3px solid rgba(255,255,255,0.8);
-
   color: white;
-
   font-weight: bold;
-
   box-shadow:
     0 4px 12px rgba(0,0,0,0.45),
     inset 0 -5px rgba(0,0,0,0.25);
@@ -118,59 +89,39 @@ body.playing #mobileControls {
   transform: scale(0.92);
 }
 
-/* 攻撃 */
-
 #btnAttack {
   right: 58px;
   bottom: 35px;
-
   width: 72px;
   height: 72px;
-
   font-size: 28px;
-
   background: #2f80ff;
 }
-
-/* ジャンプ */
 
 #btnJump {
   right: 140px;
   bottom: 72px;
-
   width: 60px;
   height: 60px;
-
   font-size: 22px;
-
   background: #2ecc71;
 }
-
-/* 必殺 */
 
 #btnSpecial {
   right: 18px;
   bottom: 105px;
-
   width: 62px;
   height: 62px;
-
   font-size: 23px;
-
   background: #ff3b3b;
 }
-
-/* ガード */
 
 #btnGuard {
   right: 145px;
   bottom: 5px;
-
   width: 56px;
   height: 56px;
-
   font-size: 20px;
-
   background: #9b59b6;
 }
 
@@ -183,38 +134,27 @@ body.playing #mobileControls {
   #mobileControls {
     left: 0;
     right: 0;
-
     bottom: 0;
-
     width: 100vw;
-    height: 30vh;
-
+    height: 42vh;
     background:
       linear-gradient(
         to top,
-        rgba(0,0,0,0.78),
-        rgba(0,0,0,0.12)
+        rgba(0,0,0,0.86),
+        rgba(0,0,0,0.2)
       );
-
     backdrop-filter: blur(10px);
   }
 
-  /* =========================
-     スティック
-  ========================= */
-
   #stickArea {
-    left: 5vw;
-    bottom: 4vh;
-
-    width: 28vw;
-    height: 28vw;
-
-    min-width: 110px;
-    min-height: 110px;
-
-    max-width: 145px;
-    max-height: 145px;
+    left: 6vw;
+    bottom: 8vh;
+    width: 30vw;
+    height: 30vw;
+    min-width: 112px;
+    min-height: 112px;
+    max-width: 150px;
+    max-height: 150px;
   }
 
   #stick {
@@ -222,91 +162,62 @@ body.playing #mobileControls {
     height: 34%;
   }
 
-  /* =========================
-     ボタン全体
-  ========================= */
-
   #buttons {
-    right: 3vw;
-    bottom: 2vh;
-
-    width: 48vw;
-    height: 26vh;
+    right: 4vw;
+    bottom: 6vh;
+    width: 50vw;
+    height: 30vh;
   }
 
   #buttons button {
     border-width: 2px;
   }
 
-  /* 攻撃 */
-
   #btnAttack {
     right: 13vw;
     bottom: 4vh;
-
-    width: 17vw;
-    height: 17vw;
-
-    min-width: 68px;
-    min-height: 68px;
-
-    max-width: 88px;
-    max-height: 88px;
-
+    width: 18vw;
+    height: 18vw;
+    min-width: 70px;
+    min-height: 70px;
+    max-width: 92px;
+    max-height: 92px;
     font-size: 26px;
   }
 
-  /* ジャンプ */
-
   #btnJump {
-    right: 30vw;
-    bottom: 10vh;
-
+    right: 31vw;
+    bottom: 12vh;
     width: 13vw;
     height: 13vw;
-
     min-width: 52px;
     min-height: 52px;
-
-    max-width: 72px;
-    max-height: 72px;
-
+    max-width: 74px;
+    max-height: 74px;
     font-size: 20px;
   }
 
-  /* 必殺 */
-
   #btnSpecial {
     right: 1vw;
-    bottom: 12vh;
-
+    bottom: 13vh;
     width: 14vw;
     height: 14vw;
-
     min-width: 56px;
     min-height: 56px;
-
-    max-width: 78px;
-    max-height: 78px;
-
+    max-width: 80px;
+    max-height: 80px;
     font-size: 22px;
   }
 
-  /* ガード */
-
   #btnGuard {
-    right: 31vw;
+    right: 32vw;
     bottom: 1vh;
-
     width: 12vw;
     height: 12vw;
-
     min-width: 48px;
     min-height: 48px;
-
-    max-width: 68px;
-    max-height: 68px;
-
+    max-width: 70px;
+    max-height: 70px;
     font-size: 18px;
   }
 }
@@ -316,7 +227,6 @@ body.playing #mobileControls {
 ========================= */
 
 @media (min-width: 900px) {
-
   #mobileControls {
     opacity: 0.45;
   }

@@ -3,56 +3,47 @@
 ========================= */
 
 function getCpuLevelLayout() {
-    const isMobile =
-        canvas.width < 900;
-
-    const cardW =
-        isMobile
-            ? canvas.width * 0.16
-            : canvas.width * 0.07;
-
-    const cardH =
-        isMobile
-            ? canvas.height * 0.13
-            : canvas.height * 0.12;
-
-    const gap =
-        isMobile
-            ? canvas.width * 0.035
-            : canvas.width * 0.012;
-
-    const cols =
-        isMobile ? 3 : 9;
-
-    const rows =
-        isMobile ? 3 : 1;
+    const cardW = 86;
+    const cardH = 92;
+    const gap = 22;
+    const cols = 9;
 
     const totalW =
-        cardW * cols + gap * (cols - 1);
+        cardW * cols +
+        gap * (cols - 1);
 
     const startX =
-        canvas.width / 2 - totalW / 2;
+        GAME_W / 2 -
+        totalW / 2;
 
     const startY =
-        isMobile
-            ? canvas.height * 0.28
-            : canvas.height / 2 - 40;
+        310;
+
+    const buttonW = 300;
+    const buttonH = 64;
+
+    const buttonX =
+        GAME_W / 2 -
+        buttonW / 2;
+
+    const buttonY =
+        600;
 
     return {
-        isMobile,
         cardW,
         cardH,
         gap,
         cols,
-        rows,
         startX,
-        startY
+        startY,
+        buttonX,
+        buttonY,
+        buttonW,
+        buttonH
     };
 }
 
 function drawCpuLevelSelect() {
-
-    // 背景画像
     if (
         menuBg &&
         menuBg.complete &&
@@ -62,88 +53,69 @@ function drawCpuLevelSelect() {
             menuBg,
             0,
             0,
-            canvas.width,
-            canvas.height
+            GAME_W,
+            GAME_H
         );
     } else {
-        ctx.fillStyle = "#080816";
-        ctx.fillRect(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
+        drawBackground();
     }
 
-    // 暗めフィルター
-    ctx.fillStyle = "rgba(0, 0, 15, 0.25)";
+    ctx.fillStyle =
+        "rgba(0,0,15,0.25)";
+
     ctx.fillRect(
         0,
         0,
-        canvas.width,
-        canvas.height
+        GAME_W,
+        GAME_H
     );
 
     const layout =
         getCpuLevelLayout();
 
-    // タイトル
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
 
     ctx.fillStyle = "#ffffff";
-    ctx.font =
-        `bold ${layout.isMobile ? 30 : 42}px sans-serif`;
+    ctx.font = "bold 48px Arial";
 
     ctx.fillText(
         "CPU LEVEL",
-        canvas.width / 2,
-        canvas.height * 0.13
+        GAME_W / 2,
+        115
     );
 
-    ctx.font =
-        `${layout.isMobile ? 13 : 18}px sans-serif`;
-
+    ctx.font = "18px Arial";
     ctx.fillStyle = "#9ee7ff";
 
     ctx.fillText(
         "1 = EASY   /   9 = ASTRA MASTER",
-        canvas.width / 2,
-        canvas.height * 0.18
+        GAME_W / 2,
+        155
     );
 
-    // レベルカード
     for (let i = 1; i <= 9; i++) {
-
-        const index =
-            i - 1;
-
-        const col =
-            index % layout.cols;
-
-        const row =
-            Math.floor(index / layout.cols);
+        const index = i - 1;
 
         const x =
             layout.startX +
-            col * (layout.cardW + layout.gap);
+            index * (layout.cardW + layout.gap);
 
         const y =
-            layout.startY +
-            row * (layout.cardH + layout.gap);
+            layout.startY;
 
-        const isSelected =
+        const selected =
             cpuLevel === i;
 
-        ctx.fillStyle = isSelected
-            ? "rgba(80, 210, 255, 0.38)"
-            : "rgba(10, 16, 38, 0.72)";
+        ctx.fillStyle = selected
+            ? "rgba(80,210,255,0.38)"
+            : "rgba(10,16,38,0.72)";
 
-        ctx.strokeStyle = isSelected
+        ctx.strokeStyle = selected
             ? "#ffffff"
             : "#4cc9f0";
 
-        ctx.lineWidth = isSelected ? 4 : 2;
+        ctx.lineWidth = selected ? 4 : 2;
 
         ctx.beginPath();
         ctx.roundRect(
@@ -156,7 +128,7 @@ function drawCpuLevelSelect() {
         ctx.fill();
         ctx.stroke();
 
-        if (isSelected) {
+        if (selected) {
             ctx.shadowColor = "#4cc9f0";
             ctx.shadowBlur = 18;
             ctx.stroke();
@@ -164,10 +136,7 @@ function drawCpuLevelSelect() {
         }
 
         ctx.fillStyle = "#ffffff";
-        ctx.font =
-            `bold ${layout.isMobile ? 28 : 40}px sans-serif`;
-
-        ctx.textAlign = "center";
+        ctx.font = "bold 40px Arial";
         ctx.textBaseline = "middle";
 
         ctx.fillText(
@@ -185,8 +154,7 @@ function drawCpuLevelSelect() {
                         ? "HARD"
                         : "MASTER";
 
-        ctx.font =
-            `${layout.isMobile ? 10 : 12}px sans-serif`;
+        ctx.font = "12px Arial";
 
         ctx.fillStyle =
             i <= 3
@@ -202,11 +170,9 @@ function drawCpuLevelSelect() {
         );
     }
 
-    // 下説明
     ctx.textBaseline = "alphabetic";
     ctx.fillStyle = "#ffffff";
-    ctx.font =
-        `${layout.isMobile ? 14 : 20}px sans-serif`;
+    ctx.font = "22px Arial";
 
     const desc =
         cpuLevel === 9
@@ -215,120 +181,78 @@ function drawCpuLevelSelect() {
 
     ctx.fillText(
         desc,
-        canvas.width / 2,
-        canvas.height * 0.78
+        GAME_W / 2,
+        550
     );
 
-    // 決定ボタン
-    const bw =
-        layout.isMobile
-            ? canvas.width * 0.38
-            : 280;
+    ctx.fillStyle =
+        "rgba(76,201,240,0.25)";
 
-    const bh =
-        layout.isMobile
-            ? canvas.height * 0.09
-            : 58;
-
-    const bx =
-        canvas.width / 2 - bw / 2;
-
-    const by =
-        canvas.height * 0.84;
-
-    ctx.fillStyle = "rgba(76, 201, 240, 0.25)";
     ctx.strokeStyle = "#4cc9f0";
     ctx.lineWidth = 3;
 
     ctx.beginPath();
     ctx.roundRect(
-        bx,
-        by,
-        bw,
-        bh,
+        layout.buttonX,
+        layout.buttonY,
+        layout.buttonW,
+        layout.buttonH,
         16
     );
     ctx.fill();
     ctx.stroke();
 
     ctx.fillStyle = "#ffffff";
-    ctx.font =
-        `bold ${layout.isMobile ? 17 : 22}px sans-serif`;
-
-    ctx.textAlign = "center";
+    ctx.font = "bold 24px Arial";
     ctx.textBaseline = "middle";
 
     ctx.fillText(
         "START BATTLE",
-        canvas.width / 2,
-        by + bh / 2
+        GAME_W / 2,
+        layout.buttonY + layout.buttonH / 2
     );
 
     ctx.textBaseline = "alphabetic";
 }
 
-/* =========================
-   CPUレベルクリック
-========================= */
-
 function handleCpuLevelClick(mouseX, mouseY) {
-
     const layout =
         getCpuLevelLayout();
 
-    // レベルカード判定
     for (let i = 1; i <= 9; i++) {
-
-        const index =
-            i - 1;
-
-        const col =
-            index % layout.cols;
-
-        const row =
-            Math.floor(index / layout.cols);
+        const index = i - 1;
 
         const x =
             layout.startX +
-            col * (layout.cardW + layout.gap);
+            index * (layout.cardW + layout.gap);
 
         const y =
-            layout.startY +
-            row * (layout.cardH + layout.gap);
+            layout.startY;
 
         if (
-            mouseX >= x &&
-            mouseX <= x + layout.cardW &&
-            mouseY >= y &&
-            mouseY <= y + layout.cardH
+            inside(
+                mouseX,
+                mouseY,
+                x,
+                y,
+                layout.cardW,
+                layout.cardH
+            )
         ) {
             cpuLevel = i;
             return;
         }
     }
 
-    // STARTボタン判定
-    const bw =
-        layout.isMobile
-            ? canvas.width * 0.38
-            : 280;
-
-    const bh =
-        layout.isMobile
-            ? canvas.height * 0.09
-            : 58;
-
-    const bx =
-        canvas.width / 2 - bw / 2;
-
-    const by =
-        canvas.height * 0.84;
-
     if (
-        mouseX >= bx &&
-        mouseX <= bx + bw &&
-        mouseY >= by &&
-        mouseY <= by + bh
+        inside(
+            mouseX,
+            mouseY,
+            layout.buttonX,
+            layout.buttonY,
+            layout.buttonW,
+            layout.buttonH
+        )
     ) {
         setupGame();
         changeState(STATE.GAME);

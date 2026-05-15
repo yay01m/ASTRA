@@ -1,16 +1,24 @@
 /* =========================
    通常背景
-   タイトル・選択画面用
 ========================= */
 
 function drawBackground() {
+    const w =
+        typeof GAME_W !== "undefined"
+            ? GAME_W
+            : canvas.width;
+
+    const h =
+        typeof GAME_H !== "undefined"
+            ? GAME_H
+            : canvas.height;
 
     const g =
         ctx.createLinearGradient(
             0,
             0,
             0,
-            canvas.height
+            h
         );
 
     g.addColorStop(0, "#101044");
@@ -21,38 +29,45 @@ function drawBackground() {
     ctx.fillRect(
         0,
         0,
-        canvas.width,
-        canvas.height
+        w,
+        h
     );
 
     ctx.fillStyle =
         "rgba(255,255,255,0.08)";
 
     for (let i = 0; i < 70; i++) {
-
         const x =
             (
                 i * 97 +
                 Date.now() * 0.015
-            ) % canvas.width;
+            ) % w;
 
         const y =
-            (i * 53) % canvas.height;
+            (i * 53) % h;
 
-        ctx.fillRect(x, y, 3, 3);
+        ctx.fillRect(
+            x,
+            y,
+            3,
+            3
+        );
     }
 }
 
 /* =========================
    バトル背景
-   対戦画面専用
 ========================= */
 
 function drawBattleBackground() {
+    const w =
+        typeof GAME_W !== "undefined"
+            ? GAME_W
+            : canvas.width;
 
-    const gameH =
-        typeof getGameAreaHeight === "function"
-            ? getGameAreaHeight()
+    const h =
+        typeof GAME_H !== "undefined"
+            ? GAME_H
             : canvas.height;
 
     if (
@@ -64,8 +79,8 @@ function drawBattleBackground() {
             backgroundImage,
             0,
             0,
-            canvas.width,
-            gameH
+            w,
+            h
         );
     } else {
         drawBackground();
@@ -74,20 +89,27 @@ function drawBattleBackground() {
     const darkGrad =
         ctx.createLinearGradient(
             0,
-            gameH * 0.55,
+            h * 0.55,
             0,
-            gameH
+            h
         );
 
-    darkGrad.addColorStop(0, "rgba(0,0,0,0)");
-    darkGrad.addColorStop(1, "rgba(0,0,0,0.45)");
+    darkGrad.addColorStop(
+        0,
+        "rgba(0,0,0,0)"
+    );
+
+    darkGrad.addColorStop(
+        1,
+        "rgba(0,0,0,0.45)"
+    );
 
     ctx.fillStyle = darkGrad;
 
     ctx.fillRect(
         0,
         0,
-        canvas.width,
-        gameH
+        w,
+        h
     );
 }

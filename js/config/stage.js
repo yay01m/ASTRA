@@ -25,14 +25,10 @@ const STAGE = {
 ========================= */
 
 const PLATFORM = {
-    width: 180,
+    width: 190,
     height: 18,
-
-    // メインステージ中心から左右にどれだけ離すか
-    offsetX: 210,
-
-    // メインステージよりどれだけ上に置くか
-    offsetY: -125
+    offsetX: 260,
+    offsetY: -145
 };
 
 /* =========================
@@ -40,9 +36,6 @@ const PLATFORM = {
 ========================= */
 
 const CAMERA = {
-    // 1.0 = 普通
-    // 0.9 = 少し広い
-    // 0.8 = かなり広い
     scale: 0.8
 };
 
@@ -58,12 +51,10 @@ const stage = {
 };
 
 /* =========================
-   足場2つ
-   x, y は setupGame() で決める
+   足場
 ========================= */
 
 const platforms = [
-    // 左足場
     {
         x: 0,
         y: 0,
@@ -72,8 +63,6 @@ const platforms = [
         offsetX: -PLATFORM.offsetX,
         offsetY: PLATFORM.offsetY
     },
-
-    // 右足場
     {
         x: 0,
         y: 0,
@@ -82,15 +71,13 @@ const platforms = [
         offsetX: PLATFORM.offsetX,
         offsetY: PLATFORM.offsetY
     },
-
-    // 上の足場
     {
         x: 0,
         y: 0,
-        w: 160,
-        h: 18,
+        w: 170,
+        h: PLATFORM.height,
         offsetX: 0,
-        offsetY: -230
+        offsetY: -250
     }
 ];
 
@@ -99,85 +86,37 @@ const platforms = [
 ========================= */
 
 function updatePlatformPositions() {
+    if (typeof platforms === "undefined") return;
 
-    const mobile =
-        typeof isPortraitMobile === "function"
-            ? isPortraitMobile()
-            : false;
-
-    // スマホ縦
-    if (mobile) {
-
-        // 左足場
-        platforms[0].w =
-            stage.w * 0.26;
-
-        platforms[0].x =
-            stage.x + stage.w * 0.14;
-
-        platforms[0].y =
-            stage.y - 105;
-
-        // 右足場
-        platforms[1].w =
-            stage.w * 0.26;
-
-        platforms[1].x =
-            stage.x + stage.w * 0.60;
-
-        platforms[1].y =
-            stage.y - 105;
-
-        // 上足場
-        platforms[2].w =
-            stage.w * 0.24;
-
-        platforms[2].x =
-            stage.x + stage.w / 2 -
-            platforms[2].w / 2;
-
-        platforms[2].y =
-            stage.y - 185;
-
-        return;
-    }
-
-    // PC / 横画面
-
-    platforms[0].w =
-        PLATFORM.width;
-
+    platforms[0].w = PLATFORM.width;
+    platforms[0].h = PLATFORM.height;
     platforms[0].x =
         stage.x +
         stage.w / 2 +
         platforms[0].offsetX -
         platforms[0].w / 2;
-
     platforms[0].y =
         stage.y +
         platforms[0].offsetY;
 
-    platforms[1].w =
-        PLATFORM.width;
-
+    platforms[1].w = PLATFORM.width;
+    platforms[1].h = PLATFORM.height;
     platforms[1].x =
         stage.x +
         stage.w / 2 +
         platforms[1].offsetX -
         platforms[1].w / 2;
-
     platforms[1].y =
         stage.y +
         platforms[1].offsetY;
 
-    platforms[2].w =
-        160;
-
+    platforms[2].w = 170;
+    platforms[2].h = PLATFORM.height;
     platforms[2].x =
         stage.x +
         stage.w / 2 -
         platforms[2].w / 2;
-
     platforms[2].y =
-        stage.y - 230;
+        stage.y -
+        250;
 }

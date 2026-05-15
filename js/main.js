@@ -1,6 +1,9 @@
 /* =========================
-   フレーム
+   固定ゲームサイズ
 ========================= */
+
+const GAME_W = 1280;
+const GAME_H = 720;
 
 let frameCount = 0;
 
@@ -8,22 +11,53 @@ let frameCount = 0;
    CANVAS RESIZE
 ========================= */
 
-function resizeCanvas() {
+function isPortraitMobile() {
   const viewport = window.visualViewport;
 
   const w = viewport ? viewport.width : window.innerWidth;
   const h = viewport ? viewport.height : window.innerHeight;
 
-  const offsetX = viewport ? viewport.offsetLeft : 0;
-  const offsetY = viewport ? viewport.offsetTop : 0;
+  return (
+    w < 900 &&
+    h > w
+  );
+}
 
-  canvas.style.left = offsetX + "px";
-  canvas.style.top = offsetY + "px";
-  canvas.style.width = w + "px";
-  canvas.style.height = h + "px";
+function resizeCanvas() {
+  const viewport = window.visualViewport;
 
-  canvas.width = Math.floor(w);
-  canvas.height = Math.floor(h);
+  const screenW = viewport ? viewport.width : window.innerWidth;
+  const screenH = viewport ? viewport.height : window.innerHeight;
+
+  canvas.width = GAME_W;
+  canvas.height = GAME_H;
+
+  const aspect = GAME_W / GAME_H;
+
+  if (isPortraitMobile()) {
+    const cssW = screenW;
+    const cssH = cssW / aspect;
+
+    canvas.style.position = "fixed";
+    canvas.style.left = "0px";
+    canvas.style.top = "55px";
+    canvas.style.width = cssW + "px";
+    canvas.style.height = cssH + "px";
+  } else {
+    let cssW = screenW;
+    let cssH = cssW / aspect;
+
+    if (cssH > screenH) {
+      cssH = screenH;
+      cssW = cssH * aspect;
+    }
+
+    canvas.style.position = "fixed";
+    canvas.style.left = (screenW - cssW) / 2 + "px";
+    canvas.style.top = (screenH - cssH) / 2 + "px";
+    canvas.style.width = cssW + "px";
+    canvas.style.height = cssH + "px";
+  }
 }
 
 resizeCanvas();
@@ -43,40 +77,8 @@ if (window.visualViewport) {
    画面エリア
 ========================= */
 
-function isPortraitMobile() {
-  return (
-    canvas.width < 900 &&
-    canvas.height > canvas.width
-  );
-}
-
-function getBattleView() {
-
-  if (!isPortraitMobile()) {
-    return {
-      x: 0,
-      y: 0,
-      w: canvas.width,
-      h: canvas.height
-    };
-  }
-
-  const w =
-    canvas.width;
-
-  const h =
-    w * 9 / 16;
-
-  return {
-    x: 0,
-    y: 55,
-    w,
-    h
-  };
-}
-
 function getGameAreaHeight() {
-  return getBattleView().h;
+  return GAME_H;
 }
 
 /* =========================
@@ -138,16 +140,19 @@ function shouldShowBackButton() {
   );
 }
 
+function getBackButtonRect() {
+  return {
+    x: GAME_W * 0.025,
+    y: GAME_H * 0.035,
+    w: 150,
+    h: 48
+  };
+}
+
 function drawBackButton() {
   if (!shouldShowBackButton()) return;
 
-  const x = canvas.width * 0.02;
-  const y = canvas.height * 0.03;
-  const w =
-    isPortraitMobile()
-      ? canvas.width * 0.22
-      : canvas.width * 0.1;
-  const h = canvas.height * 0.055;
+  const b = getBackButtonRect();
 
   ctx.save();
 
@@ -156,35 +161,39 @@ function drawBackButton() {
   ctx.lineWidth = 2;
 
   ctx.beginPath();
-  ctx.roundRect(x, y, w, h, 12);
+  ctx.roundRect(
+    b.x,
+    b.y,
+    b.w,
+    b.h,
+    12
+  );
   ctx.fill();
   ctx.stroke();
 
   ctx.fillStyle = "#ffffff";
-  ctx.font =
-    isPortraitMobile()
-      ? "bold 14px sans-serif"
-      : "bold 18px sans-serif";
+  ctx.font = "bold 18px sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
-  ctx.fillText("← BACK", x + w / 2, y + h / 2);
+  ctx.fillText(
+    "← BACK",
+    b.x + b.w / 2,
+    b.y + b.h / 2
+  );
 
   ctx.restore();
 }
 
 function isBackButtonHit(x, y) {
-  const bx = canvas.width * 0.02;
-  const by = canvas.height * 0.03;
-  const bw = canvas.width * 0.1;
-  const bh = canvas.height * 0.055;
+  const b = getBackButtonRect();
 
   return (
     shouldShowBackButton() &&
-    x >= bx &&
-    x <= bx + bw &&
-    y >= by &&
-    y <= by + bh
+    x >= b.x &&
+    x <= b.x + b.w &&
+    y >= b.y &&
+    y <= b.y + b.h
   );
 }
 
@@ -234,6 +243,10 @@ function resetBattleTimers() {
   cpuPrevStocks = cpu.stocks;
 }
 
+function getSpawnGap() {
+  return 250;
+}
+
 function startRespawn(fighter, isCpu) {
   fighter.x = -9999;
   fighter.y = -9999;
@@ -252,9 +265,7 @@ function finishRespawn(fighter, isCpu) {
     stage.x + stage.w / 2;
 
   const safeGap =
-    isPortraitMobile()
-      ? canvas.width * 0.32
-      : 220;
+    getSpawnGap();
 
   fighter.x =
     isCpu
@@ -351,8 +362,8 @@ function drawStartCountdown() {
 
   ctx.fillText(
     text,
-    canvas.width / 2,
-    canvas.height / 2
+    GAME_W / 2,
+    GAME_H / 2
   );
 
   ctx.restore();
@@ -370,16 +381,16 @@ function drawRespawnText() {
   if (playerRespawnTimer > 0) {
     ctx.fillText(
       "PLAYER RESPAWNING...",
-      canvas.width / 2,
-      canvas.height / 2 + 90
+      GAME_W / 2,
+      GAME_H / 2 + 90
     );
   }
 
   if (cpuRespawnTimer > 0) {
     ctx.fillText(
       "CPU RESPAWNING...",
-      canvas.width / 2,
-      canvas.height / 2 + 125
+      GAME_W / 2,
+      GAME_H / 2 + 125
     );
   }
 
@@ -391,50 +402,30 @@ function drawRespawnText() {
 ========================= */
 
 function setupGame() {
-  const gameH =
-    getGameAreaHeight();
-
-  const visibleBottom =
-    isPortraitMobile()
-      ? gameH
-      : canvas.height;
-
-  const scale =
-    isPortraitMobile()
-      ? 0.31
-      : CAMERA && CAMERA.scale
-        ? CAMERA.scale
-        : 1;
-
-  const viewW =
-    canvas.width / scale;
-
-  // =========================
-  // 床ステージ設定
-  // =========================
-
   stage.w =
-    viewW * 1.6;
+    GAME_W * 1.6;
 
   stage.h =
     STAGE.height;
 
   stage.x =
-    canvas.width / 2 -
+    GAME_W / 2 -
     stage.w / 2;
 
   stage.y =
-    visibleBottom -
+    GAME_H -
     stage.h;
 
   updatePlatformPositions();
 
-  // =========================
-  // キャラ初期位置
-  // =========================
+  const centerX =
+    stage.x + stage.w / 2;
+
+  const gap =
+    getSpawnGap();
 
   player = new Fighter(
-    stage.x + stage.w * 0.42,
+    centerX - gap,
     stage.y - 100,
     selectedChar,
     false
@@ -448,11 +439,11 @@ function setupGame() {
 
   const randomCpuChar =
     cpuChars[
-    Math.floor(Math.random() * cpuChars.length)
+      Math.floor(Math.random() * cpuChars.length)
     ];
 
   cpu = new Fighter(
-    stage.x + stage.w * 0.58,
+    centerX + gap,
     stage.y - 100,
     randomCpuChar,
     true
@@ -595,28 +586,22 @@ function updateGame() {
 ========================= */
 
 function applyCamera() {
-
-  const view =
-    getBattleView();
-
   const scale =
-    isPortraitMobile()
-      ? 0.31
-      : CAMERA && CAMERA.scale
-        ? CAMERA.scale
-        : 1;
+    CAMERA && CAMERA.scale
+      ? CAMERA.scale
+      : 1;
 
   const viewCenterX =
-    view.x + view.w / 2;
+    GAME_W / 2;
 
   const viewCenterY =
-    view.y + view.h / 2;
+    GAME_H / 2;
 
   const targetX =
     stage.x + stage.w / 2;
 
   const floorScreenY =
-    view.y + view.h - 8;
+    GAME_H - 8;
 
   const targetY =
     stage.y -
@@ -640,23 +625,9 @@ function applyCamera() {
 ========================= */
 
 function drawGame() {
-  const view =
-    getBattleView();
+  drawBattleBackground();
 
   ctx.save();
-
-  ctx.beginPath();
-
-  ctx.rect(
-    view.x,
-    view.y,
-    view.w,
-    view.h
-  );
-
-  ctx.clip();
-
-  drawBattleBackground();
 
   applyCamera();
 
@@ -694,27 +665,6 @@ function drawGame() {
   drawEffects();
 
   ctx.restore();
-
-  if (isPortraitMobile()) {
-    ctx.save();
-
-    ctx.fillStyle = "rgba(0,0,0,0.45)";
-    ctx.fillRect(
-      0,
-      getGameAreaHeight(),
-      canvas.width,
-      canvas.height - getGameAreaHeight()
-    );
-
-    ctx.strokeStyle = "rgba(76,201,240,0.5)";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(0, getGameAreaHeight());
-    ctx.lineTo(canvas.width, getGameAreaHeight());
-    ctx.stroke();
-
-    ctx.restore();
-  }
 
   drawHUD();
 

@@ -3,13 +3,17 @@
 ========================= */
 
 function drawStage() {
-
-    drawStagePart(stage, true);
+    drawStagePart(
+        stage,
+        true
+    );
 
     if (typeof platforms !== "undefined") {
-
         for (const p of platforms) {
-            drawStagePart(p, false);
+            drawStagePart(
+                p,
+                false
+            );
         }
     }
 }
@@ -18,8 +22,10 @@ function drawStage() {
    ステージパーツ描画
 ========================= */
 
-function drawStagePart(s, isMain) {
-
+function drawStagePart(
+    s,
+    isMain
+) {
     const img =
         isMain
             ? stageImages.main
@@ -33,26 +39,25 @@ function drawStagePart(s, isMain) {
         ctx.drawImage(
             img,
             s.x,
-            s.y - s.h * 2.4,
+            isMain
+                ? s.y - s.h * 1.4
+                : s.y - s.h * 1.1,
             s.w,
-            s.h * 4
+            isMain
+                ? s.h * 2.6
+                : s.h * 2.2
         );
-    } else {
-        ctx.fillStyle =
-            isMain ? "#36366b" : "#44448f";
 
-        ctx.fillRect(
-            s.x,
-            s.y,
-            s.w,
-            s.h
-        );
+        return;
     }
 
-    /*
-    // 判定確認用
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(s.x, s.y, s.w, s.h);
-    */
+    ctx.fillStyle =
+        isMain ? "#36366b" : "#44448f";
+
+    ctx.fillRect(
+        s.x,
+        s.y,
+        s.w,
+        s.h
+    );
 }

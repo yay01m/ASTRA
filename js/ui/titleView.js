@@ -1,6 +1,4 @@
 function drawTitle() {
-
-    // 背景
     if (
         titleBg &&
         titleBg.complete &&
@@ -10,27 +8,23 @@ function drawTitle() {
             titleBg,
             0,
             0,
-            canvas.width,
-            canvas.height
+            GAME_W,
+            GAME_H
         );
     } else {
         drawBackground();
     }
 
-    // 暗くする
     ctx.fillStyle =
         "rgba(0,0,0,0.2)";
 
     ctx.fillRect(
         0,
         0,
-        canvas.width,
-        canvas.height
+        GAME_W,
+        GAME_H
     );
 
-    
-
-    // 点滅
     const alpha =
         0.5 +
         Math.sin(Date.now() * 0.005) * 0.5;
@@ -39,33 +33,30 @@ function drawTitle() {
 
     ctx.globalAlpha = alpha;
     ctx.fillStyle = "white";
-    ctx.font =
-        `bold ${Math.max(18, canvas.width * 0.035)}px Arial`;
-
+    ctx.font = "bold 44px Arial";
     ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
     ctx.shadowColor = "#9d4dff";
     ctx.shadowBlur = 20;
 
     ctx.fillText(
         "TAP TO START",
-        canvas.width / 2,
-        canvas.height * 0.82
+        GAME_W / 2,
+        GAME_H * 0.82
     );
 
     ctx.restore();
 
-    // version
     ctx.fillStyle =
         "rgba(255,255,255,0.7)";
 
-    ctx.font =
-        `${Math.max(12, canvas.width * 0.016)}px Arial`;
-
+    ctx.font = "18px Arial";
     ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
 
     ctx.fillText(
         "v1.0",
-        canvas.width / 2,
-        canvas.height * 0.93
+        GAME_W / 2,
+        GAME_H * 0.93
     );
 }

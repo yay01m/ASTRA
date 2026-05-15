@@ -3,7 +3,6 @@
 ========================= */
 
 function drawKO() {
-
     drawGame();
 
     ctx.fillStyle =
@@ -12,26 +11,29 @@ function drawKO() {
     ctx.fillRect(
         0,
         0,
-        canvas.width,
-        canvas.height
+        GAME_W,
+        GAME_H
     );
 
     ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
 
     ctx.fillStyle = "#fff";
-    ctx.font = `bold ${canvas.width * 0.045}px Arial`
+
+    ctx.font =
+        "bold 64px Arial";
 
     ctx.fillText(
         player.stocks > 0
             ? "YOU WIN!"
             : "YOU LOSE...",
-        canvas.width / 2,
-        canvas.height / 2 - 30
+        GAME_W / 2,
+        GAME_H / 2 - 30
     );
 
     drawButton(
-        canvas.width / 2 - 150,
-        canvas.height / 2 + 35,
+        GAME_W / 2 - 150,
+        GAME_H / 2 + 35,
         300,
         65,
         "TITLE"

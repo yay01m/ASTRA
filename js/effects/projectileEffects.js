@@ -65,18 +65,33 @@ function addNovaBallEffect(x, y, size = 70) {
 ========================= */
 
 function updateProjectiles() {
-    projectiles = projectiles.filter(p => p.life > 0);
+    projectiles =
+        projectiles.filter(p => p.life > 0);
 
     for (const p of projectiles) {
+
         p.x += p.vx;
+        p.y += p.vy || 0;
         p.life--;
 
-        const target = p.owner === player ? cpu : player;
+        // 画面外に大きく出た弾は消す
+        if (
+            p.x < -300 ||
+            p.x > GAME_W + 300 ||
+            p.y < -300 ||
+            p.y > GAME_H + 300
+        ) {
+            p.life = 0;
+            continue;
+        }
 
+        const target =
+            p.owner === player
+                ? cpu
+                : player;
+
+        if (!target) continue;
         if (target.invincible > 0) continue;
-
-        const tx = target.x + target.w / 2;
-        const ty = target.y + target.h / 2;
 
         const hit =
             p.x + p.r > target.x &&
@@ -119,7 +134,8 @@ function drawProjectiles() {
     for (const p of projectiles) {
 
         if (p.type === "novaShot") {
-            p.rot = (p.rot || 0) + 0.08;
+            p.rot =
+                (p.rot || 0) + 0.08;
 
             drawImageEffect(
                 effectImages.novaBall,
@@ -161,7 +177,12 @@ function drawProjectiles() {
             Math.PI * 2
         );
 
-        ctx.fillStyle = colorAlpha(p.color, 0.35);
+        ctx.fillStyle =
+            colorAlpha(
+                p.color,
+                0.35
+            );
+
         ctx.fill();
     }
 }

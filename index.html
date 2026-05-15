@@ -2,126 +2,58 @@
 <html lang="ja">
 
 <head>
-
   <meta charset="UTF-8" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
 
   <title>ASTRA</title>
 
-  <!-- =========================
-       CSS
-  ========================== -->
-
-  <link rel="stylesheet" href="css/style.css" />
-
+  <link rel="stylesheet" href="css/style.css?v=20" />
 </head>
 
 <body>
 
-  <!-- =========================
-       GAME CANVAS
-  ========================== -->
-
   <canvas id="gameCanvas"></canvas>
-
-  <!-- =========================
-       MOBILE CONTROLS
-  ========================== -->
 
   <div id="mobileControls">
 
-    <!-- =========================
-         STICK
-    ========================== -->
-
     <div id="stickArea">
-
       <div id="stick"></div>
-
     </div>
 
-    <!-- =========================
-         BUTTONS
-    ========================== -->
-
     <div id="buttons">
-
-      <button id="btnAttack">
-        A
-      </button>
-
-      <button id="btnSpecial">
-        B
-      </button>
-
-      <button id="btnJump">
-        J
-      </button>
-
-      <button id="btnGuard">
-        G
-      </button>
-
+      <button id="btnAttack">A</button>
+      <button id="btnSpecial">B</button>
+      <button id="btnJump">J</button>
+      <button id="btnGuard">G</button>
     </div>
 
   </div>
 
-  <!-- =========================
-       CONFIG
-  ========================== -->
-
   <script src="js/config/base.js"></script>
-
   <script src="js/config/images.js"></script>
-
   <script src="js/config/characters.js"></script>
-
   <script src="js/config/stage.js"></script>
 
-  <!-- =========================
-       EFFECTS
-  ========================== -->
-
   <script src="js/effects/effectUtils.js"></script>
-
   <script src="js/effects/hitEffects.js"></script>
-
   <script src="js/effects/movementEffects.js"></script>
-
   <script src="js/effects/guardEffects.js"></script>
-
   <script src="js/effects/projectileEffects.js"></script>
-
   <script src="js/effects/effectRenderer.js"></script>
 
-  <!-- =========================
-       COMBAT
-  ========================== -->
-
   <script src="js/combat/knockbackSystem.js"></script>
-
   <script src="js/combat/hitSystem.js"></script>
-
   <script src="js/combat/cpuAI.js"></script>
 
-  <!-- =========================
-       FIGHTER
-  ========================== -->
-
   <script src="js/fighter/fighterCore.js"></script>
-
   <script src="js/fighter/fighterMove.js"></script>
-
   <script src="js/fighter/fighterAttack.js"></script>
-
   <script src="js/fighter/fighterGuard.js"></script>
-
   <script src="js/fighter/fighterDraw.js"></script>
-
-  <!-- =========================
-       GAME
-  ========================== -->
 
   <script src="js/ui/background.js"></script>
   <script src="js/ui/stageView.js"></script>
@@ -134,7 +66,6 @@
   <script src="js/ui/koView.js"></script>
 
   <script src="js/input.js"></script>
-
   <script src="js/main.js"></script>
 
 </body>
