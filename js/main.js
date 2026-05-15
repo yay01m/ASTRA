@@ -356,12 +356,16 @@ function setupGame() {
     getGameAreaHeight();
 
   if (isPortraitMobile()) {
+
+    // PCと同じサイズ
     stage.w =
-      canvas.width * 0.86;
+      STAGE.width;
 
     stage.h =
-      32;
+      STAGE.height;
+
   } else {
+
     stage.w =
       STAGE.width;
 
@@ -542,9 +546,11 @@ function updateGame() {
 
 function applyCamera() {
   const scale =
-    CAMERA && CAMERA.scale
-      ? CAMERA.scale
-      : 1;
+    isPortraitMobile()
+      ? 0.48
+      : CAMERA && CAMERA.scale
+        ? CAMERA.scale
+        : 1;
 
   const centerX = canvas.width / 2;
   const centerY = canvas.height / 2;
