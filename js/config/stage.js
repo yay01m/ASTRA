@@ -25,10 +25,7 @@ const STAGE = {
 ========================= */
 
 const PLATFORM = {
-    width: 190,
-    height: 18,
-    offsetX: 260,
-    offsetY: -145
+    height: 18
 };
 
 /* =========================
@@ -52,32 +49,106 @@ const stage = {
 
 /* =========================
    足場
+   4段: 3-2-3-2
 ========================= */
 
 const platforms = [
+
+    /* 下段3 */
     {
-        x: 0,
-        y: 0,
-        w: PLATFORM.width,
-        h: PLATFORM.height,
-        offsetX: -PLATFORM.offsetX,
-        offsetY: PLATFORM.offsetY
+        x:0,
+        y:0,
+        w:300,
+        h:PLATFORM.height,
+        offsetX:-560,
+        offsetY:-145
     },
+
     {
-        x: 0,
-        y: 0,
-        w: PLATFORM.width,
-        h: PLATFORM.height,
-        offsetX: PLATFORM.offsetX,
-        offsetY: PLATFORM.offsetY
+        x:0,
+        y:0,
+        w:330,
+        h:PLATFORM.height,
+        offsetX:0,
+        offsetY:-175
     },
+
     {
-        x: 0,
-        y: 0,
-        w: 170,
-        h: PLATFORM.height,
-        offsetX: 0,
-        offsetY: -250
+        x:0,
+        y:0,
+        w:300,
+        h:PLATFORM.height,
+        offsetX:560,
+        offsetY:-145
+    },
+
+    /* 中段2 */
+
+    {
+        x:0,
+        y:0,
+        w:300,
+        h:PLATFORM.height,
+        offsetX:-330,
+        offsetY:-290
+    },
+
+    {
+        x:0,
+        y:0,
+        w:300,
+        h:PLATFORM.height,
+        offsetX:330,
+        offsetY:-290
+    },
+
+    /* 上段3 */
+
+    {
+        x:0,
+        y:0,
+        w:250,
+        h:PLATFORM.height,
+        offsetX:-560,
+        offsetY:-410
+    },
+
+    {
+        x:0,
+        y:0,
+        w:290,
+        h:PLATFORM.height,
+        offsetX:0,
+        offsetY:-445
+    },
+
+    {
+        x:0,
+        y:0,
+        w:250,
+        h:PLATFORM.height,
+        offsetX:560,
+        offsetY:-410
+    },
+
+    /* 最上段2 */
+
+    {
+        x:0,
+        y:0,
+        w:240,
+        h:PLATFORM.height,
+        offsetX:-300,
+        offsetY:-540
+    },
+
+    {
+        x:0,
+        y:0,
+        w:240,
+        h:PLATFORM.height,
+        offsetX:300,
+        offsetY:-540
     }
 ];
 
@@ -86,37 +157,21 @@ const platforms = [
 ========================= */
 
 function updatePlatformPositions() {
-    if (typeof platforms === "undefined") return;
 
-    platforms[0].w = PLATFORM.width;
-    platforms[0].h = PLATFORM.height;
-    platforms[0].x =
-        stage.x +
-        stage.w / 2 +
-        platforms[0].offsetX -
-        platforms[0].w / 2;
-    platforms[0].y =
-        stage.y +
-        platforms[0].offsetY;
+    if(
+        typeof platforms==="undefined"
+    ) return;
 
-    platforms[1].w = PLATFORM.width;
-    platforms[1].h = PLATFORM.height;
-    platforms[1].x =
-        stage.x +
-        stage.w / 2 +
-        platforms[1].offsetX -
-        platforms[1].w / 2;
-    platforms[1].y =
-        stage.y +
-        platforms[1].offsetY;
+    for(const p of platforms){
 
-    platforms[2].w = 170;
-    platforms[2].h = PLATFORM.height;
-    platforms[2].x =
-        stage.x +
-        stage.w / 2 -
-        platforms[2].w / 2;
-    platforms[2].y =
-        stage.y -
-        250;
+        p.x=
+            stage.x+
+            stage.w/2+
+            p.offsetX-
+            p.w/2;
+
+        p.y=
+            stage.y+
+            p.offsetY;
+    }
 }

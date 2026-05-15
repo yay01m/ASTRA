@@ -1,50 +1,30 @@
 const CHARACTERS = {
 
-    /* =========================
-       NOVA
-    ========================= */
-
     balance: {
-
         name: "NOVA",
-
         type: "バランス型",
 
         color: "#4cc9f0",
-
         subColor: "#bdefff",
 
-        speed: 5,
-
-        dashSpeed: 7.2,
-
+        speed: 8,
         accel: 0.75,
 
         jump: 14,
-
         weight: 1.0,
-
         maxJumps: 2,
 
         attackDamage: 8,
 
-        attackKnockback: 7,
-
-        smashCharge1: 100,
-        smashCharge2: 200,
-        smashCharge3: 300,
+        smashCharge1: 20,
+        smashCharge2: 40,
+        smashCharge3: 60,
 
         dashDamage: 10,
-        dashKnockback: 9,
-
         airDamage: 9,
-        airKnockback: 8,
 
         specialDamage: 20,
-        specialKnockback: 28,
-
         specialCooldown: 180,
-
         specialType: "novaShot",
 
         normalTime: 8,
@@ -64,51 +44,31 @@ const CHARACTERS = {
         airLock: 5
     },
 
-    /* =========================
-       BLAZE
-    ========================= */
-
     power: {
-
         name: "BLAZE",
-
         type: "パワー型",
 
         color: "#ff4d4d",
-
         subColor: "#ffd166",
 
-        speed: 3.7,
-
-        dashSpeed: 5.6,
-
+        speed: 6.5,
         accel: 0.55,
 
         jump: 11,
-
         weight: 1.25,
-
         maxJumps: 2,
 
         attackDamage: 9,
 
-        attackKnockback: 7,
-
-        smashCharge1: 200,
-        smashCharge2: 400,
-        smashCharge3: 600,
+        smashCharge1: 40,
+        smashCharge2: 80,
+        smashCharge3: 120,
 
         dashDamage: 12,
-        dashKnockback: 10,
-
         airDamage: 9,
-        airKnockback: 8,
 
         specialDamage: 35,
-        specialKnockback: 30,
-
         specialCooldown: 480,
-
         specialType: "blazeBurst",
 
         normalTime: 10,
@@ -128,51 +88,31 @@ const CHARACTERS = {
         airLock: 8
     },
 
-    /* =========================
-       VOLT
-    ========================= */
-
     speed: {
-
         name: "VOLT",
-
         type: "スピード型",
 
         color: "#ffe66d",
-
         subColor: "#ffffff",
 
-        speed: 6.7,
-
-        dashSpeed: 9.4,
-
+        speed: 10,
         accel: 0.95,
 
         jump: 14,
-
         weight: 0.78,
-
         maxJumps: 3,
 
         attackDamage: 6,
 
-        attackKnockback: 6,
-
-        smashCharge1: 50,
-        smashCharge2: 100,
-        smashCharge3: 150,
+        smashCharge1: 10,
+        smashCharge2: 20,
+        smashCharge3: 30,
 
         dashDamage: 8,
-        dashKnockback: 8,
-
         airDamage: 7,
-        airKnockback: 7,
 
         specialDamage: 15,
-        specialKnockback: 20,
-
         specialCooldown: 120,
-
         specialType: "voltSlash",
 
         normalTime: 6,

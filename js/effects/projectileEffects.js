@@ -104,8 +104,9 @@ function updateProjectiles() {
                 p.owner,
                 target,
                 p.damage,
-                p.knock,
+                p.hitType || "special",
                 true,
+                false,
                 false
             );
 

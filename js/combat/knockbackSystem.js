@@ -8,14 +8,13 @@
 
 function getKnockbackPower(target, finalKnock) {
 
-  // ダメージが20%を超えてから吹っ飛びが強くなる
-  // 数字を上げるほど、高%でよく飛ぶ
+  // 25%を超えてから吹っ飛びが強くなる
   const percentPower =
-    Math.max(0, target.damage - 20) * 0.25;
+    Math.max(0, target.damage - 25) * 0.22;
 
-  // 技ごとの基本吹っ飛び
+  // 技ごとの基本吹っ飛びを少し弱める
   const basePower =
-    finalKnock * 0.95;
+    finalKnock * 0.88;
 
   return basePower + percentPower;
 }
@@ -27,9 +26,9 @@ function getKnockbackPower(target, finalKnock) {
 function isFinishHit(target, finalKnock, isSpecial) {
 
   return (
-    target.damage >= 100 &&
+    target.damage >= 115 &&
     (
-      finalKnock >= 12 ||
+      finalKnock >= 13 ||
       isSpecial
     )
   );
@@ -48,18 +47,18 @@ function applyKnockback(
 ) {
 
   const boost =
-    finishHit ? 1.45 : 1.0;
+    finishHit ? 1.35 : 1.0;
 
   target.vx =
     attacker.dir *
     power *
     boost /
-    target.data.weight;
+    (target.data.weight * 1.08);
 
   target.vy =
     isAir
-      ? -(power * 0.66 * boost) / target.data.weight
-      : -(power * 0.56 * boost) / target.data.weight;
+      ? -(power * 0.60 * boost) / (target.data.weight * 1.08)
+      : -(power * 0.50 * boost) / (target.data.weight * 1.08);
 }
 
 /* =========================
@@ -73,38 +72,23 @@ function addHitFeel(
 ) {
 
   if (guarded) {
-
     addHitStop(2);
-
-    // ガード時は揺らさない
-    // addScreenShake(1, 0.8);
-
     return;
   }
 
   if (isAir) {
-
     addHitStop(5);
-
-    // 空中攻撃ヒット時だけ一瞬軽く揺らす
     addScreenShake(1, 1.0);
-
     return;
   }
 
   if (isSpecial) {
-
     addHitStop(7);
-
-    // 必殺技ヒット時だけ一瞬軽く揺らす
     addScreenShake(1, 1.4);
-
     return;
   }
 
   addHitStop(4);
-
-  // 通常ヒット時だけ一瞬軽く揺らす
   addScreenShake(1, 0.8);
 }
 
@@ -113,9 +97,6 @@ function addHitFeel(
 ========================= */
 
 function addFinishHitFeel() {
-
   addHitStop(16);
-
-  // 撃墜級の一撃だけ少し揺らす
   addScreenShake(1, 2.0);
 }

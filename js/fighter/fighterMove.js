@@ -14,6 +14,21 @@ Fighter.prototype.move = function (inputX, dashInput = false) {
 
     if (inputX !== 0) {
 
+        /* =========================
+   溜め中に移動したら解除
+   ただし一瞬の入力はダッシュ攻撃用に残す
+========================= */
+
+        if (
+            this.attackCharging &&
+            this.onGround &&
+            inputX !== 0 &&
+            this.attackCharge > 6
+        ) {
+            this.attackCharging = false;
+            this.attackCharge = 0;
+        }
+
         this.dir = inputX > 0 ? 1 : -1;
 
         const guardRate =
@@ -338,10 +353,10 @@ Fighter.prototype.update = function () {
     ) {
         if (frameCount % 4 === 0) {
             addEffect(
-                this.x + this.w / 2 + this.dir * 25,
-                this.y + this.h / 2,
+                this.x + this.w / 2 + this.dir * 55,
+                this.y + this.h * 0.38,
                 this.data.color,
-                18
+                22
             );
         }
     }

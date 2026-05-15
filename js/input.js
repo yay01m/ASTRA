@@ -352,4 +352,72 @@ window.addEventListener("orientationchange", () => {
     setTimeout(resetStick, 300);
 });
 
-setTimeout(resetStick, 300);
+/* =========================
+   スティック初期化
+========================= */
+
+function initStickPosition() {
+
+    const controls =
+        document.getElementById(
+            "mobileControls"
+        );
+
+    if (
+        !controls ||
+        controls.offsetWidth === 0
+    ) {
+        requestAnimationFrame(
+            initStickPosition
+        );
+
+        return;
+    }
+
+    resetStick();
+}
+
+window.addEventListener(
+    "resize",
+    initStickPosition
+);
+
+window.addEventListener(
+    "orientationchange",
+    () => {
+        setTimeout(
+            initStickPosition,
+            300
+        );
+    }
+);
+
+/* =========================
+   ゲーム開始監視
+========================= */
+
+let lastPlaying = false;
+
+setInterval(() => {
+
+    const playing =
+        document.body.classList.contains(
+            "playing"
+        );
+
+    if (
+        playing &&
+        !lastPlaying
+    ) {
+        setTimeout(
+            initStickPosition,
+            50
+        );
+    }
+
+    lastPlaying =
+        playing;
+
+}, 200);
+
+initStickPosition();

@@ -280,30 +280,24 @@ function drawDesktopCharCardContent(
     ctx.fillStyle = "#ffffff";
     ctx.font = "14px Arial";
 
-    const jumpText =
-        ch.maxJumps >= 3
-            ? "Triple Jump"
-            : ch.maxJumps >= 2
-                ? "Double Jump"
-                : "Single Jump";
-
-    const specialText =
-        ch.specialType === "novaShot"
-            ? "Energy Shot"
-            : ch.specialType === "blazeBurst"
-                ? "Burst Explosion"
-                : ch.specialType === "voltSlash"
-                    ? "Dash Slash"
-                    : "Special";
+    /* =========================
+     ステータス表示
+  ========================= */
 
     const lines = [
-        `MOVE SPEED : ${ch.speed}`,
-        `DASH       : ${ch.dashSpeed}`,
-        `JUMP       : ${jumpText}`,
-        `ATTACK     : ${ch.attackDamage}`,
-        `SMASH      : ${ch.smashCharge3}F`,
-        `SPECIAL    : ${specialText}`,
-        `POWER      : ${ch.specialDamage}`
+
+        `SPEED : ${ch.speed}`,
+
+        `ACCEL : ${ch.accel}`,
+
+        `JUMP : ${ch.jump}`,
+
+        `WEIGHT : ${ch.weight}`,
+
+        `POWER : ${ch.attackDamage}`,
+
+        `SPECIAL : ${ch.specialDamage}`
+
     ];
 
     lines.forEach((t, i) => {

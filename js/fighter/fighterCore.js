@@ -8,11 +8,24 @@ class Fighter {
         this.data = data;
         this.isCPU = isCPU;
 
+        /* =========================
+           ダッシュ速度自動計算
+        ========================= */
+
+        this.data.dashSpeed =
+            Math.floor(
+                this.data.speed * 1.35
+            );
+
         this.x = x;
         this.y = y;
 
-        this.w = 54;
-        this.h = 82;
+        /* =========================
+           サイズ
+        ========================= */
+
+        this.w = 78;
+        this.h = 102;
 
         this.vx = 0;
         this.vy = 0;
@@ -25,6 +38,7 @@ class Fighter {
         this.onGround = false;
 
         this.jumpCount = 0;
+
         this.maxJumps =
             this.data.maxJumps || 2;
 
@@ -47,10 +61,10 @@ class Fighter {
 
         this.guardHeld = false;
         this.isGuarding = false;
+
         this.guardHoldTimer = 0;
         this.guardBreakTimer = 0;
 
-        // 空中回避
         this.airDodgeTimer = 0;
         this.airDodgeUsed = false;
     }
@@ -84,10 +98,12 @@ class Fighter {
 
         this.guardHeld = false;
         this.isGuarding = false;
+
         this.guardHoldTimer = 0;
         this.guardBreakTimer = 0;
 
         this.jumpCount = 0;
+
         this.maxJumps =
             this.data.maxJumps || 2;
 

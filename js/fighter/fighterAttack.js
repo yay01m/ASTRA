@@ -24,7 +24,6 @@ Fighter.prototype.startAttackCharge = function () {
 ========================= */
 
 Fighter.prototype.releaseAttackCharge = function () {
-
     if (!this.attackCharging) return;
 
     this.attackCharging = false;
@@ -43,35 +42,25 @@ Fighter.prototype.releaseAttackCharge = function () {
         return;
     }
 
-    // =========================
-    // 三段階スマッシュ
-    // =========================
-
+    // 地上で動いている時はスマッシュ溜めをキャンセルして通常攻撃
     if (
-        this.attackCharge >=
-        this.data.smashCharge3
+        this.onGround &&
+        Math.abs(this.vx) > 0.4 &&
+        !this.isDashing
     ) {
+        this.attackCharge = 0;
+    }
 
+    if (this.attackCharge >= this.data.smashCharge3) {
         this.smashAttack(3);
-
-    } else if (
-        this.attackCharge >=
-        this.data.smashCharge2
-    ) {
-
+    } else if (this.attackCharge >= this.data.smashCharge2) {
         this.smashAttack(2);
-
-    } else if (
-        this.attackCharge >=
-        this.data.smashCharge1
-    ) {
-
+    } else if (this.attackCharge >= this.data.smashCharge1) {
         this.smashAttack(1);
-
     } else {
-
         this.normalAttack();
     }
+
     this.attackCharge = 0;
 };
 
@@ -80,11 +69,9 @@ Fighter.prototype.releaseAttackCharge = function () {
 ========================= */
 
 Fighter.prototype.updateAttackCharge = function () {
-
     if (!this.attackCharging) return;
 
     this.attackCharge++;
-
     this.attackCharge =
         Math.min(this.attackCharge, 1000);
 };
@@ -94,7 +81,6 @@ Fighter.prototype.updateAttackCharge = function () {
 ========================= */
 
 Fighter.prototype.normalAttack = function () {
-
     if (
         this.coolAttack > 0 ||
         this.hitstun > 0 ||
@@ -102,15 +88,9 @@ Fighter.prototype.normalAttack = function () {
     ) return;
 
     this.attackKind = "normal";
-
-    this.attackTimer =
-        this.data.normalTime;
-
-    this.coolAttack =
-        this.data.normalCooldown;
-
-    this.actionLock =
-        this.data.normalLock;
+    this.attackTimer = this.data.normalTime;
+    this.coolAttack = this.data.normalCooldown;
+    this.actionLock = this.data.normalLock;
 };
 
 /* =========================
@@ -118,7 +98,6 @@ Fighter.prototype.normalAttack = function () {
 ========================= */
 
 Fighter.prototype.smashAttack = function (level = 1) {
-
     if (
         this.coolAttack > 0 ||
         this.hitstun > 0 ||
@@ -126,36 +105,18 @@ Fighter.prototype.smashAttack = function (level = 1) {
     ) return;
 
     this.attackKind = "smash";
-
-    // =========================
-    // スマッシュ段階
-    // =========================
-
     this.smashLevel = level;
 
-    // =========================
-    // レベルごとに強化
-    // =========================
-
     this.attackTimer =
-        this.data.smashTime +
-        level * 2;
+        this.data.smashTime + level * 2;
 
     this.coolAttack =
-        this.data.smashCooldown +
-        level * 4;
+        this.data.smashCooldown + level * 4;
 
     this.actionLock =
-        this.data.smashLock +
-        level * 3;
+        this.data.smashLock + level * 3;
 
     addHitStop(4 + level);
-
-    //ヒット時のみ揺らす
-    //addScreenShake(
-    //   8 + level * 3,
-    //    10 + level * 4
-    //);
 };
 
 /* =========================
@@ -163,31 +124,20 @@ Fighter.prototype.smashAttack = function (level = 1) {
 ========================= */
 
 Fighter.prototype.dashAttack = function () {
-
     if (
         this.coolDashAttack > 0 ||
         this.hitstun > 0 ||
         this.actionLock > 0
     ) return;
 
-    this.dashAttackTimer =
-        this.data.dashTime;
-
-    this.coolDashAttack =
-        this.data.dashCooldown;
-
-    this.actionLock =
-        this.data.dashLock;
+    this.dashAttackTimer = this.data.dashTime;
+    this.coolDashAttack = this.data.dashCooldown;
+    this.actionLock = this.data.dashLock;
 
     this.vx =
         this.dir *
-        (
-            this.charKey === "speed"
-                ? 10
-                : this.charKey === "power"
-                    ? 7
-                    : 8.2
-        );
+        this.data.dashSpeed *
+        0.95;
 
     addDashEffect(
         this.x + this.w / 2,
@@ -201,7 +151,6 @@ Fighter.prototype.dashAttack = function () {
 ========================= */
 
 Fighter.prototype.airAttack = function () {
-
     if (
         this.isGuarding ||
         this.guardBreakTimer > 0
@@ -215,25 +164,18 @@ Fighter.prototype.airAttack = function () {
 
     if (this.onGround) return;
 
-    this.airAttackTimer =
-        this.data.airTime;
-
-    this.coolAirAttack =
-        this.data.airCooldown;
-
-    this.actionLock =
-        this.data.airLock;
+    this.airAttackTimer = this.data.airTime;
+    this.coolAirAttack = this.data.airCooldown;
+    this.actionLock = this.data.airLock;
 
     this.vx += this.dir * 4.5;
 
     if (this.charKey === "power") {
-
         this.vy += 1.5;
         this.vx += this.dir * 1.5;
     }
 
     if (this.charKey === "speed") {
-
         this.vx += this.dir * 2.5;
     }
 };
@@ -243,7 +185,6 @@ Fighter.prototype.airAttack = function () {
 ========================= */
 
 Fighter.prototype.special = function () {
-
     if (
         this.isGuarding ||
         this.guardBreakTimer > 0
@@ -256,24 +197,11 @@ Fighter.prototype.special = function () {
     ) return;
 
     this.specialTimer = 18;
-
-    // =========================
-    // キャラ別クールタイム
-    // =========================
-
-    this.coolSpecial =
-        this.data.specialCooldown;
-
+    this.coolSpecial = this.data.specialCooldown;
     this.actionLock = 24;
 
-    /* =========================
-       NOVA
-    ========================= */
-
     if (this.data.specialType === "novaShot") {
-
         projectiles.push({
-
             type: "novaShot",
             owner: this,
 
@@ -295,8 +223,7 @@ Fighter.prototype.special = function () {
             damage:
                 this.data.specialDamage,
 
-            knock:
-                this.data.specialKnockback,
+            hitType: "special",
 
             color:
                 this.data.color,
@@ -305,26 +232,14 @@ Fighter.prototype.special = function () {
         });
 
         addNovaBallEffect(
-            this.x +
-            this.w / 2 +
-            this.dir * 25,
-
-            this.y +
-            this.h / 2,
-
+            this.x + this.w / 2 + this.dir * 25,
+            this.y + this.h / 2,
             92
         );
     }
 
-    /* =========================
-       BLAZE
-    ========================= */
-
     if (this.data.specialType === "blazeBurst") {
-
         addHitStop(7);
-
-        //addScreenShake(12, 14);
 
         addFireBurstEffect(
             this.x + this.w / 2 + this.dir * 70,
@@ -332,14 +247,8 @@ Fighter.prototype.special = function () {
         );
     }
 
-    /* =========================
-       VOLT
-    ========================= */
-
     if (this.data.specialType === "voltSlash") {
-
         this.vx = this.dir * 30;
-
         this.dashAttackTimer = 10;
 
         addDashEffect(
@@ -349,13 +258,8 @@ Fighter.prototype.special = function () {
         );
 
         addLightningSlashEffect(
-            this.x +
-            this.w / 2 +
-            this.dir * 80,
-
-            this.y +
-            this.h / 2,
-
+            this.x + this.w / 2 + this.dir * 80,
+            this.y + this.h / 2,
             this.dir
         );
     }

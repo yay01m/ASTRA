@@ -1,4 +1,23 @@
 /* =========================
+   ノックバック自動計算
+========================= */
+
+function getDamageKnockback(
+    damage,
+    type = "normal"
+) {
+    const rate = {
+        normal: 0.95,
+        dash: 1.05,
+        air: 1.00,
+        special: 1.35,
+        smash: 1.55
+    };
+
+    return damage * (rate[type] || 1);
+}
+
+/* =========================
    ダメージ処理
 ========================= */
 
@@ -6,27 +25,37 @@ function applyHit(
     attacker,
     target,
     damage,
-    knock,
+    hitType = "normal",
     isSpecial = false,
     isAir = false,
     isSmash = false
 ) {
-    const guarded = target.isGuarding;
+    const guarded =
+        target.isGuarding;
 
-    const finalDamage = guarded
-        ? Math.floor(damage * 0.25)
-        : damage;
+    const knock =
+        getDamageKnockback(
+            damage,
+            hitType
+        );
 
-    const finalKnock = guarded
-        ? knock * 0.16
-        : knock;
+    const finalDamage =
+        guarded
+            ? Math.floor(damage * 0.25)
+            : damage;
+
+    const finalKnock =
+        guarded
+            ? knock * 0.16
+            : knock;
 
     target.damage += finalDamage;
 
-    const power = getKnockbackPower(
-        target,
-        finalKnock
-    );
+    const power =
+        getKnockbackPower(
+            target,
+            finalKnock
+        );
 
     const finishHit =
         !guarded &&
@@ -48,32 +77,38 @@ function applyHit(
         finishHit
     );
 
-    target.hitstun = finishHit
-        ? 34
-        : guarded
-            ? 5
-            : isSmash
-                ? 24
-                : 16;
+    target.hitstun =
+        finishHit
+            ? 34
+            : guarded
+                ? 5
+                : isSmash
+                    ? 24
+                    : 16;
 
-    target.invincible = finishHit
-        ? 20
-        : isSmash
-            ? 16
-            : 12;
+    target.invincible =
+        finishHit
+            ? 20
+            : isSmash
+                ? 16
+                : 12;
 
     if (isSpecial) {
         attacker.actionLock =
-            Math.max(attacker.actionLock, 20);
+            Math.max(
+                attacker.actionLock,
+                20
+            );
     }
 
-    const tx = target.x + target.w / 2;
-    const ty = target.y + target.h / 2;
+    const tx =
+        target.x + target.w / 2;
+
+    const ty =
+        target.y + target.h / 2;
 
     if (finishHit) {
-
         addFinishHitFeel();
-
         addKOFlashEffect(tx, ty);
 
         addEffect(
@@ -82,9 +117,7 @@ function applyHit(
             "#ffffff",
             58
         );
-
     } else {
-
         addHitFeel(
             isSpecial,
             isAir,
@@ -93,7 +126,6 @@ function applyHit(
     }
 
     if (guarded) {
-
         addEffect(
             tx,
             ty,
@@ -105,11 +137,13 @@ function applyHit(
     }
 
     if (isAir) {
-
         attacker.airAttackTimer = 0;
 
         attacker.actionLock =
-            Math.max(attacker.actionLock, 8);
+            Math.max(
+                attacker.actionLock,
+                8
+            );
     }
 
     addCharacterHitEffect(
@@ -119,14 +153,13 @@ function applyHit(
     );
 
     if (isSmash) {
-
         addEffect(
             tx,
             ty,
             "#ffffff",
-            62 + (attacker.smashLevel || 1) * 8
+            62 +
+            (attacker.smashLevel || 1) * 8
         );
-
     }
 }
 
@@ -134,110 +167,50 @@ function applyHit(
    攻撃判定時間
 ========================= */
 
-/*
-attackTime
-
-> 3 && <= 8
-
-なら
-
-8〜4 の間だけ
-攻撃判定が出る
-*/
-
-/* =========================
-   通常攻撃
-========================= */
-
 function isNormalActive(attacker) {
-
     return (
         attacker.attackTimer > 3 &&
         attacker.attackTimer <= 8
     );
 }
 
-/* =========================
-   スマッシュ
-========================= */
-
 function isSmashActive(attacker) {
-
     return (
         attacker.attackTimer > 4 &&
         attacker.attackTimer <= 11
     );
 }
 
-/* =========================
-   ダッシュ攻撃
-========================= */
-
 function isDashActive(attacker) {
-
     return (
         attacker.dashAttackTimer > 4 &&
         attacker.dashAttackTimer <= 10
     );
 }
 
-/* =========================
-   空中攻撃
-========================= */
-
 function isAirActive(attacker) {
-
     return (
         attacker.airAttackTimer > 3 &&
         attacker.airAttackTimer <= 8
     );
 }
 
-/* =========================
-   必殺技
-========================= */
-
 function isSpecialActive(attacker) {
-
-    // =========================
-    // BLAZE
-    // =========================
-
-    if (
-        attacker.data.specialType ===
-        "blazeBurst"
-    ) {
-
+    if (attacker.data.specialType === "blazeBurst") {
         return (
             attacker.specialTimer > 5 &&
             attacker.specialTimer <= 10
         );
     }
 
-    // =========================
-    // VOLT
-    // =========================
-
-    if (
-        attacker.data.specialType ===
-        "voltSlash"
-    ) {
-
+    if (attacker.data.specialType === "voltSlash") {
         return (
             attacker.specialTimer > 10 &&
             attacker.specialTimer <= 12
         );
     }
 
-    // =========================
-    // NOVA
-    // =========================
-
-    if (
-        attacker.data.specialType ===
-        "novaShot"
-    ) {
-
+    if (attacker.data.specialType === "novaShot") {
         return false;
     }
 
@@ -259,7 +232,6 @@ function makeHitBox({
     height = 40,
     radius = 60
 }) {
-
     return {
         shape,
         offsetX,
@@ -279,7 +251,6 @@ function isHitBoxTouching(
     attacker,
     target
 ) {
-
     const ax =
         attacker.x +
         attacker.w / 2 +
@@ -304,36 +275,21 @@ function isHitBoxTouching(
     const dy =
         Math.abs(ty - ay);
 
-    /* =========================
-       円形
-    ========================= */
-
     if (hitBox.shape === "circle") {
-
         return (
             Math.hypot(dx, dy) <
             hitBox.radius
         );
     }
 
-    /* =========================
-       長方形
-    ========================= */
-
     if (hitBox.shape === "rect") {
-
         return (
             dx < hitBox.width / 2 &&
             dy < hitBox.height / 2
         );
     }
 
-    /* =========================
-       楕円
-    ========================= */
-
     if (hitBox.shape === "ellipse") {
-
         const rx =
             hitBox.width / 2;
 
@@ -353,8 +309,10 @@ function isHitBoxTouching(
    攻撃判定
 ========================= */
 
-function hitCheck(attacker, target) {
-
+function hitCheck(
+    attacker,
+    target
+) {
     if (target.invincible > 0) return;
 
     let hitBox = null;
@@ -362,33 +320,24 @@ function hitCheck(attacker, target) {
     let damage =
         attacker.data.attackDamage;
 
-    let knock =
-        attacker.data.attackKnockback;
+    let hitType =
+        "normal";
 
     let isSpecial = false;
     let isAir = false;
     let isSmash = false;
-
-    /* =========================
-       通常攻撃 / スマッシュ
-    ========================= */
 
     if (
         attacker.attackKind === "smash"
             ? isSmashActive(attacker)
             : isNormalActive(attacker)
     ) {
-
         if (attacker.attackKind === "smash") {
-
             isSmash = true;
+            hitType = "smash";
 
             const level =
                 attacker.smashLevel || 1;
-
-            /* =========================
-               スマッシュ倍率
-            ========================= */
 
             const damageRate =
                 level === 3
@@ -397,49 +346,27 @@ function hitCheck(attacker, target) {
                         ? 3.75
                         : 2.95;
 
-            const knockRate =
-                level === 3
-                    ? 6.35
-                    : level === 2
-                        ? 4.8
-                        : 4.25;
-
             damage =
                 Math.floor(
                     attacker.data.attackDamage *
                     damageRate
                 );
 
-            knock =
-                attacker.data.attackKnockback *
-                knockRate;
-
-            /* =========================
-               スマッシュ判定
-            ========================= */
-
             if (attacker.charKey === "power") {
-
                 hitBox = makeHitBox({
                     shape: "rect",
                     offsetX: 48,
                     width: 105,
                     height: 58
                 });
-
-            } else if (
-                attacker.charKey === "speed"
-            ) {
-
+            } else if (attacker.charKey === "speed") {
                 hitBox = makeHitBox({
                     shape: "rect",
                     offsetX: 52,
                     width: 112,
                     height: 44
                 });
-
             } else {
-
                 hitBox = makeHitBox({
                     shape: "rect",
                     offsetX: 50,
@@ -449,10 +376,7 @@ function hitCheck(attacker, target) {
             }
 
         } else {
-
-            /* =========================
-               通常攻撃倍率
-            ========================= */
+            hitType = "normal";
 
             damage =
                 Math.floor(
@@ -460,36 +384,21 @@ function hitCheck(attacker, target) {
                     1.15
                 );
 
-            knock =
-                attacker.data.attackKnockback *
-                1.2;
-
-            /* =========================
-               通常攻撃判定
-            ========================= */
-
             if (attacker.charKey === "power") {
-
                 hitBox = makeHitBox({
                     shape: "rect",
                     offsetX: 42,
                     width: 82,
                     height: 46
                 });
-
-            } else if (
-                attacker.charKey === "speed"
-            ) {
-
+            } else if (attacker.charKey === "speed") {
                 hitBox = makeHitBox({
                     shape: "rect",
                     offsetX: 48,
                     width: 92,
                     height: 34
                 });
-
             } else {
-
                 hitBox = makeHitBox({
                     shape: "rect",
                     offsetX: 45,
@@ -500,40 +409,30 @@ function hitCheck(attacker, target) {
         }
     }
 
-    /* =========================
-       ダッシュ攻撃
-    ========================= */
-
     if (isDashActive(attacker)) {
+        hitType = "dash";
 
         damage =
-            attacker.data.dashDamage * 1.35;
-
-        knock =
-            attacker.data.dashKnockback * 1.9;
+            Math.floor(
+                attacker.data.dashDamage *
+                1.35
+            );
 
         if (attacker.charKey === "speed") {
-
             hitBox = makeHitBox({
                 shape: "rect",
                 offsetX: 48,
                 width: 95,
                 height: 32
             });
-
-        } else if (
-            attacker.charKey === "power"
-        ) {
-
+        } else if (attacker.charKey === "power") {
             hitBox = makeHitBox({
                 shape: "rect",
                 offsetX: 45,
                 width: 90,
                 height: 40
             });
-
         } else {
-
             hitBox = makeHitBox({
                 shape: "rect",
                 offsetX: 46,
@@ -543,42 +442,31 @@ function hitCheck(attacker, target) {
         }
     }
 
-    /* =========================
-       空中攻撃
-    ========================= */
-
     if (isAirActive(attacker)) {
-
         isAir = true;
+        hitType = "air";
 
         damage =
-            attacker.data.airDamage * 1.25;
-
-        knock =
-            attacker.data.airKnockback * 1.7;
+            Math.floor(
+                attacker.data.airDamage *
+                1.25
+            );
 
         if (attacker.charKey === "power") {
-
             hitBox = makeHitBox({
                 shape: "ellipse",
                 offsetX: 28,
                 width: 78,
                 height: 58
             });
-
-        } else if (
-            attacker.charKey === "speed"
-        ) {
-
+        } else if (attacker.charKey === "speed") {
             hitBox = makeHitBox({
                 shape: "ellipse",
                 offsetX: 34,
                 width: 82,
                 height: 42
             });
-
         } else {
-
             hitBox = makeHitBox({
                 shape: "ellipse",
                 offsetX: 30,
@@ -588,29 +476,14 @@ function hitCheck(attacker, target) {
         }
     }
 
-    /* =========================
-       必殺技
-    ========================= */
-
     if (isSpecialActive(attacker)) {
-
         isSpecial = true;
+        hitType = "special";
 
         damage =
             attacker.data.specialDamage;
 
-        knock =
-            attacker.data.specialKnockback;
-
-        /* =========================
-           BLAZE
-        ========================= */
-
-        if (
-            attacker.data.specialType ===
-            "blazeBurst"
-        ) {
-
+        if (attacker.data.specialType === "blazeBurst") {
             hitBox = makeHitBox({
                 shape: "circle",
                 offsetX: 70,
@@ -618,15 +491,7 @@ function hitCheck(attacker, target) {
             });
         }
 
-        /* =========================
-           VOLT
-        ========================= */
-
-        if (
-            attacker.data.specialType ===
-            "voltSlash"
-        ) {
-
+        if (attacker.data.specialType === "voltSlash") {
             hitBox = makeHitBox({
                 shape: "rect",
                 offsetX: 10,
@@ -635,15 +500,7 @@ function hitCheck(attacker, target) {
             });
         }
 
-        /* =========================
-           NOVA
-        ========================= */
-
-        if (
-            attacker.data.specialType ===
-            "novaShot"
-        ) {
-
+        if (attacker.data.specialType === "novaShot") {
             hitBox = null;
         }
     }
@@ -657,12 +514,11 @@ function hitCheck(attacker, target) {
             target
         )
     ) {
-
         applyHit(
             attacker,
             target,
             damage,
-            knock,
+            hitType,
             isSpecial,
             isAir,
             isSmash

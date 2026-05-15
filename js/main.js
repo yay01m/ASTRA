@@ -260,31 +260,43 @@ function startRespawn(fighter, isCpu) {
   }
 }
 
-function finishRespawn(fighter, isCpu) {
+function finishRespawn(
+  fighter,
+  isCpu
+) {
+
   const centerX =
     stage.x + stage.w / 2;
 
   const safeGap =
-    getSpawnGap();
+    300;
 
   fighter.x =
     isCpu
       ? centerX + safeGap
-      : centerX - safeGap;
+      : centerX - safeGap - 120;
 
   fighter.y =
-    stage.y - fighter.h - 20;
+    stage.y -
+    fighter.h -
+    100;
 
   fighter.vx = 0;
   fighter.vy = 0;
+
   fighter.damage = 0;
+
   fighter.onGround = false;
-  fighter.dir = isCpu ? -1 : 1;
+
+  fighter.dir =
+    isCpu ? -1 : 1;
 
   if (isCpu) {
-    cpuInvincibleTimer = INVINCIBLE_TIME;
+    cpuInvincibleTimer =
+      INVINCIBLE_TIME;
   } else {
-    playerInvincibleTimer = INVINCIBLE_TIME;
+    playerInvincibleTimer =
+      INVINCIBLE_TIME;
   }
 }
 
@@ -402,6 +414,7 @@ function drawRespawnText() {
 ========================= */
 
 function setupGame() {
+
   stage.w =
     GAME_W * 1.6;
 
@@ -421,12 +434,15 @@ function setupGame() {
   const centerX =
     stage.x + stage.w / 2;
 
-  const gap =
-    getSpawnGap();
+  /* =====================
+     初期スポーン距離
+  ===================== */
+
+  const gap = 300;
 
   player = new Fighter(
-    centerX - gap,
-    stage.y - 100,
+    centerX - gap - 120,
+    stage.y - 220,
     selectedChar,
     false
   );
@@ -439,15 +455,22 @@ function setupGame() {
 
   const randomCpuChar =
     cpuChars[
-      Math.floor(Math.random() * cpuChars.length)
+    Math.floor(
+      Math.random() *
+      cpuChars.length
+    )
     ];
 
   cpu = new Fighter(
     centerX + gap,
-    stage.y - 100,
+    stage.y - 220,
     randomCpuChar,
     true
   );
+
+  /* =====================
+     向き
+  ===================== */
 
   player.dir = 1;
   cpu.dir = -1;
@@ -466,8 +489,27 @@ function updateGame() {
   if (matchStartTimer > 0) {
     matchStartTimer--;
 
+    // 3・2・1中は完全停止
+    stickX = 0;
+    guardButtonDown = false;
+
+    if (player) {
+      player.vx = 0;
+      player.vy = 0;
+      player.attackCharging = false;
+      player.attackCharge = 0;
+      player.setGuard(false);
+    }
+
+    if (cpu) {
+      cpu.vx = 0;
+      cpu.vy = 0;
+      cpu.attackCharging = false;
+      cpu.attackCharge = 0;
+      cpu.setGuard(false);
+    }
+
     updateEffects();
-    updateProjectiles();
 
     return;
   }

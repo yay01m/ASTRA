@@ -71,11 +71,11 @@ Fighter.prototype.drawCharacterImage = function () {
         return;
     }
 
-    const drawW = this.w + 30;
-    const drawH = this.h + 20;
+    const drawW = this.w + 42;
+    const drawH = this.h + 38;
 
-    const drawX = -15;
-    const drawY = -14;
+    const drawX = -21;
+    const drawY = -22;
 
     ctx.save();
 
@@ -167,10 +167,10 @@ Fighter.prototype.drawChargeEffect = function () {
     if (level <= 0) return;
 
     const cx =
-        this.w / 2 + this.dir * 26;
+        this.w / 2 + this.dir * (this.w * 0.72);
 
     const cy =
-        this.h / 2 - 2;
+        this.h * 0.38;
 
     const pulse =
         Math.sin(Date.now() / 65) * 2;
