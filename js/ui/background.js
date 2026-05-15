@@ -55,12 +55,17 @@ function drawBattleBackground() {
         backgroundImage.complete &&
         backgroundImage.naturalWidth > 0
     ) {
+        const gameH =
+            typeof getGameAreaHeight === "function"
+                ? getGameAreaHeight()
+                : canvas.height;
+
         ctx.drawImage(
             backgroundImage,
             0,
             0,
             canvas.width,
-            canvas.height
+            gameH
         );
     } else {
         drawBackground();
@@ -83,6 +88,6 @@ function drawBattleBackground() {
         0,
         0,
         canvas.width,
-        canvas.height
+        gameH
     );
 }

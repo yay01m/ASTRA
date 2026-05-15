@@ -545,19 +545,46 @@ function updateGame() {
 ========================= */
 
 function applyCamera() {
+
   const scale =
     isPortraitMobile()
-      ? 0.26
+      ? 0.31
       : CAMERA && CAMERA.scale
         ? CAMERA.scale
         : 1;
 
-  const centerX = canvas.width / 2;
-  const centerY = canvas.height / 2;
+  const gameH =
+    typeof getGameAreaHeight === "function"
+      ? getGameAreaHeight()
+      : canvas.height;
 
-  ctx.translate(centerX, centerY);
+  const viewCenterX =
+    canvas.width / 2;
+
+  const viewCenterY =
+    isPortraitMobile()
+      ? gameH / 2
+      : canvas.height / 2;
+
+  // ステージ中央
+  const targetX =
+    stage.x + stage.w / 2;
+
+  // 少し上を見る
+  const targetY =
+    stage.y - 120;
+
+  ctx.translate(
+    viewCenterX,
+    viewCenterY
+  );
+
   ctx.scale(scale, scale);
-  ctx.translate(-centerX, -centerY);
+
+  ctx.translate(
+    -targetX,
+    -targetY
+  );
 }
 
 /* =========================

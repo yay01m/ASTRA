@@ -356,6 +356,20 @@ stickArea.addEventListener(
     }
 );
 
+window.addEventListener(
+    "resize",
+    resetStick
+);
+
+window.addEventListener(
+    "orientationchange",
+    () => {
+        setTimeout(resetStick, 300);
+    }
+);
+
+setTimeout(resetStick, 300);
+
 stickArea.addEventListener(
     "touchcancel",
     e => {
