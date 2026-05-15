@@ -547,7 +547,7 @@ function updateGame() {
 function applyCamera() {
   const scale =
     isPortraitMobile()
-      ? 0.48
+      ? 0.38
       : CAMERA && CAMERA.scale
         ? CAMERA.scale
         : 1;
