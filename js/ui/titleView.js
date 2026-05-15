@@ -1,13 +1,21 @@
 function drawTitle() {
 
     // 背景
-    ctx.drawImage(
-        titleBg,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
+    if (
+        titleBg &&
+        titleBg.complete &&
+        titleBg.naturalWidth > 0
+    ) {
+        ctx.drawImage(
+            titleBg,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+    } else {
+        drawBackground();
+    }
 
     // 暗くする
     ctx.fillStyle =
@@ -20,6 +28,8 @@ function drawTitle() {
         canvas.height
     );
 
+    
+
     // 点滅
     const alpha =
         0.5 +
@@ -28,21 +38,18 @@ function drawTitle() {
     ctx.save();
 
     ctx.globalAlpha = alpha;
-
     ctx.fillStyle = "white";
-
     ctx.font =
-        `bold ${canvas.width * 0.035}px Arial`;
+        `bold ${Math.max(18, canvas.width * 0.035)}px Arial`;
 
     ctx.textAlign = "center";
-
     ctx.shadowColor = "#9d4dff";
     ctx.shadowBlur = 20;
 
     ctx.fillText(
         "TAP TO START",
         canvas.width / 2,
-        canvas.height - 120
+        canvas.height * 0.82
     );
 
     ctx.restore();
@@ -52,11 +59,13 @@ function drawTitle() {
         "rgba(255,255,255,0.7)";
 
     ctx.font =
-        `${canvas.width * 0.016}px Arial`;
+        `${Math.max(12, canvas.width * 0.016)}px Arial`;
+
+    ctx.textAlign = "center";
 
     ctx.fillText(
         "v1.0",
         canvas.width / 2,
-        canvas.height - 50
+        canvas.height * 0.93
     );
 }

@@ -33,12 +33,18 @@ function drawStageSelect() {
         80
     );
 
+    const cardW =
+        canvas.width * 0.3;
+
+    const cardH =
+        canvas.height * 0.24;
+
     drawStageCard(
         "cyber_core",
-        canvas.width / 2 - 160,
-        140,
-        canvas.width * 0.3,
-        canvas.height * 0.24
+        canvas.width / 2 - cardW / 2,
+        canvas.height * 0.2,
+        cardW,
+        cardH
     );
 
     drawButton(
