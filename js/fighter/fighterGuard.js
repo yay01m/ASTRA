@@ -15,7 +15,7 @@ Fighter.prototype.guardBreak = function() {
     this.vx = 0;
     this.vy = -4;
 
-    shake = 10;
+    //shake = 10;
 
     if (typeof addGuardBreakEffect === "function") {
         addGuardBreakEffect(

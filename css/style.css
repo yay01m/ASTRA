@@ -29,30 +29,11 @@ canvas {
    MOBILE CONTROLS
 ========================= */
 
-@media (max-width: 900px) and (orientation: portrait) {
-
-  #mobileControls {
-    inset: auto;
-
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: auto;
-    bottom: 0;
-
-    width: 100vw;
-    height: 30vh;
-
-    pointer-events: none;
-    z-index: 10;
-
-    background:
-      linear-gradient(to top,
-        rgba(0, 0, 0, 0.78),
-        rgba(0, 0, 0, 0.12));
-
-    backdrop-filter: blur(10px);
-  }
+#mobileControls {
+  position: fixed;
+  display: none;
+  pointer-events: none;
+  z-index: 10;
 }
 
 /* ゲーム中だけ表示 */
@@ -61,7 +42,7 @@ body.playing #mobileControls {
 }
 
 /* =========================
-   PC / 横画面
+   PC / 横画面 基本配置
 ========================= */
 
 #stickArea {
@@ -156,27 +137,26 @@ body.playing #mobileControls {
 
 @media (max-width: 900px) and (orientation: portrait) {
 
-  /* 下側UIエリア */
   #mobileControls {
-
-    position: fixed;
     left: 0;
+    right: 0;
+    top: auto;
     bottom: 0;
 
     width: 100vw;
     height: 30vh;
 
     background:
-      linear-gradient(to top,
+      linear-gradient(
+        to top,
         rgba(0, 0, 0, 0.78),
-        rgba(0, 0, 0, 0.12));
+        rgba(0, 0, 0, 0.12)
+      );
 
     backdrop-filter: blur(10px);
   }
 
-  /* 左スティック */
   #stickArea {
-
     left: 6vw;
     bottom: 4vh;
 
@@ -191,20 +171,16 @@ body.playing #mobileControls {
   }
 
   #stick {
-
     left: 50%;
     top: 50%;
 
     width: 38%;
     height: 38%;
 
-    transform:
-      translate(-50%, -50%);
+    transform: translate(-50%, -50%);
   }
 
-  /* 右ボタンエリア */
   #buttons {
-
     right: 4vw;
     bottom: 2vh;
 
@@ -212,15 +188,11 @@ body.playing #mobileControls {
     height: 24vh;
   }
 
-  /* 共通ボタン */
   #buttons button {
-
     border-width: 2px;
   }
 
-  /* 攻撃 */
   #btnAttack {
-
     right: 8vw;
     bottom: 3vh;
 
@@ -234,12 +206,9 @@ body.playing #mobileControls {
     max-height: 95px;
 
     font-size: 26px;
-    background: #2f80ff;
   }
 
-  /* ジャンプ */
   #btnJump {
-
     right: 24vw;
     bottom: 9vh;
 
@@ -253,13 +222,10 @@ body.playing #mobileControls {
     max-height: 80px;
 
     font-size: 20px;
-    background: #2ecc71;
   }
 
-  /* 必殺 */
   #btnSpecial {
-
-    right: 0vw;
+    right: 0;
     bottom: 10vh;
 
     width: 15vw;
@@ -272,14 +238,11 @@ body.playing #mobileControls {
     max-height: 84px;
 
     font-size: 22px;
-    background: #ff3b3b;
   }
 
-  /* ガード */
   #btnGuard {
-
     right: 25vw;
-    bottom: 0vh;
+    bottom: 0;
 
     width: 13vw;
     height: 13vw;
@@ -291,7 +254,6 @@ body.playing #mobileControls {
     max-height: 74px;
 
     font-size: 18px;
-    background: #9b59b6;
   }
 }
 
@@ -300,7 +262,6 @@ body.playing #mobileControls {
 ========================= */
 
 @media (min-width: 900px) {
-
   #mobileControls {
     opacity: 0.45;
   }

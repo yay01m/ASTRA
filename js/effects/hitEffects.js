@@ -76,11 +76,11 @@ function addCharacterHitEffect(x, y, attacker) {
 
   if (!attacker) return;
 
-  if (attacker.type === "balance") {
+  if (attacker.charKey === "balance") {
     addNovaHitEffect(x, y);
-  } else if (attacker.type === "power") {
+  } else if (attacker.charKey === "power") {
     addBlazeHitEffect(x, y);
-  } else if (attacker.type === "speed") {
+  } else if (attacker.charKey === "speed") {
     addVoltHitEffect(x, y);
   }
 }

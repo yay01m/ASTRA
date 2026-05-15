@@ -2,25 +2,10 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 /* =========================
-   画面サイズ
-========================= */
-
-function resize() {
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-
-window.addEventListener("resize", resize);
-
-resize();
-
-/* =========================
    ゲーム状態
 ========================= */
 
 const STATE = {
-
     TITLE: "title",
     SELECT: "select",
     STAGE_SELECT: "stageSelect",

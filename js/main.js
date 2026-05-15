@@ -634,17 +634,10 @@ function drawGame() {
 function loop() {
   frameCount++;
 
-  const mobileControls =
-    document.getElementById(
-      "mobileControls"
-    );
-
-  if (mobileControls) {
-    mobileControls.style.display =
-      gameState === STATE.GAME
-        ? "flex"
-        : "none";
-  }
+  document.body.classList.toggle(
+    "playing",
+    gameState === STATE.GAME
+  );
 
   if (
     gameState === STATE.GAME &&
