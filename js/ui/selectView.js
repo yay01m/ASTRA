@@ -2,50 +2,61 @@
    キャラ選択画面
 ========================= */
 
-function drawSelect() {
-
-    /* 背景画像 */
-    ctx.drawImage(
-        menuBg,
-        0,
-        0,
-        canvas.width,
-        canvas.height
+function isSelectMobile() {
+    return (
+        canvas.width < 900 &&
+        canvas.height > canvas.width
     );
+}
 
-    /* 暗めオーバーレイ */
-    ctx.fillStyle =
-        "rgba(0,0,0,0.35)";
+function getSelectLayout() {
 
-    ctx.fillRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
+    const mobile =
+        isSelectMobile();
 
-    /* タイトル */
-    ctx.textAlign = "center";
+    if (mobile) {
 
-    ctx.fillStyle = "#ffffff";
+        const cardW =
+            canvas.width * 0.82;
 
-    ctx.font =
-        "bold 52px Arial";
+        const cardH =
+            canvas.height * 0.16;
 
-    ctx.shadowColor =
-        "#7a5cff";
+        const gap =
+            canvas.height * 0.025;
 
-    ctx.shadowBlur = 25;
+        const startX =
+            canvas.width / 2 - cardW / 2;
 
-    ctx.fillText(
-        "CHARACTER SELECT",
-        canvas.width / 2,
-        90
-    );
+        const startY =
+            canvas.height * 0.18;
 
-    ctx.shadowBlur = 0;
+        const buttonW =
+            canvas.width * 0.62;
 
-    /* キャラカード */
+        const buttonH =
+            canvas.height * 0.07;
+
+        const buttonX =
+            canvas.width / 2 - buttonW / 2;
+
+        const buttonY =
+            canvas.height * 0.82;
+
+        return {
+            mobile,
+            cardW,
+            cardH,
+            gap,
+            startX,
+            startY,
+            buttonX,
+            buttonY,
+            buttonW,
+            buttonH
+        };
+    }
+
     const cardW =
         canvas.width * 0.18;
 
@@ -61,43 +72,122 @@ function drawSelect() {
     const startX =
         canvas.width / 2 - totalW / 2;
 
-    const cards = [
-        {
-            key: "balance",
-            x: startX
-        },
-        {
-            key: "power",
-            x: startX + cardW + gap
-        },
-        {
-            key: "speed",
-            x: startX + (cardW + gap) * 2
-        }
-    ];
+    const startY =
+        canvas.height * 0.2;
 
-    for (const c of cards) {
+    return {
+        mobile,
+        cardW,
+        cardH,
+        gap,
+        startX,
+        startY,
+        buttonX: canvas.width / 2 - 140,
+        buttonY: canvas.height - 95,
+        buttonW: 280,
+        buttonH: 62
+    };
+}
 
-        drawCharCard(
-            c.key,
-            c.x,
-            canvas.height * 0.2,
-            cardW,
-            cardH
+/* =========================
+   キャラ選択画面
+========================= */
+
+function drawSelect() {
+
+    if (
+        menuBg &&
+        menuBg.complete &&
+        menuBg.naturalWidth > 0
+    ) {
+        ctx.drawImage(
+            menuBg,
+            0,
+            0,
+            canvas.width,
+            canvas.height
         );
+    } else {
+        drawBackground();
     }
 
-    /* STARTボタン */
+    ctx.fillStyle =
+        "rgba(0,0,0,0.35)";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    const layout =
+        getSelectLayout();
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
+
+    ctx.fillStyle = "#ffffff";
+
+    ctx.font =
+        layout.mobile
+            ? "bold 30px Arial"
+            : "bold 52px Arial";
+
+    ctx.shadowColor =
+        "#7a5cff";
+
+    ctx.shadowBlur = 25;
+
+    ctx.fillText(
+        "CHARACTER SELECT",
+        canvas.width / 2,
+        layout.mobile
+            ? canvas.height * 0.11
+            : 90
+    );
+
+    ctx.shadowBlur = 0;
+
+    const keys = [
+        "balance",
+        "power",
+        "speed"
+    ];
+
+    keys.forEach((key, i) => {
+
+        const x =
+            layout.mobile
+                ? layout.startX
+                : layout.startX + i * (layout.cardW + layout.gap);
+
+        const y =
+            layout.mobile
+                ? layout.startY + i * (layout.cardH + layout.gap)
+                : layout.startY;
+
+        drawCharCard(
+            key,
+            x,
+            y,
+            layout.cardW,
+            layout.cardH,
+            layout.mobile
+        );
+    });
 
     drawCyberButton(
-        canvas.width / 2 - 140,
-        canvas.height - 95,
-        280,
-        62,
-        "START BATTLE"
+        layout.buttonX,
+        layout.buttonY,
+        layout.buttonW,
+        layout.buttonH,
+        "START BATTLE",
+        layout.mobile
     );
 
     ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
 }
 
 /* =========================
@@ -109,7 +199,8 @@ function drawCyberButton(
     y,
     w,
     h,
-    text
+    text,
+    mobile = false
 ) {
 
     ctx.fillStyle =
@@ -120,26 +211,31 @@ function drawCyberButton(
     ctx.strokeStyle =
         "#7a5cff";
 
-    ctx.lineWidth = 3;
+    ctx.lineWidth =
+        mobile ? 2 : 3;
 
     ctx.strokeRect(x, y, w, h);
 
     ctx.shadowColor =
         "#7a5cff";
 
-    ctx.shadowBlur = 20;
+    ctx.shadowBlur =
+        mobile ? 14 : 20;
 
     ctx.fillStyle = "#fff";
 
     ctx.font =
-        "bold 28px Arial";
+        mobile
+            ? "bold 18px Arial"
+            : "bold 28px Arial";
 
     ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
 
     ctx.fillText(
         text,
         x + w / 2,
-        y + 40
+        y + h / 2
     );
 
     ctx.shadowBlur = 0;
@@ -154,7 +250,8 @@ function drawCharCard(
     x,
     y,
     w,
-    h
+    h,
+    mobile = false
 ) {
 
     const ch =
@@ -162,8 +259,6 @@ function drawCharCard(
 
     const active =
         selectedChar === key;
-
-    /* カード背景 */
 
     ctx.fillStyle =
         active
@@ -177,10 +272,7 @@ function drawCharCard(
         h
     );
 
-    /* 光 */
-
     if (active) {
-
         ctx.shadowColor =
             ch.color;
 
@@ -204,7 +296,123 @@ function drawCharCard(
 
     ctx.shadowBlur = 0;
 
-    /* 名前 */
+    if (mobile) {
+        drawMobileCharCardContent(
+            key,
+            x,
+            y,
+            w,
+            h,
+            ch
+        );
+    } else {
+        drawDesktopCharCardContent(
+            key,
+            x,
+            y,
+            w,
+            h,
+            ch
+        );
+    }
+}
+
+/* =========================
+   スマホ用カード中身
+========================= */
+
+function drawMobileCharCardContent(
+    key,
+    x,
+    y,
+    w,
+    h,
+    ch
+) {
+
+    drawPreviewCharacter(
+        key,
+        x + 18,
+        y + h / 2 - 42,
+        ch,
+        64,
+        84
+    );
+
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+
+    ctx.fillStyle =
+        ch.color;
+
+    ctx.font =
+        "bold 24px Arial";
+
+    ctx.fillText(
+        ch.name,
+        x + 100,
+        y + 34
+    );
+
+    ctx.fillStyle =
+        "#d9d9ff";
+
+    ctx.font =
+        "14px Arial";
+
+    ctx.fillText(
+        ch.type,
+        x + 100,
+        y + 56
+    );
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.font =
+        "13px Arial";
+
+    const jumpText =
+        ch.maxJumps >= 3
+            ? "Triple Jump"
+            : ch.maxJumps >= 2
+                ? "Double Jump"
+                : "Single Jump";
+
+    const specialText =
+        ch.specialType === "novaShot"
+            ? "Energy Shot"
+            : ch.specialType === "blazeBurst"
+                ? "Burst Explosion"
+                : ch.specialType === "voltSlash"
+                    ? "Dash Slash"
+                    : "Special";
+
+    ctx.fillText(
+        `SPD ${ch.speed} / ATK ${ch.attackDamage} / ${jumpText}`,
+        x + 100,
+        y + 82
+    );
+
+    ctx.fillText(
+        `SPECIAL : ${specialText}`,
+        x + 100,
+        y + 104
+    );
+}
+
+/* =========================
+   PC用カード中身
+========================= */
+
+function drawDesktopCharCardContent(
+    key,
+    x,
+    y,
+    w,
+    h,
+    ch
+) {
 
     ctx.fillStyle =
         ch.color;
@@ -213,14 +421,13 @@ function drawCharCard(
         "bold 34px Arial";
 
     ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
 
     ctx.fillText(
         ch.name,
         x + w / 2,
         y + 42
     );
-
-    /* タイプ */
 
     ctx.fillStyle =
         "#d9d9ff";
@@ -234,16 +441,14 @@ function drawCharCard(
         y + 72
     );
 
-    /* キャラ画像 */
-
     drawPreviewCharacter(
         key,
         x + w / 2 - 40,
         y + 85,
-        ch
+        ch,
+        82,
+        104
     );
-
-    /* ステータス */
 
     ctx.textAlign = "left";
 
@@ -270,7 +475,6 @@ function drawCharCard(
                     : "Special";
 
     const lines = [
-
         `MOVE SPEED : ${ch.speed}`,
         `DASH       : ${ch.dashSpeed}`,
         `JUMP       : ${jumpText}`,
@@ -281,7 +485,6 @@ function drawCharCard(
     ];
 
     lines.forEach((t, i) => {
-
         ctx.fillText(
             t,
             x + 20,
@@ -298,7 +501,9 @@ function drawPreviewCharacter(
     key,
     x,
     y,
-    ch
+    ch,
+    w = 82,
+    h = 104
 ) {
 
     const img =
@@ -309,27 +514,84 @@ function drawPreviewCharacter(
         img.complete &&
         img.naturalWidth > 0
     ) {
-
         ctx.drawImage(
             img,
             x,
             y,
-            82,
-            104
+            w,
+            h
         );
 
         return;
     }
 
-    /* fallback */
-
     ctx.fillStyle =
         ch.color;
 
     ctx.fillRect(
-        x + 20,
-        y + 30,
-        42,
-        52
+        x + w * 0.25,
+        y + h * 0.28,
+        w * 0.5,
+        h * 0.5
     );
+}
+
+/* =========================
+   キャラ選択クリック
+========================= */
+
+function handleSelectClick(mouseX, mouseY) {
+
+    const layout =
+        getSelectLayout();
+
+    const keys = [
+        "balance",
+        "power",
+        "speed"
+    ];
+
+    for (let i = 0; i < keys.length; i++) {
+
+        const x =
+            layout.mobile
+                ? layout.startX
+                : layout.startX + i * (layout.cardW + layout.gap);
+
+        const y =
+            layout.mobile
+                ? layout.startY + i * (layout.cardH + layout.gap)
+                : layout.startY;
+
+        if (
+            inside(
+                mouseX,
+                mouseY,
+                x,
+                y,
+                layout.cardW,
+                layout.cardH
+            )
+        ) {
+            selectedChar =
+                keys[i];
+
+            return;
+        }
+    }
+
+    if (
+        inside(
+            mouseX,
+            mouseY,
+            layout.buttonX,
+            layout.buttonY,
+            layout.buttonW,
+            layout.buttonH
+        )
+    ) {
+        changeState(
+            STATE.STAGE_SELECT
+        );
+    }
 }

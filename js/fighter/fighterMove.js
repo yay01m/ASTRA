@@ -142,28 +142,6 @@ Fighter.prototype.airDodge = function (inputX = 0) {
 };
 
 /* =========================
-   足場の位置更新
-========================= */
-
-function updatePlatformPositions() {
-
-    if (typeof platforms === "undefined") return;
-
-    for (const p of platforms) {
-
-        p.x =
-            stage.x +
-            stage.w / 2 +
-            p.offsetX -
-            p.w / 2;
-
-        p.y =
-            stage.y +
-            p.offsetY;
-    }
-}
-
-/* =========================
    床・足場に乗る処理
 ========================= */
 

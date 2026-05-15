@@ -40,6 +40,23 @@ if (window.visualViewport) {
 }
 
 /* =========================
+   画面エリア
+========================= */
+
+function isPortraitMobile() {
+  return (
+    canvas.width < 900 &&
+    canvas.height > canvas.width
+  );
+}
+
+function getGameAreaHeight() {
+  return isPortraitMobile()
+    ? canvas.height * 0.7
+    : canvas.height;
+}
+
+/* =========================
    画面遷移フェード
 ========================= */
 
@@ -335,8 +352,30 @@ function drawRespawnText() {
 ========================= */
 
 function setupGame() {
-  stage.x = canvas.width / 2 - stage.w / 2;
-  stage.y = canvas.height * 0.68;
+  const gameH =
+    getGameAreaHeight();
+
+  if (isPortraitMobile()) {
+    stage.w =
+      canvas.width * 0.86;
+
+    stage.h =
+      32;
+  } else {
+    stage.w =
+      STAGE.width;
+
+    stage.h =
+      STAGE.height;
+  }
+
+  stage.x =
+    canvas.width / 2 - stage.w / 2;
+
+  stage.y =
+    isPortraitMobile()
+      ? gameH * 0.74
+      : canvas.height * 0.68;
 
   updatePlatformPositions();
 
@@ -355,7 +394,7 @@ function setupGame() {
 
   const randomCpuChar =
     cpuChars[
-      Math.floor(Math.random() * cpuChars.length)
+    Math.floor(Math.random() * cpuChars.length)
     ];
 
   cpu = new Fighter(
@@ -560,6 +599,27 @@ function drawGame() {
   drawEffects();
 
   ctx.restore();
+
+  if (isPortraitMobile()) {
+    ctx.save();
+
+    ctx.fillStyle = "rgba(0,0,0,0.45)";
+    ctx.fillRect(
+      0,
+      getGameAreaHeight(),
+      canvas.width,
+      canvas.height - getGameAreaHeight()
+    );
+
+    ctx.strokeStyle = "rgba(76,201,240,0.5)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, getGameAreaHeight());
+    ctx.lineTo(canvas.width, getGameAreaHeight());
+    ctx.stroke();
+
+    ctx.restore();
+  }
 
   drawHUD();
 

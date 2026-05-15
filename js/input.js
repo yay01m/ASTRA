@@ -3,7 +3,6 @@
 ========================= */
 
 function inside(x, y, bx, by, bw, bh) {
-
     return (
         x >= bx &&
         x <= bx + bw &&
@@ -11,284 +10,6 @@ function inside(x, y, bx, by, bw, bh) {
         y <= by + bh
     );
 }
-
-/* =========================
-   クリック
-========================= */
-
-function clickHandler(x, y) {
-
-    // フェード中は操作禁止
-    if (isFading) return;
-
-    // =========================
-    // 戻るボタン
-    // =========================
-
-    if (isBackButtonHit(x, y)) {
-
-        goBackState();
-
-        return;
-    }
-
-    /* =========================
-       TITLE
-    ========================= */
-
-    if (gameState === STATE.TITLE) {
-
-        changeState(
-            STATE.SELECT
-        );
-
-        return;
-    }
-
-    /* =========================
-       CHARACTER SELECT
-    ========================= */
-
-    if (gameState === STATE.SELECT) {
-
-        const cards = [
-
-            {
-                key: "balance",
-                x: canvas.width / 2 - 330
-            },
-
-            {
-                key: "power",
-                x: canvas.width / 2 - 105
-            },
-
-            {
-                key: "speed",
-                x: canvas.width / 2 + 120
-            }
-        ];
-
-        // キャラ選択
-        for (const c of cards) {
-
-            if (
-                inside(
-                    x,
-                    y,
-                    c.x,
-                    125,
-                    205,
-                    300
-                )
-            ) {
-
-                selectedChar =
-                    c.key;
-            }
-        }
-
-        // STARTボタン
-        if (
-            inside(
-                x,
-                y,
-                canvas.width / 2 - 130,
-                canvas.height - 90,
-                260,
-                60
-            )
-        ) {
-
-            changeState(
-                STATE.STAGE_SELECT
-            );
-        }
-
-        return;
-    }
-
-    /* =========================
-       STAGE SELECT
-    ========================= */
-
-    if (
-        gameState ===
-        STATE.STAGE_SELECT
-    ) {
-
-        const cards = [
-
-            {
-                key: "cyber_core",
-                x: canvas.width / 2 - 160
-            }
-        ];
-
-        // ステージ選択
-        for (const s of cards) {
-
-            if (
-                inside(
-                    x,
-                    y,
-                    s.x,
-                    140,
-                    320,
-                    190
-                )
-            ) {
-
-                selectedStage =
-                    s.key;
-
-                currentStage =
-                    s.key;
-
-                loadStageImages();
-            }
-        }
-
-        // STARTボタン
-        if (
-            inside(
-                x,
-                y,
-                canvas.width / 2 - 130,
-                canvas.height - 90,
-                260,
-                60
-            )
-        ) {
-
-            changeState(
-                STATE.CPU_LEVEL
-            );
-        }
-
-        return;
-    }
-
-    /* =========================
-       CPU LEVEL
-    ========================= */
-
-    if (gameState === STATE.CPU_LEVEL) {
-
-        const cardW = 90;
-        const cardH = 100;
-        const gap = 18;
-
-        const totalW =
-            cardW * 9 + gap * 8;
-
-        const startX =
-            canvas.width / 2 - totalW / 2;
-
-        const cardY =
-            canvas.height / 2 - 40;
-
-        // レベル選択
-        for (let i = 1; i <= 9; i++) {
-
-            const cardX =
-                startX +
-                (i - 1) *
-                (cardW + gap);
-
-            if (
-                inside(
-                    x,
-                    y,
-                    cardX,
-                    cardY,
-                    cardW,
-                    cardH
-                )
-            ) {
-
-                cpuLevel = i;
-            }
-        }
-
-        // START BATTLE
-        if (
-            inside(
-                x,
-                y,
-                canvas.width / 2 - 140,
-                canvas.height - 85,
-                280,
-                58
-            )
-        ) {
-
-            setupGame();
-
-            changeState(
-                STATE.GAME
-            );
-        }
-
-        return;
-    }
-
-    /* =========================
-       KO
-    ========================= */
-
-    if (gameState === STATE.KO) {
-
-        if (
-            inside(
-                x,
-                y,
-                canvas.width / 2 - 150,
-                canvas.height / 2 + 35,
-                300,
-                65
-            )
-        ) {
-
-            changeState(
-                STATE.TITLE
-            );
-        }
-    }
-}
-
-/* =========================
-   マウス
-========================= */
-
-canvas.addEventListener(
-    "mousedown",
-    e => {
-
-        clickHandler(
-            e.clientX,
-            e.clientY
-        );
-    }
-);
-
-/* =========================
-   タッチ
-========================= */
-
-canvas.addEventListener(
-    "touchstart",
-    e => {
-
-        const t =
-            e.touches[0];
-
-        clickHandler(
-            t.clientX,
-            t.clientY
-        );
-    }
-);
 
 /* =========================
    回避方向取得
@@ -303,7 +24,6 @@ function getDodgeInput() {
         keys["A"] ||
         keys["ArrowLeft"]
     ) {
-
         dodgeInput = -1;
     }
 
@@ -312,12 +32,10 @@ function getDodgeInput() {
         keys["D"] ||
         keys["ArrowRight"]
     ) {
-
         dodgeInput = 1;
     }
 
     if (Math.abs(stickX) > 0.25) {
-
         dodgeInput =
             stickX > 0 ? 1 : -1;
     }
@@ -326,7 +44,7 @@ function getDodgeInput() {
 }
 
 /* =========================
-   キーボード
+   キーボード押す
 ========================= */
 
 window.addEventListener(
@@ -336,16 +54,11 @@ window.addEventListener(
         keys[e.key] = true;
         keys[e.code] = true;
 
-        if (
-            e.code === "Space"
-        ) {
-
+        if (e.code === "Space") {
             e.preventDefault();
         }
 
-        if (
-            gameState !== STATE.GAME
-        ) return;
+        if (gameState !== STATE.GAME) return;
 
         // ジャンプ
         if (
@@ -354,23 +67,16 @@ window.addEventListener(
             e.key === "ArrowUp" ||
             e.code === "Space"
         ) {
-
             player.jump();
         }
 
-        // 攻撃
+        // 攻撃ため開始
         if (
             e.key === "j" ||
             e.key === "J"
         ) {
-
-            if (
-                !keys.attackCharging
-            ) {
-
-                keys.attackCharging =
-                    true;
-
+            if (!keys.attackCharging) {
+                keys.attackCharging = true;
                 player.startAttackCharge();
             }
         }
@@ -380,7 +86,6 @@ window.addEventListener(
             e.key === "k" ||
             e.key === "K"
         ) {
-
             player.special();
         }
 
@@ -389,12 +94,10 @@ window.addEventListener(
             e.key === "l" ||
             e.key === "L"
         ) {
-
             if (
                 player &&
                 !player.onGround
             ) {
-
                 player.airDodge(
                     getDodgeInput()
                 );
@@ -404,7 +107,7 @@ window.addEventListener(
 );
 
 /* =========================
-   キー離す
+   キーボード離す
 ========================= */
 
 window.addEventListener(
@@ -414,42 +117,32 @@ window.addEventListener(
         keys[e.key] = false;
         keys[e.code] = false;
 
-        if (
-            gameState !== STATE.GAME
-        ) return;
+        if (gameState !== STATE.GAME) return;
 
+        // 攻撃ため解除
         if (
             e.key === "j" ||
             e.key === "J"
         ) {
-
-            keys.attackCharging =
-                false;
-
+            keys.attackCharging = false;
             player.releaseAttackCharge();
         }
     }
 );
 
 /* =========================
-   スマホボタン
+   スマホ攻撃ボタン
 ========================= */
 
 const attackBtn =
-    document.getElementById(
-        "btnAttack"
-    );
+    document.getElementById("btnAttack");
 
 attackBtn.addEventListener(
     "touchstart",
     e => {
-
         e.preventDefault();
 
-        if (
-            gameState === STATE.GAME
-        ) {
-
+        if (gameState === STATE.GAME) {
             player.startAttackCharge();
         }
     }
@@ -458,13 +151,9 @@ attackBtn.addEventListener(
 attackBtn.addEventListener(
     "touchend",
     e => {
-
         e.preventDefault();
 
-        if (
-            gameState === STATE.GAME
-        ) {
-
+        if (gameState === STATE.GAME) {
             player.releaseAttackCharge();
         }
     }
@@ -473,69 +162,58 @@ attackBtn.addEventListener(
 attackBtn.addEventListener(
     "touchcancel",
     e => {
-
         e.preventDefault();
 
-        if (
-            gameState === STATE.GAME
-        ) {
-
+        if (gameState === STATE.GAME) {
             player.releaseAttackCharge();
         }
     }
 );
 
+/* =========================
+   スマホ必殺ボタン
+========================= */
+
 document
-    .getElementById(
-        "btnSpecial"
-    )
+    .getElementById("btnSpecial")
     .addEventListener(
         "touchstart",
         e => {
-
             e.preventDefault();
 
-            if (
-                gameState === STATE.GAME
-            ) {
-
+            if (gameState === STATE.GAME) {
                 player.special();
             }
         }
     );
 
+/* =========================
+   スマホジャンプボタン
+========================= */
+
 document
-    .getElementById(
-        "btnJump"
-    )
+    .getElementById("btnJump")
     .addEventListener(
         "touchstart",
         e => {
-
             e.preventDefault();
 
-            if (
-                gameState === STATE.GAME
-            ) {
-
+            if (gameState === STATE.GAME) {
                 player.jump();
             }
         }
     );
 
 /* =========================
-   ガード / 空中回避
+   スマホガード / 空中回避
 ========================= */
 
 const guardBtn =
-    document.getElementById(
-        "btnGuard"
-    );
+    document.getElementById("btnGuard");
 
 guardBtn.addEventListener(
     "touchstart",
     e => {
-
         e.preventDefault();
 
         if (
@@ -543,9 +221,8 @@ guardBtn.addEventListener(
             player &&
             !player.onGround
         ) {
-
             player.airDodge(
-                stickX
+                getDodgeInput()
             );
 
             return;
@@ -558,7 +235,6 @@ guardBtn.addEventListener(
 guardBtn.addEventListener(
     "touchend",
     e => {
-
         e.preventDefault();
 
         guardButtonDown = false;
@@ -568,7 +244,6 @@ guardBtn.addEventListener(
 guardBtn.addEventListener(
     "touchcancel",
     e => {
-
         e.preventDefault();
 
         guardButtonDown = false;
@@ -580,19 +255,21 @@ guardBtn.addEventListener(
 ========================= */
 
 const stickArea =
-    document.getElementById(
-        "stickArea"
-    );
+    document.getElementById("stickArea");
 
 const stick =
-    document.getElementById(
-        "stick"
-    );
+    document.getElementById("stick");
+
+stickArea.addEventListener(
+    "touchstart",
+    e => {
+        e.preventDefault();
+    }
+);
 
 stickArea.addEventListener(
     "touchmove",
     e => {
-
         e.preventDefault();
 
         const rect =
@@ -602,12 +279,10 @@ stickArea.addEventListener(
             e.touches[0];
 
         const cx =
-            rect.left +
-            rect.width / 2;
+            rect.left + rect.width / 2;
 
         const cy =
-            rect.top +
-            rect.height / 2;
+            rect.top + rect.height / 2;
 
         let dx =
             t.clientX - cx;
@@ -622,7 +297,6 @@ stickArea.addEventListener(
             Math.hypot(dx, dy);
 
         if (len > max) {
-
             dx =
                 dx / len * max;
 
@@ -630,15 +304,19 @@ stickArea.addEventListener(
                 dy / len * max;
         }
 
-        const base =
+        const baseX =
             rect.width / 2 -
             stick.offsetWidth / 2;
 
+        const baseY =
+            rect.height / 2 -
+            stick.offsetHeight / 2;
+
         stick.style.left =
-            base + dx + "px";
+            baseX + dx + "px";
 
         stick.style.top =
-            base + dy + "px";
+            baseY + dy + "px";
 
         stickX = dx / max;
     }
@@ -648,23 +326,40 @@ stickArea.addEventListener(
    スティック離す
 ========================= */
 
+function resetStick() {
+
+    stickX = 0;
+
+    const rect =
+        stickArea.getBoundingClientRect();
+
+    const baseX =
+        rect.width / 2 -
+        stick.offsetWidth / 2;
+
+    const baseY =
+        rect.height / 2 -
+        stick.offsetHeight / 2;
+
+    stick.style.left =
+        baseX + "px";
+
+    stick.style.top =
+        baseY + "px";
+}
+
 stickArea.addEventListener(
     "touchend",
-    () => {
+    e => {
+        e.preventDefault();
+        resetStick();
+    }
+);
 
-        stickX = 0;
-
-        const rect =
-            stickArea.getBoundingClientRect();
-
-        const base =
-            rect.width / 2 -
-            stick.offsetWidth / 2;
-
-        stick.style.left =
-            base + "px";
-
-        stick.style.top =
-            base + "px";
+stickArea.addEventListener(
+    "touchcancel",
+    e => {
+        e.preventDefault();
+        resetStick();
     }
 );

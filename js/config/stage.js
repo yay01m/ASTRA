@@ -93,3 +93,91 @@ const platforms = [
         offsetY: -230
     }
 ];
+
+/* =========================
+   足場位置更新
+========================= */
+
+function updatePlatformPositions() {
+
+    const mobile =
+        typeof isPortraitMobile === "function"
+            ? isPortraitMobile()
+            : false;
+
+    // スマホ縦
+    if (mobile) {
+
+        // 左足場
+        platforms[0].w =
+            stage.w * 0.26;
+
+        platforms[0].x =
+            stage.x + stage.w * 0.14;
+
+        platforms[0].y =
+            stage.y - 105;
+
+        // 右足場
+        platforms[1].w =
+            stage.w * 0.26;
+
+        platforms[1].x =
+            stage.x + stage.w * 0.60;
+
+        platforms[1].y =
+            stage.y - 105;
+
+        // 上足場
+        platforms[2].w =
+            stage.w * 0.24;
+
+        platforms[2].x =
+            stage.x + stage.w / 2 -
+            platforms[2].w / 2;
+
+        platforms[2].y =
+            stage.y - 185;
+
+        return;
+    }
+
+    // PC / 横画面
+
+    platforms[0].w =
+        PLATFORM.width;
+
+    platforms[0].x =
+        stage.x +
+        stage.w / 2 +
+        platforms[0].offsetX -
+        platforms[0].w / 2;
+
+    platforms[0].y =
+        stage.y +
+        platforms[0].offsetY;
+
+    platforms[1].w =
+        PLATFORM.width;
+
+    platforms[1].x =
+        stage.x +
+        stage.w / 2 +
+        platforms[1].offsetX -
+        platforms[1].w / 2;
+
+    platforms[1].y =
+        stage.y +
+        platforms[1].offsetY;
+
+    platforms[2].w =
+        160;
+
+    platforms[2].x =
+        stage.x +
+        stage.w / 2 -
+        platforms[2].w / 2;
+
+    platforms[2].y =
+        stage.y - 230;
+}
