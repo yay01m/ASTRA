@@ -50,10 +50,33 @@ function isPortraitMobile() {
   );
 }
 
+function getBattleView() {
+
+  if (!isPortraitMobile()) {
+    return {
+      x: 0,
+      y: 0,
+      w: canvas.width,
+      h: canvas.height
+    };
+  }
+
+  const w =
+    canvas.width;
+
+  const h =
+    w * 9 / 16;
+
+  return {
+    x: 0,
+    y: 20,
+    w,
+    h
+  };
+}
+
 function getGameAreaHeight() {
-  return isPortraitMobile()
-    ? canvas.height * 0.7
-    : canvas.height;
+  return getBattleView().h;
 }
 
 /* =========================
@@ -219,11 +242,21 @@ function startRespawn(fighter, isCpu) {
 }
 
 function finishRespawn(fighter, isCpu) {
-  fighter.x = isCpu
-    ? stage.x + stage.w - 180
-    : stage.x + 120;
+  const centerX =
+    stage.x + stage.w / 2;
 
-  fighter.y = stage.y - 140;
+  const safeGap =
+    isPortraitMobile()
+      ? canvas.width * 0.32
+      : 220;
+
+  fighter.x =
+    isCpu
+      ? centerX + safeGap
+      : centerX - safeGap;
+
+  fighter.y =
+    stage.y - fighter.h - 20;
 
   fighter.vx = 0;
   fighter.vy = 0;
@@ -355,40 +388,47 @@ function setupGame() {
   const gameH =
     getGameAreaHeight();
 
-  if (isPortraitMobile()) {
-
-    // PCと同じサイズ
-    stage.w =
-      STAGE.width;
-
-    stage.h =
-      STAGE.height;
-
-  } else {
-
-    stage.w =
-      STAGE.width;
-
-    stage.h =
-      STAGE.height;
-  }
-
-  stage.x =
-    canvas.width / 2 - stage.w / 2;
-
   const visibleBottom =
     isPortraitMobile()
       ? gameH
       : canvas.height;
 
-  // 床を画面下ギリギリへ
+  const scale =
+    isPortraitMobile()
+      ? 0.31
+      : CAMERA && CAMERA.scale
+        ? CAMERA.scale
+        : 1;
+
+  const viewW =
+    canvas.width / scale;
+
+  // =========================
+  // 床ステージ設定
+  // =========================
+
+  stage.w =
+    viewW * 1.6;
+
+  stage.h =
+    STAGE.height;
+
+  stage.x =
+    canvas.width / 2 -
+    stage.w / 2;
+
   stage.y =
-    visibleBottom - stage.h - 8;
+    visibleBottom -
+    stage.h;
 
   updatePlatformPositions();
 
+  // =========================
+  // キャラ初期位置
+  // =========================
+
   player = new Fighter(
-    stage.x + 120,
+    stage.x + stage.w * 0.42,
     stage.y - 100,
     selectedChar,
     false
@@ -406,7 +446,7 @@ function setupGame() {
     ];
 
   cpu = new Fighter(
-    stage.x + stage.w - 180,
+    stage.x + stage.w * 0.58,
     stage.y - 100,
     randomCpuChar,
     true
@@ -550,6 +590,9 @@ function updateGame() {
 
 function applyCamera() {
 
+  const view =
+    getBattleView();
+
   const scale =
     isPortraitMobile()
       ? 0.31
@@ -557,26 +600,21 @@ function applyCamera() {
         ? CAMERA.scale
         : 1;
 
-  const gameH =
-    typeof getGameAreaHeight === "function"
-      ? getGameAreaHeight()
-      : canvas.height;
-
   const viewCenterX =
-    canvas.width / 2;
+    view.x + view.w / 2;
 
   const viewCenterY =
-    isPortraitMobile()
-      ? gameH / 2
-      : canvas.height / 2;
+    view.y + view.h / 2;
 
-  // ステージ中央
   const targetX =
     stage.x + stage.w / 2;
 
-  // 少し上を見る
+  const floorScreenY =
+    view.y + view.h - 8;
+
   const targetY =
-    stage.y - 120;
+    stage.y -
+    (floorScreenY - viewCenterY) / scale;
 
   ctx.translate(
     viewCenterX,
@@ -596,9 +634,23 @@ function applyCamera() {
 ========================= */
 
 function drawGame() {
-  drawBattleBackground();
+  const view =
+    getBattleView();
 
   ctx.save();
+
+  ctx.beginPath();
+
+  ctx.rect(
+    view.x,
+    view.y,
+    view.w,
+    view.h
+  );
+
+  ctx.clip();
+
+  drawBattleBackground();
 
   applyCamera();
 
