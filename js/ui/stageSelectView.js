@@ -130,7 +130,7 @@ function drawStageSelect() {
         layout.buttonY,
         layout.buttonW,
         layout.buttonH,
-        "START"
+        "NEXT"
     );
 
     ctx.textAlign = "left";

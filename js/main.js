@@ -143,7 +143,10 @@ function drawBackButton() {
 
   const x = canvas.width * 0.02;
   const y = canvas.height * 0.03;
-  const w = canvas.width * 0.1;
+  const w =
+    isPortraitMobile()
+      ? canvas.width * 0.22
+      : canvas.width * 0.1;
   const h = canvas.height * 0.055;
 
   ctx.save();
@@ -158,7 +161,10 @@ function drawBackButton() {
   ctx.stroke();
 
   ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 18px sans-serif";
+  ctx.font =
+    isPortraitMobile()
+      ? "bold 14px sans-serif"
+      : "bold 18px sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 

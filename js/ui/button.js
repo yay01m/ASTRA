@@ -31,10 +31,13 @@ function drawButton(
     ctx.fillStyle = "#fff";
     ctx.font = "bold 28px Arial";
     ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
 
     ctx.fillText(
         text,
         x + w / 2,
-        y + h / 2 + 10
+        y + h / 2
     );
+
+    ctx.textBaseline = "alphabetic";
 }

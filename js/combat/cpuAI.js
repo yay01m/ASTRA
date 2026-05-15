@@ -17,6 +17,22 @@ const CPU_LEVELS = {
 };
 
 /* =========================
+   CPU待機位置
+========================= */
+
+function getCpuHomeX() {
+  const centerX =
+    stage.x + stage.w / 2;
+
+  const safeGap =
+    isPortraitMobile()
+      ? canvas.width * 0.32
+      : 220;
+
+  return centerX + safeGap;
+}
+
+/* =========================
    CPU
 ========================= */
 
@@ -24,6 +40,43 @@ function updateCPU() {
 
   const level =
     CPU_LEVELS[cpuLevel] || CPU_LEVELS[5];
+
+  cpu.setGuard(false);
+
+  /* =========================
+     リスポーン中は待機位置へ戻る
+  ========================= */
+
+  if (
+    playerRespawnTimer > 0 ||
+    cpuRespawnTimer > 0
+  ) {
+    const homeX =
+      getCpuHomeX();
+
+    const diff =
+      homeX - cpu.x;
+
+    if (Math.abs(diff) > 24) {
+      const dir =
+        diff > 0 ? 1 : -1;
+
+      cpu.move(dir, true);
+    } else {
+      cpu.move(0, false);
+      cpu.vx *= 0.75;
+      cpu.dir = -1;
+    }
+
+    if (
+      cpu.onGround &&
+      cpu.y > stage.y - 60
+    ) {
+      cpu.jump();
+    }
+
+    return;
+  }
 
   const dx =
     player.x - cpu.x;
@@ -43,20 +96,15 @@ function updateCPU() {
   const dash =
     absDx > 150;
 
-  cpu.setGuard(false);
-
   /* =========================
      レベル9補正
      ほぼボスCPU
   ========================= */
 
   if (cpuLevel >= 9) {
-
-    // 反応を速くする
     cpu.invincible =
       Math.max(cpu.invincible, 1);
 
-    // 9だけ少し機動力補正
     cpu.data.speed =
       Math.max(cpu.data.speed, 5.2);
 
@@ -97,7 +145,6 @@ function updateCPU() {
 
   /* =========================
      ガード
-     相手が攻撃中なら防ぐ
   ========================= */
 
   const playerAttacking =
@@ -117,7 +164,6 @@ function updateCPU() {
 
   /* =========================
      レベル9専用
-     近距離ならほぼ即攻撃
   ========================= */
 
   if (
@@ -125,8 +171,6 @@ function updateCPU() {
     absDx < 120 &&
     absDy < 100
   ) {
-
-    // プレイヤー高％ならスマッシュ狙い
     if (
       player.damage >= 70 &&
       Math.random() < 0.65
@@ -137,7 +181,6 @@ function updateCPU() {
       return;
     }
 
-    // 近距離は通常攻撃連打
     if (Math.random() < 0.55) {
       cpu.startAttackCharge();
       cpu.attackCharge = 0;
@@ -181,7 +224,6 @@ function updateCPU() {
     absDx < level.range &&
     Math.random() < level.attack
   ) {
-
     cpu.startAttackCharge();
 
     if (

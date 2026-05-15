@@ -182,7 +182,7 @@ function drawSelect() {
         layout.buttonY,
         layout.buttonW,
         layout.buttonH,
-        "START BATTLE",
+        "NEXT",
         layout.mobile
     );
 
