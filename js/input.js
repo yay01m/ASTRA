@@ -18,25 +18,16 @@ function inside(x, y, bx, by, bw, bh) {
 function getDodgeInput() {
     let dodgeInput = 0;
 
-    if (
-        keys["a"] ||
-        keys["A"] ||
-        keys["ArrowLeft"]
-    ) {
+    if (keys["a"] || keys["A"] || keys["ArrowLeft"]) {
         dodgeInput = -1;
     }
 
-    if (
-        keys["d"] ||
-        keys["D"] ||
-        keys["ArrowRight"]
-    ) {
+    if (keys["d"] || keys["D"] || keys["ArrowRight"]) {
         dodgeInput = 1;
     }
 
     if (Math.abs(stickX) > 0.25) {
-        dodgeInput =
-            stickX > 0 ? 1 : -1;
+        dodgeInput = stickX > 0 ? 1 : -1;
     }
 
     return dodgeInput;
@@ -65,34 +56,20 @@ window.addEventListener("keydown", e => {
         player.jump();
     }
 
-    if (
-        e.key === "j" ||
-        e.key === "J"
-    ) {
+    if (e.key === "j" || e.key === "J") {
         if (!keys.attackCharging) {
             keys.attackCharging = true;
             player.startAttackCharge();
         }
     }
 
-    if (
-        e.key === "k" ||
-        e.key === "K"
-    ) {
+    if (e.key === "k" || e.key === "K") {
         player.special();
     }
 
-    if (
-        e.key === "l" ||
-        e.key === "L"
-    ) {
-        if (
-            player &&
-            !player.onGround
-        ) {
-            player.airDodge(
-                getDodgeInput()
-            );
+    if (e.key === "l" || e.key === "L") {
+        if (player && !player.onGround) {
+            player.airDodge(getDodgeInput());
         }
     }
 });
@@ -107,10 +84,7 @@ window.addEventListener("keyup", e => {
 
     if (gameState !== STATE.GAME) return;
 
-    if (
-        e.key === "j" ||
-        e.key === "J"
-    ) {
+    if (e.key === "j" || e.key === "J") {
         keys.attackCharging = false;
         player.releaseAttackCharge();
     }
@@ -156,14 +130,6 @@ canvas.addEventListener(
 
                 moveStartX = p.x;
                 moveStartY = p.y;
-
-                /* 空中だけタップジャンプ */
-                if (
-                    player &&
-                    !player.onGround
-                ) {
-                    player.jump();
-                }
             }
 
             /* 右半分：攻撃 */
@@ -199,46 +165,54 @@ canvas.addEventListener(
 
         for (const t of e.changedTouches) {
 
-            /* 左半分：左右移動 */
+            /* 左半分：左右移動 / 上フリックジャンプ / 下フリック足場降り */
             if (t.identifier === touchMoveId) {
+                const p = getCanvasPoint(t);
 
-                const p =
-                    getCanvasPoint(t);
-
-                const dx =
-                    p.x - moveStartX;
-
-                const dy =
-                    p.y - moveStartY;
+                const dx = p.x - moveStartX;
+                const dy = p.y - moveStartY;
 
                 stickX =
                     Math.max(
                         -1,
                         Math.min(
                             1,
-                            dx / 65
+                            dx / 70
                         )
                     );
 
-                /* 地上のみ上フリック */
+                /*
+                   上フリック＝ジャンプ
+                   シビア条件：
+                   ・上に90以上
+                   ・横ズレ35未満
+                   ・つまり、かなり真上に払った時だけ
+                */
                 if (
-                    dy < -50 &&
-                    player.onGround
+                    dy < -90 &&
+                    Math.abs(dx) < 35 &&
+                    player
                 ) {
-
                     player.jump();
 
-                    moveStartY = p.y + 80;
+                    moveStartX = p.x;
+                    moveStartY = p.y + 120;
                 }
 
-                /* 下フリック：足場を降りる */
+                /*
+                   下フリック＝足場降り
+                   メイン床では落ちず、dropPlatformTimer中だけ足場を無視
+                */
                 if (
-                    dy > 55 &&
+                    dy > 75 &&
+                    Math.abs(dx) < 45 &&
                     player &&
                     player.onGround
                 ) {
                     player.dropPlatformTimer = 12;
                     player.y += 8;
+
+                    moveStartX = p.x;
                     moveStartY = p.y;
                 }
             }
@@ -251,7 +225,7 @@ canvas.addEventListener(
 
                 /* 上スライド：必殺技 */
                 if (
-                    dy < -55 &&
+                    dy < -60 &&
                     !actionDidSpecial
                 ) {
                     actionDidSpecial = true;
@@ -267,7 +241,7 @@ canvas.addEventListener(
 
                 /* 下スライド保持：ガード */
                 else if (
-                    dy > 55 &&
+                    dy > 60 &&
                     !actionDidSpecial
                 ) {
                     actionDidGuard = true;
@@ -305,13 +279,11 @@ canvas.addEventListener(
 
         for (const t of e.changedTouches) {
 
-            /* 左指を離した */
             if (t.identifier === touchMoveId) {
                 touchMoveId = null;
                 stickX = 0;
             }
 
-            /* 右指を離した */
             if (t.identifier === touchActionId) {
                 touchActionId = null;
 
