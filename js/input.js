@@ -160,14 +160,15 @@ canvas.addEventListener("touchmove", e => {
             );
 
             /*
-               上フリック＝ジャンプ
-               少し斜めでもOK
-               地上でも空中でも使える
-            */
+   上フリック＝ジャンプ
+*/
+
             if (
-                dy < -90 &&
-                Math.abs(dx) < 70
+                dy < -135 &&
+                Math.abs(dx) < 80
             ) {
+
+                // 大ジャン
                 player.jump(1);
 
                 moveStartX = p.x;
@@ -175,10 +176,12 @@ canvas.addEventListener("touchmove", e => {
             }
 
             else if (
-                dy < -45 &&
-                Math.abs(dx) < 70
+                dy < -60 &&
+                Math.abs(dx) < 80
             ) {
-                player.jump(0.62);
+
+                // 小ジャン
+                player.jump(0.72);
 
                 moveStartX = p.x;
                 moveStartY = p.y;
