@@ -103,7 +103,7 @@ guardButtonDown = false;
    タッチ開始
 ========================= */
 
-canvas.addEventListener("touchstart", e => {
+window.addEventListener("touchstart", e => {
     if (gameState !== STATE.GAME) return;
 
     for (const t of e.changedTouches) {
@@ -158,7 +158,7 @@ canvas.addEventListener("touchstart", e => {
    タッチ移動
 ========================= */
 
-canvas.addEventListener("touchmove", e => {
+window.addEventListener("touchmove", e => {
     if (gameState !== STATE.GAME) return;
 
     for (const t of e.changedTouches) {
@@ -261,7 +261,7 @@ canvas.addEventListener("touchmove", e => {
    タッチ終了
 ========================= */
 
-canvas.addEventListener("touchend", e => {
+window.addEventListener("touchend", e => {
     if (gameState !== STATE.GAME) return;
 
     for (const t of e.changedTouches) {
@@ -297,7 +297,7 @@ canvas.addEventListener("touchend", e => {
    タッチキャンセル
 ========================= */
 
-canvas.addEventListener("touchcancel", e => {
+window.addEventListener("touchcancel", e => {
     touchMoveId = null;
     touchActionId = null;
 
