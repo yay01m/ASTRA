@@ -94,6 +94,8 @@ let actionStartY = 0;
 let actionDidSpecial = false;
 let actionDidGuard = false;
 
+let lastTapTime = 0;
+
 stickX = 0;
 guardButtonDown = false;
 
@@ -112,6 +114,20 @@ canvas.addEventListener("touchstart", e => {
             p.x < GAME_W / 2 &&
             touchMoveId === null
         ) {
+
+            const now = Date.now();
+
+            if (
+                now - lastTapTime < 250
+            ) {
+
+                // 小ジャン
+                player.jump(0.62);
+
+            }
+
+            lastTapTime = now;
+
             touchMoveId = t.identifier;
 
             moveStartX = p.x;
@@ -164,24 +180,12 @@ canvas.addEventListener("touchmove", e => {
 */
 
             if (
-                dy < -135 &&
+                dy < -70 &&
                 Math.abs(dx) < 80
             ) {
 
                 // 大ジャン
                 player.jump(1);
-
-                moveStartX = p.x;
-                moveStartY = p.y;
-            }
-
-            else if (
-                dy < -60 &&
-                Math.abs(dx) < 80
-            ) {
-
-                // 小ジャン
-                player.jump(0.72);
 
                 moveStartX = p.x;
                 moveStartY = p.y;
