@@ -230,6 +230,17 @@ canvas.addEventListener(
 
                     moveStartY = p.y + 80;
                 }
+
+                /* 下フリック：足場を降りる */
+                if (
+                    dy > 55 &&
+                    player &&
+                    player.onGround
+                ) {
+                    player.dropPlatformTimer = 12;
+                    player.y += 8;
+                    moveStartY = p.y;
+                }
             }
 
             /* 右半分：上スライド必殺 / 下スライドガード */

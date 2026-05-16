@@ -156,6 +156,13 @@ Fighter.prototype.checkLandingOn = function (
     isMainStage = false
 ) {
 
+    if (
+        !isMainStage &&
+        this.dropPlatformTimer > 0
+    ) {
+        return false;
+    }
+
     const footY =
         this.y + this.h;
 
@@ -293,6 +300,10 @@ Fighter.prototype.checkKO = function () {
 ========================= */
 
 Fighter.prototype.update = function () {
+
+    if (this.dropPlatformTimer > 0) {
+        this.dropPlatformTimer--;
+    }
 
     this.updateAttackCharge();
 
