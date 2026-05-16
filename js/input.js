@@ -117,307 +117,191 @@ window.addEventListener("keyup", e => {
 });
 
 /* =========================
-   スマホボタン共通
+   ASTRAスマホジェスチャー
 ========================= */
 
-function safePrevent(e) {
-    e.preventDefault();
-    e.stopPropagation();
-}
+let touchMoveId = null;
+let touchActionId = null;
+
+let moveStartX = 0;
+let moveStartY = 0;
+
+let actionStartX = 0;
+let actionStartY = 0;
+
+let lastRightTapTime = 0;
+
+stickX = 0;
+guardButtonDown = false;
 
 /* =========================
-   攻撃ボタン
+   スマホ：タッチ開始
 ========================= */
 
-const attackBtn =
-    document.getElementById("btnAttack");
+canvas.addEventListener(
+    "touchstart",
+    e => {
+        if (gameState !== STATE.GAME) return;
 
-attackBtn.addEventListener("touchstart", e => {
-    safePrevent(e);
+        for (const t of e.changedTouches) {
+            const p = getCanvasPoint(t);
 
-    if (gameState === STATE.GAME) {
-        player.startAttackCharge();
-    }
-}, { passive: false });
+            /* 左半分：移動 */
+            if (
+                p.x < GAME_W / 2 &&
+                touchMoveId === null
+            ) {
+                touchMoveId = t.identifier;
 
-attackBtn.addEventListener("touchend", e => {
-    safePrevent(e);
+                moveStartX = p.x;
+                moveStartY = p.y;
+            }
 
-    if (gameState === STATE.GAME) {
-        player.releaseAttackCharge();
-    }
-}, { passive: false });
+            /* 右半分：攻撃 */
+            else if (
+                p.x >= GAME_W / 2 &&
+                touchActionId === null
+            ) {
+                touchActionId = t.identifier;
 
-attackBtn.addEventListener("touchcancel", e => {
-    safePrevent(e);
+                actionStartX = p.x;
+                actionStartY = p.y;
 
-    if (gameState === STATE.GAME) {
-        player.releaseAttackCharge();
-    }
-}, { passive: false });
+                const now = Date.now();
 
-/* =========================
-   必殺ボタン
-========================= */
+                /* ダブルタップ：必殺 */
+                if (now - lastRightTapTime < 260) {
+                    player.special();
 
-document
-    .getElementById("btnSpecial")
-    .addEventListener("touchstart", e => {
-        safePrevent(e);
+                    if (player.attackCharging) {
+                        player.releaseAttackCharge();
+                    }
+                }
 
-        if (gameState === STATE.GAME) {
-            player.special();
+                /* ふつうに押す：攻撃溜め開始 */
+                else {
+                    player.startAttackCharge();
+                }
+
+                lastRightTapTime = now;
+            }
         }
-    }, { passive: false });
 
-/* =========================
-   ジャンプボタン
-========================= */
-
-document
-    .getElementById("btnJump")
-    .addEventListener("touchstart", e => {
-        safePrevent(e);
-
-        if (gameState === STATE.GAME) {
-            player.jump();
-        }
-    }, { passive: false });
-
-/* =========================
-   ガード / 空中回避
-========================= */
-
-const guardBtn =
-    document.getElementById("btnGuard");
-
-guardBtn.addEventListener("touchstart", e => {
-    safePrevent(e);
-
-    if (
-        gameState === STATE.GAME &&
-        player &&
-        !player.onGround
-    ) {
-        player.airDodge(
-            getDodgeInput()
-        );
-
-        return;
-    }
-
-    guardButtonDown = true;
-}, { passive: false });
-
-guardBtn.addEventListener("touchend", e => {
-    safePrevent(e);
-    guardButtonDown = false;
-}, { passive: false });
-
-guardBtn.addEventListener("touchcancel", e => {
-    safePrevent(e);
-    guardButtonDown = false;
-}, { passive: false });
-
-/* =========================
-   スティック
-========================= */
-
-const stickArea =
-    document.getElementById("stickArea");
-
-const stick =
-    document.getElementById("stick");
-
-let stickTouchId = null;
-
-function getStickBase() {
-    const rect =
-        stickArea.getBoundingClientRect();
-
-    return {
-        rect,
-        centerX: rect.left + rect.width / 2,
-        centerY: rect.top + rect.height / 2,
-        baseX: rect.width / 2 - stick.offsetWidth / 2,
-        baseY: rect.height / 2 - stick.offsetHeight / 2,
-        max: rect.width * 0.34
-    };
-}
-
-function moveStick(touch) {
-    const data =
-        getStickBase();
-
-    let dx =
-        touch.clientX - data.centerX;
-
-    let dy =
-        touch.clientY - data.centerY;
-
-    const len =
-        Math.hypot(dx, dy);
-
-    if (len > data.max) {
-        dx =
-            dx / len * data.max;
-
-        dy =
-            dy / len * data.max;
-    }
-
-    stick.style.left =
-        data.baseX + dx + "px";
-
-    stick.style.top =
-        data.baseY + dy + "px";
-
-    stickX =
-        dx / data.max;
-}
-
-function findStickTouch(touches) {
-    for (const t of touches) {
-        if (t.identifier === stickTouchId) {
-            return t;
-        }
-    }
-
-    return null;
-}
-
-stickArea.addEventListener("touchstart", e => {
-    safePrevent(e);
-
-    const t =
-        e.changedTouches[0];
-
-    stickTouchId =
-        t.identifier;
-
-    moveStick(t);
-}, { passive: false });
-
-stickArea.addEventListener("touchmove", e => {
-    safePrevent(e);
-
-    const t =
-        findStickTouch(e.touches);
-
-    if (!t) return;
-
-    moveStick(t);
-}, { passive: false });
-
-/* =========================
-   スティックリセット
-========================= */
-
-function resetStick() {
-    stickX = 0;
-    stickTouchId = null;
-
-    if (!stickArea || !stick) return;
-
-    const data =
-        getStickBase();
-
-    stick.style.left =
-        data.baseX + "px";
-
-    stick.style.top =
-        data.baseY + "px";
-}
-
-stickArea.addEventListener("touchend", e => {
-    safePrevent(e);
-
-    const ended =
-        Array.from(e.changedTouches)
-            .some(t => t.identifier === stickTouchId);
-
-    if (ended) {
-        resetStick();
-    }
-}, { passive: false });
-
-stickArea.addEventListener("touchcancel", e => {
-    safePrevent(e);
-    resetStick();
-}, { passive: false });
-
-window.addEventListener("resize", resetStick);
-
-window.addEventListener("orientationchange", () => {
-    setTimeout(resetStick, 300);
-});
-
-/* =========================
-   スティック初期化
-========================= */
-
-function initStickPosition() {
-
-    const controls =
-        document.getElementById(
-            "mobileControls"
-        );
-
-    if (
-        !controls ||
-        controls.offsetWidth === 0
-    ) {
-        requestAnimationFrame(
-            initStickPosition
-        );
-
-        return;
-    }
-
-    resetStick();
-}
-
-window.addEventListener(
-    "resize",
-    initStickPosition
-);
-
-window.addEventListener(
-    "orientationchange",
-    () => {
-        setTimeout(
-            initStickPosition,
-            300
-        );
-    }
+        e.preventDefault();
+    },
+    { passive: false }
 );
 
 /* =========================
-   ゲーム開始監視
+   スマホ：タッチ移動
 ========================= */
 
-let lastPlaying = false;
+canvas.addEventListener(
+    "touchmove",
+    e => {
+        if (gameState !== STATE.GAME) return;
 
-setInterval(() => {
+        for (const t of e.changedTouches) {
 
-    const playing =
-        document.body.classList.contains(
-            "playing"
-        );
+            /* 左半分：左右移動・上ジャンプ */
+            if (t.identifier === touchMoveId) {
+                const p = getCanvasPoint(t);
 
-    if (
-        playing &&
-        !lastPlaying
-    ) {
-        setTimeout(
-            initStickPosition,
-            50
-        );
-    }
+                const dx = p.x - moveStartX;
+                const dy = p.y - moveStartY;
 
-    lastPlaying =
-        playing;
+                stickX =
+                    Math.max(
+                        -1,
+                        Math.min(
+                            1,
+                            dx / 65
+                        )
+                    );
 
-}, 200);
+                /* 上スワイプ：ジャンプ */
+                if (dy < -55) {
+                    player.jump();
 
-initStickPosition();
+                    moveStartY = p.y;
+                }
+            }
+
+            /* 右半分：下スワイプ保持でガード */
+            if (t.identifier === touchActionId) {
+                const p = getCanvasPoint(t);
+
+                const dy = p.y - actionStartY;
+
+                if (dy > 55) {
+                    guardButtonDown = true;
+
+                    if (player.attackCharging) {
+                        player.releaseAttackCharge();
+                    }
+                } else {
+                    guardButtonDown = false;
+                }
+            }
+        }
+
+        e.preventDefault();
+    },
+    { passive: false }
+);
+
+/* =========================
+   スマホ：タッチ終了
+========================= */
+
+canvas.addEventListener(
+    "touchend",
+    e => {
+        if (gameState !== STATE.GAME) return;
+
+        for (const t of e.changedTouches) {
+
+            /* 左指を離した */
+            if (t.identifier === touchMoveId) {
+                touchMoveId = null;
+                stickX = 0;
+            }
+
+            /* 右指を離した */
+            if (t.identifier === touchActionId) {
+                touchActionId = null;
+
+                guardButtonDown = false;
+
+                if (player && player.attackCharging) {
+                    player.releaseAttackCharge();
+                }
+            }
+        }
+
+        e.preventDefault();
+    },
+    { passive: false }
+);
+
+/* =========================
+   スマホ：タッチキャンセル
+========================= */
+
+canvas.addEventListener(
+    "touchcancel",
+    e => {
+        touchMoveId = null;
+        touchActionId = null;
+
+        stickX = 0;
+        guardButtonDown = false;
+
+        if (player && player.attackCharging) {
+            player.releaseAttackCharge();
+        }
+
+        e.preventDefault();
+    },
+    { passive: false }
+);

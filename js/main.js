@@ -481,6 +481,36 @@ function setupGame() {
   resetBattleTimers();
 }
 
+function separateFighters(a, b) {
+  if (!a || !b) return;
+
+  const overlapX =
+    Math.min(a.x + a.w, b.x + b.w) -
+    Math.max(a.x, b.x);
+
+  const overlapY =
+    Math.min(a.y + a.h, b.y + b.h) -
+    Math.max(a.y, b.y);
+
+  if (overlapX <= 0 || overlapY <= 0) return;
+
+  // 横の重なりだけ押し戻す
+  if (overlapX < overlapY) {
+    const push = overlapX / 2 + 1;
+
+    if (a.x < b.x) {
+      a.x -= push;
+      b.x += push;
+    } else {
+      a.x += push;
+      b.x -= push;
+    }
+
+    a.vx *= 0.35;
+    b.vx *= 0.35;
+  }
+}
+
 /* =========================
    ゲーム更新
 ========================= */
@@ -600,6 +630,13 @@ function updateGame() {
 
   if (cpuRespawnTimer <= 0) {
     cpu.update();
+  }
+
+  if (
+    playerRespawnTimer <= 0 &&
+    cpuRespawnTimer <= 0
+  ) {
+    separateFighters(player, cpu);
   }
 
   if (
