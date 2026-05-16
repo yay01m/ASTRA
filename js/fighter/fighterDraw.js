@@ -249,7 +249,7 @@ function(){
     const cx=
     this.w/2+
     this.dir*
-    (this.w*0.48);
+    (this.w*0.72);
 
     const cy=
     this.h*0.42;
