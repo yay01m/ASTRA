@@ -809,21 +809,25 @@ loop();
 ========================= */
 
 function getCanvasPoint(event) {
-  const rect =
-    canvas.getBoundingClientRect();
 
-  const scaleX =
-    canvas.width / rect.width;
+  const screenW =
+    window.innerWidth;
 
-  const scaleY =
-    canvas.height / rect.height;
+  const screenH =
+    window.innerHeight;
 
   return {
-    x: (event.clientX - rect.left) * scaleX,
-    y: (event.clientY - rect.top) * scaleY
+
+    x:
+      (event.clientX / screenW)
+      * GAME_W,
+
+    y:
+      (event.clientY / screenH)
+      * GAME_H
+
   };
 }
-
 /* =========================
    クリック操作
 ========================= */
