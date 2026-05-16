@@ -7,10 +7,10 @@ const CHARACTERS = {
         color: "#4cc9f0",
         subColor: "#bdefff",
 
-        speed: 8,
+        speed: 11,
         accel: 0.75,
 
-        jump: 14,
+        jump: 16,
         weight: 1.0,
         maxJumps: 2,
 
@@ -51,10 +51,10 @@ const CHARACTERS = {
         color: "#ff4d4d",
         subColor: "#ffd166",
 
-        speed: 6.5,
+        speed: 8.5,
         accel: 0.55,
 
-        jump: 11,
+        jump: 13,
         weight: 1.25,
         maxJumps: 2,
 
@@ -95,10 +95,10 @@ const CHARACTERS = {
         color: "#ffe66d",
         subColor: "#ffffff",
 
-        speed: 10,
+        speed: 14,
         accel: 0.95,
 
-        jump: 14,
+        jump: 16,
         weight: 0.78,
         maxJumps: 3,
 

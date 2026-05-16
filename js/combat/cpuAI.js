@@ -3,221 +3,189 @@
 ========================= */
 
 const CPU_LEVELS = {
-  1:{attack:0.015,smash:0.05,special:0.002,air:0.006,guard:0.03,jump:0.006,range:90},
-  2:{attack:0.022,smash:0.10,special:0.004,air:0.010,guard:0.05,jump:0.008,range:95},
-  3:{attack:0.030,smash:0.18,special:0.006,air:0.014,guard:0.08,jump:0.010,range:100},
-  4:{attack:0.040,smash:0.25,special:0.009,air:0.020,guard:0.12,jump:0.012,range:105},
-  5:{attack:0.052,smash:0.35,special:0.013,air:0.030,guard:0.18,jump:0.014,range:110},
-  6:{attack:0.065,smash:0.45,special:0.018,air:0.040,guard:0.26,jump:0.016,range:115},
-  7:{attack:0.080,smash:0.58,special:0.025,air:0.055,guard:0.38,jump:0.018,range:120},
-  8:{attack:0.105,smash:0.72,special:0.035,air:0.075,guard:0.52,jump:0.020,range:125},
-  9:{attack:0.220,smash:0.96,special:0.080,air:0.160,guard:0.88,jump:0.026,range:145}
+    1: { attack: 0.012, smash: 0.03, special: 0.002, air: 0.006, guard: 0.03, jump: 0.006, chase: 90 },
+    2: { attack: 0.018, smash: 0.06, special: 0.004, air: 0.010, guard: 0.05, jump: 0.008, chase: 100 },
+    3: { attack: 0.026, smash: 0.12, special: 0.006, air: 0.014, guard: 0.08, jump: 0.010, chase: 110 },
+    4: { attack: 0.036, smash: 0.20, special: 0.009, air: 0.020, guard: 0.12, jump: 0.013, chase: 120 },
+    5: { attack: 0.048, smash: 0.30, special: 0.013, air: 0.030, guard: 0.18, jump: 0.016, chase: 130 },
+    6: { attack: 0.060, smash: 0.42, special: 0.018, air: 0.042, guard: 0.26, jump: 0.020, chase: 140 },
+    7: { attack: 0.076, smash: 0.55, special: 0.025, air: 0.058, guard: 0.36, jump: 0.025, chase: 150 },
+    8: { attack: 0.095, smash: 0.70, special: 0.035, air: 0.078, guard: 0.48, jump: 0.030, chase: 165 },
+    9: { attack: 0.140, smash: 0.88, special: 0.060, air: 0.120, guard: 0.70, jump: 0.040, chase: 185 }
 };
 
 /* =========================
    CPU待機位置
 ========================= */
 
-function getCpuHomeX(){
-
-    const centerX=
-        stage.x+stage.w/2;
-
-    return centerX+220;
+function getCpuHomeX() {
+    return stage.x + stage.w / 2 + 220;
 }
 
 /* =========================
    CPU更新
 ========================= */
 
-function updateCPU(){
+function updateCPU() {
 
-    const level=
-        CPU_LEVELS[cpuLevel]||
+    const level =
+        CPU_LEVELS[cpuLevel] ||
         CPU_LEVELS[5];
+
+    if (!cpu || !player) return;
 
     cpu.setGuard(false);
 
+    const dx = player.x - cpu.x;
+    const dy = player.y - cpu.y;
+
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+
+    const dir = dx > 0 ? 1 : -1;
+
+    const playerAttacking =
+        player.attackTimer > 0 ||
+        player.airAttackTimer > 0 ||
+        player.dashAttackTimer > 0 ||
+        player.specialTimer > 0;
+
     /* =====================
-       リスポーン待機
+       リスポーン中は戻る
     ===================== */
 
-    if(
-        playerRespawnTimer>0||
-        cpuRespawnTimer>0
-    ){
+    if (
+        playerRespawnTimer > 0 ||
+        cpuRespawnTimer > 0
+    ) {
+        const homeX = getCpuHomeX();
+        const diff = homeX - cpu.x;
 
-        const homeX=
-            getCpuHomeX();
-
-        const diff=
-            homeX-cpu.x;
-
-        if(
-            Math.abs(diff)>24
-        ){
-
-            const dir=
-                diff>0?1:-1;
-
-            cpu.move(
-                dir,
-                true
-            );
-
-        }else{
-
-            cpu.move(
-                0,
-                false
-            );
-
-            cpu.vx*=0.75;
-            cpu.dir=-1;
+        if (Math.abs(diff) > 24) {
+            cpu.move(diff > 0 ? 1 : -1, true);
+        } else {
+            cpu.move(0, false);
+            cpu.vx *= 0.75;
+            cpu.dir = -1;
         }
 
         return;
     }
 
-    const dx=
-        player.x-cpu.x;
-
-    const dy=
-        player.y-cpu.y;
-
-    const absDx=
-        Math.abs(dx);
-
-    const absDy=
-        Math.abs(dy);
-
-    const dir=
-        dx>0?1:-1;
-
-    const dash=
-        absDx>150;
-
     /* =====================
-       Lv9補正
+       向き調整
     ===================== */
 
-    if(cpuLevel>=9){
-
-        cpu.invincible=
-            Math.max(
-                cpu.invincible,
-                1
-            );
-
-        cpu.data.speed=
-            Math.max(
-                cpu.data.speed,
-                5.2
-            );
-
-        cpu.data.dashSpeed=
-            Math.max(
-                cpu.data.dashSpeed,
-                8.2
-            );
+    if (absDx > 20) {
+        cpu.dir = dir;
     }
 
     /* =====================
-       移動
+       復帰ジャンプ
     ===================== */
 
-    if(absDx>55){
+    const dangerLow =
+        cpu.y > stage.y - 95;
+
+    const farFromCenter =
+        Math.abs(
+            cpu.x - (stage.x + stage.w / 2)
+        ) > stage.w * 0.42;
+
+    if (
+        !cpu.onGround &&
+        (
+            dangerLow ||
+            farFromCenter
+        )
+    ) {
+        cpu.jump();
+
+        const centerX =
+            stage.x + stage.w / 2;
 
         cpu.move(
-            dir,
+            cpu.x < centerX ? 1 : -1,
             true
         );
-    }
 
-    /* =====================
-       復帰
-    ===================== */
-
-    if(
-        !cpu.onGround &&
-        cpu.y>stage.y-80 &&
-        Math.random()<0.20
-    ){
-
-        cpu.jump();
-    }
-
-    if(
-        cpu.onGround &&
-        Math.random()<level.jump
-    ){
-        cpu.jump();
-    }
-
-    /* =====================
-       ガード
-    ===================== */
-
-    const playerAttacking=
-        player.attackTimer>0||
-        player.airAttackTimer>0||
-        player.dashAttackTimer>0||
-        player.specialTimer>0;
-
-    if(
-        playerAttacking &&
-        absDx<130 &&
-        Math.random()<level.guard
-    ){
-
-        cpu.setGuard(true);
         return;
     }
 
     /* =====================
-       Lv9専用
+       上にいる相手を追う
+       二段ジャンプ用
     ===================== */
 
-    if(
-        cpuLevel>=9 &&
-        absDx<120 &&
-        absDy<100
-    ){
+    if (
+        player.y + player.h < cpu.y - 55 &&
+        absDx < 260
+    ) {
+        cpu.move(dir, true);
 
-        if(
-            player.damage>=70 &&
-            Math.random()<0.65
-        ){
+        if (
+            Math.random() < level.jump * 3.2
+        ) {
+            cpu.jump();
+        }
+    }
 
-            cpu.startAttackCharge();
-            cpu.attackCharge=999;
-            cpu.releaseAttackCharge();
-            return;
+    /* =====================
+       空中で横追跡
+    ===================== */
+
+    if (!cpu.onGround) {
+        if (absDx > 45) {
+            cpu.move(dir, true);
         }
 
-        if(
-            Math.random()<0.55
-        ){
-
-            cpu.startAttackCharge();
-            cpu.attackCharge=0;
-            cpu.releaseAttackCharge();
+        if (
+            absDx < 145 &&
+            absDy < 120 &&
+            Math.random() < level.air
+        ) {
+            cpu.airAttack();
             return;
         }
     }
 
     /* =====================
-       空中攻撃
+       地上追跡
     ===================== */
 
-    if(
-        !cpu.onGround &&
-        absDx<level.range &&
-        absDy<105 &&
-        Math.random()<level.air
-    ){
+    if (cpu.onGround) {
 
-        cpu.airAttack();
+        if (absDx > level.chase) {
+            cpu.move(dir, true);
+        }
+        else if (absDx > 55) {
+            cpu.move(dir, false);
+        }
+        else {
+            cpu.move(0, false);
+            cpu.vx *= 0.82;
+        }
+
+        if (
+            player.y + player.h < cpu.y - 65 &&
+            Math.random() < level.jump * 2.2
+        ) {
+            cpu.jump();
+        }
+    }
+
+    /* =====================
+       ガード判断
+    ===================== */
+
+    if (
+        playerAttacking &&
+        absDx < 150 &&
+        absDy < 120 &&
+        cpu.onGround &&
+        Math.random() < level.guard
+    ) {
+        cpu.setGuard(true);
         return;
     }
 
@@ -225,36 +193,36 @@ function updateCPU(){
        ダッシュ攻撃
     ===================== */
 
-    if(
-        absDx<120 &&
-        dash &&
-        Math.random()<level.attack
-    ){
-
+    if (
+        cpu.onGround &&
+        absDx < 135 &&
+        absDx > 65 &&
+        Math.random() < level.attack
+    ) {
         cpu.dashAttack();
         return;
     }
 
     /* =====================
-       通常・スマッシュ
+       近距離攻撃
     ===================== */
 
-    if(
-        absDx<level.range &&
-        Math.random()<level.attack
-    ){
-
+    if (
+        absDx < 115 &&
+        absDy < 95 &&
+        Math.random() < level.attack
+    ) {
         cpu.startAttackCharge();
 
-        if(
-            player.damage>=65||
-            Math.random()<level.smash
-        ){
+        const shouldSmash =
+            player.damage >= 75 ||
+            Math.random() < level.smash;
 
-            cpu.attackCharge=
-                cpuLevel>=9
-                ?999
-                :90;
+        if (shouldSmash) {
+            cpu.attackCharge =
+                cpuLevel >= 8
+                    ? 999
+                    : 90;
         }
 
         cpu.releaseAttackCharge();
@@ -262,15 +230,28 @@ function updateCPU(){
     }
 
     /* =====================
-       必殺
+       必殺技
     ===================== */
 
-    if(
-        absDx<190 &&
-        cpu.coolSpecial<=0 &&
-        Math.random()<level.special
-    ){
-
+    if (
+        absDx < 230 &&
+        absDy < 110 &&
+        cpu.coolSpecial <= 0 &&
+        Math.random() < level.special
+    ) {
         cpu.special();
+        return;
+    }
+
+    /* =====================
+       たまにジャンプ接近
+    ===================== */
+
+    if (
+        cpu.onGround &&
+        absDx < 240 &&
+        Math.random() < level.jump
+    ) {
+        cpu.jump();
     }
 }
