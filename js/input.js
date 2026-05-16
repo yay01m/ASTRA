@@ -156,6 +156,14 @@ canvas.addEventListener(
 
                 moveStartX = p.x;
                 moveStartY = p.y;
+
+                /* 空中だけタップジャンプ */
+                if (
+                    player &&
+                    !player.onGround
+                ) {
+                    player.jump();
+                }
             }
 
             /* 右半分：攻撃 */
@@ -191,12 +199,17 @@ canvas.addEventListener(
 
         for (const t of e.changedTouches) {
 
-            /* 左半分：左右移動・上ジャンプ */
+            /* 左半分：左右移動 */
             if (t.identifier === touchMoveId) {
-                const p = getCanvasPoint(t);
 
-                const dx = p.x - moveStartX;
-                const dy = p.y - moveStartY;
+                const p =
+                    getCanvasPoint(t);
+
+                const dx =
+                    p.x - moveStartX;
+
+                const dy =
+                    p.y - moveStartY;
 
                 stickX =
                     Math.max(
@@ -207,15 +220,15 @@ canvas.addEventListener(
                         )
                     );
 
-                /* 上スライド：ジャンプ */
-                if (dy < -42) {
+                /* 地上のみ上フリック */
+                if (
+                    dy < -50 &&
+                    player.onGround
+                ) {
+
                     player.jump();
 
-                    /*
-                       ここを少し下に戻すことで、
-                       同じ指でも2回目の上スライドを出しやすくする
-                    */
-                    moveStartY = p.y + 30;
+                    moveStartY = p.y + 80;
                 }
             }
 
