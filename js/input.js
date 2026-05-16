@@ -129,7 +129,8 @@ let moveStartY = 0;
 let actionStartX = 0;
 let actionStartY = 0;
 
-let lastRightTapTime = 0;
+let actionDidSpecial = false;
+let actionDidGuard = false;
 
 stickX = 0;
 guardButtonDown = false;
@@ -167,23 +168,10 @@ canvas.addEventListener(
                 actionStartX = p.x;
                 actionStartY = p.y;
 
-                const now = Date.now();
+                actionDidSpecial = false;
+                actionDidGuard = false;
 
-                /* ダブルタップ：必殺 */
-                if (now - lastRightTapTime < 260) {
-                    player.special();
-
-                    if (player.attackCharging) {
-                        player.releaseAttackCharge();
-                    }
-                }
-
-                /* ふつうに押す：攻撃溜め開始 */
-                else {
-                    player.startAttackCharge();
-                }
-
-                lastRightTapTime = now;
+                player.startAttackCharge();
             }
         }
 
@@ -219,28 +207,60 @@ canvas.addEventListener(
                         )
                     );
 
-                /* 上スワイプ：ジャンプ */
-                if (dy < -55) {
+                /* 上スライド：ジャンプ */
+                if (dy < -42) {
                     player.jump();
 
-                    moveStartY = p.y;
+                    /*
+                       ここを少し下に戻すことで、
+                       同じ指でも2回目の上スライドを出しやすくする
+                    */
+                    moveStartY = p.y + 30;
                 }
             }
 
-            /* 右半分：下スワイプ保持でガード */
+            /* 右半分：上スライド必殺 / 下スライドガード */
             if (t.identifier === touchActionId) {
                 const p = getCanvasPoint(t);
 
                 const dy = p.y - actionStartY;
 
-                if (dy > 55) {
+                /* 上スライド：必殺技 */
+                if (
+                    dy < -55 &&
+                    !actionDidSpecial
+                ) {
+                    actionDidSpecial = true;
+
+                    if (player.attackCharging) {
+                        player.attackCharging = false;
+                        player.attackCharge = 0;
+                    }
+
+                    guardButtonDown = false;
+                    player.special();
+                }
+
+                /* 下スライド保持：ガード */
+                else if (
+                    dy > 55 &&
+                    !actionDidSpecial
+                ) {
+                    actionDidGuard = true;
                     guardButtonDown = true;
 
                     if (player.attackCharging) {
-                        player.releaseAttackCharge();
+                        player.attackCharging = false;
+                        player.attackCharge = 0;
                     }
-                } else {
+                }
+
+                else if (
+                    dy <= 35 &&
+                    actionDidGuard
+                ) {
                     guardButtonDown = false;
+                    actionDidGuard = false;
                 }
             }
         }
@@ -273,9 +293,17 @@ canvas.addEventListener(
 
                 guardButtonDown = false;
 
-                if (player && player.attackCharging) {
+                if (
+                    player &&
+                    player.attackCharging &&
+                    !actionDidSpecial &&
+                    !actionDidGuard
+                ) {
                     player.releaseAttackCharge();
                 }
+
+                actionDidSpecial = false;
+                actionDidGuard = false;
             }
         }
 
@@ -298,8 +326,12 @@ canvas.addEventListener(
         guardButtonDown = false;
 
         if (player && player.attackCharging) {
-            player.releaseAttackCharge();
+            player.attackCharging = false;
+            player.attackCharge = 0;
         }
+
+        actionDidSpecial = false;
+        actionDidGuard = false;
 
         e.preventDefault();
     },
