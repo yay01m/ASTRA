@@ -24,7 +24,7 @@ function getDodgeInput() {
 }
 
 /* =========================
-   キーボード
+   キーボード操作
 ========================= */
 
 window.addEventListener("keydown", e => {
@@ -74,7 +74,7 @@ window.addEventListener("keyup", e => {
 });
 
 /* =========================
-   ASTRAスマホジェスチャー
+   スマホ操作
 ========================= */
 
 let touchMoveId = null;
@@ -82,8 +82,6 @@ let touchActionId = null;
 
 let moveStartX = 0;
 let moveStartY = 0;
-let moveStartTime = 0;
-let moveMaxDistance = 0;
 
 let actionStartX = 0;
 let actionStartY = 0;
@@ -104,18 +102,22 @@ canvas.addEventListener("touchstart", e => {
     for (const t of e.changedTouches) {
         const p = getCanvasPoint(t);
 
-        /* 左半分：移動・ジャンプ */
-        if (p.x < GAME_W / 2 && touchMoveId === null) {
+        /* 左半分：移動 */
+        if (
+            p.x < GAME_W / 2 &&
+            touchMoveId === null
+        ) {
             touchMoveId = t.identifier;
 
             moveStartX = p.x;
             moveStartY = p.y;
-            moveStartTime = Date.now();
-            moveMaxDistance = 0;
         }
 
         /* 右半分：攻撃 */
-        else if (p.x >= GAME_W / 2 && touchActionId === null) {
+        else if (
+            p.x >= GAME_W / 2 &&
+            touchActionId === null
+        ) {
             touchActionId = t.identifier;
 
             actionStartX = p.x;
@@ -140,27 +142,41 @@ canvas.addEventListener("touchmove", e => {
 
     for (const t of e.changedTouches) {
 
-        /* 左半分：左右移動・下フリック */
+        /* 左半分：移動・ジャンプ・足場降り */
         if (t.identifier === touchMoveId) {
             const p = getCanvasPoint(t);
 
             const dx = p.x - moveStartX;
             const dy = p.y - moveStartY;
 
-            moveMaxDistance = Math.max(
-                moveMaxDistance,
-                Math.hypot(dx, dy)
-            );
-
             stickX = Math.max(
                 -1,
                 Math.min(1, dx / 70)
             );
 
-            /* 下フリック：足場を降りる */
+            /*
+               上フリック＝ジャンプ
+               少し斜めでもOK
+               地上でも空中でも使える
+            */
+            if (
+                dy < -55 &&
+                Math.abs(dx) < 70 &&
+                player &&
+                player.hitstun <= 0
+            ) {
+                player.jump();
+
+                moveStartX = p.x;
+                moveStartY = p.y;
+            }
+
+            /*
+               下フリック＝足場降り
+            */
             if (
                 dy > 75 &&
-                Math.abs(dx) < 55 &&
+                Math.abs(dx) < 65 &&
                 player &&
                 player.onGround
             ) {
@@ -169,17 +185,20 @@ canvas.addEventListener("touchmove", e => {
 
                 moveStartX = p.x;
                 moveStartY = p.y;
-                moveMaxDistance = 0;
             }
         }
 
-        /* 右半分：上必殺・下ガード */
+        /* 右半分：必殺・ガード */
         if (t.identifier === touchActionId) {
             const p = getCanvasPoint(t);
+
             const dy = p.y - actionStartY;
 
-            /* 上スライド：必殺 */
-            if (dy < -60 && !actionDidSpecial) {
+            /* 上フリック＝必殺 */
+            if (
+                dy < -60 &&
+                !actionDidSpecial
+            ) {
                 actionDidSpecial = true;
 
                 if (player.attackCharging) {
@@ -191,8 +210,11 @@ canvas.addEventListener("touchmove", e => {
                 player.special();
             }
 
-            /* 下スライド：ガード */
-            else if (dy > 60 && !actionDidSpecial) {
+            /* 下フリック保持＝ガード */
+            else if (
+                dy > 60 &&
+                !actionDidSpecial
+            ) {
                 actionDidGuard = true;
                 guardButtonDown = true;
 
@@ -202,7 +224,10 @@ canvas.addEventListener("touchmove", e => {
                 }
             }
 
-            else if (dy <= 35 && actionDidGuard) {
+            else if (
+                dy <= 35 &&
+                actionDidGuard
+            ) {
                 guardButtonDown = false;
                 actionDidGuard = false;
             }
@@ -221,31 +246,11 @@ canvas.addEventListener("touchend", e => {
 
     for (const t of e.changedTouches) {
 
-        /* 左指を離した */
         if (t.identifier === touchMoveId) {
-            const touchTime = Date.now() - moveStartTime;
-
-            /*
-               左短タップ＝ジャンプ
-               ・短いタップ
-               ・ほぼ動いてない
-               ・吹っ飛び中ではない
-            */
-            if (
-                touchTime < 170 &&
-                moveMaxDistance < 22 &&
-                player &&
-                player.hitstun <= 0
-            ) {
-                player.jump();
-            }
-
             touchMoveId = null;
             stickX = 0;
-            moveMaxDistance = 0;
         }
 
-        /* 右指を離した */
         if (t.identifier === touchActionId) {
             touchActionId = null;
 
@@ -278,7 +283,6 @@ canvas.addEventListener("touchcancel", e => {
 
     stickX = 0;
     guardButtonDown = false;
-    moveMaxDistance = 0;
 
     if (player && player.attackCharging) {
         player.attackCharging = false;
