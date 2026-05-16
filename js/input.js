@@ -180,8 +180,8 @@ window.addEventListener("touchmove", e => {
 */
 
             if (
-                dy < -70 &&
-                Math.abs(dx) < 80
+                dy < -120 &&
+                Math.abs(dx) < 60
             ) {
 
                 // 大ジャン
