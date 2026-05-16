@@ -180,7 +180,7 @@ window.addEventListener("touchmove", e => {
 */
 
             if (
-                dy < -120 &&
+                dy < -150 &&
                 Math.abs(dx) < 60
             ) {
 
@@ -195,8 +195,8 @@ window.addEventListener("touchmove", e => {
                下フリック＝足場降り
             */
             if (
-                dy > 75 &&
-                Math.abs(dx) < 65 &&
+                dy > 150 &&
+                Math.abs(dx) < 60 &&
                 player &&
                 player.onGround
             ) {
