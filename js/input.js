@@ -188,15 +188,27 @@ canvas.addEventListener(
                    ・横ズレ35未満
                    ・つまり、かなり真上に払った時だけ
                 */
+                /* 上フリック＝ジャンプ */
+                const jumpFlick =
+                    player.onGround
+                        ? (
+                            dy < -95 &&
+                            Math.abs(dx) < 30
+                        )
+                        : (
+                            dy < -65 &&
+                            Math.abs(dx) < 80
+                        );
+
                 if (
-                    dy < -90 &&
-                    Math.abs(dx) < 35 &&
+                    jumpFlick &&
                     player
                 ) {
                     player.jump();
 
+                    // 同じ指で2回目も出せる
                     moveStartX = p.x;
-                    moveStartY = p.y + 120;
+                    moveStartY = p.y;
                 }
 
                 /*
