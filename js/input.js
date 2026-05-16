@@ -76,6 +76,36 @@ window.addEventListener("keyup", e => {
         keys.attackCharging = false;
         player.releaseAttackCharge();
     }
+
+    if (
+        e.key === "p" ||
+        e.key === "P" ||
+        e.key === "Escape"
+    ) {
+
+        if (
+            gameState ===
+            STATE.GAME
+        ) {
+
+            gameState =
+                STATE.PAUSE;
+
+            return;
+        }
+
+        if (
+            gameState ===
+            STATE.PAUSE
+        ) {
+
+            gameState =
+                STATE.GAME;
+
+            return;
+        }
+
+    }
 });
 
 /* =========================

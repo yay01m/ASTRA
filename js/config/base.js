@@ -11,6 +11,7 @@ const STATE = {
     STAGE_SELECT: "stageSelect",
     CPU_LEVEL: "cpuLevel",
     GAME: "game",
+    PAUSE:"pause",
     KO: "ko"
 };
 
