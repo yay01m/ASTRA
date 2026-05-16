@@ -1,5 +1,6 @@
 /* =========================
-   共通ボタン
+   メニュー用ボタン描画
+   (戦闘画面では未使用)
 ========================= */
 
 function drawButton(
@@ -9,6 +10,7 @@ function drawButton(
     h,
     text
 ) {
+
     ctx.fillStyle = "#22224f";
 
     ctx.fillRect(
@@ -29,7 +31,10 @@ function drawButton(
     );
 
     ctx.fillStyle = "#fff";
-    ctx.font = "bold 28px Arial";
+
+    ctx.font =
+        "bold 28px Arial";
+
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
@@ -39,5 +44,7 @@ function drawButton(
         y + h / 2
     );
 
-    ctx.textBaseline = "alphabetic";
+    ctx.textBaseline =
+        "alphabetic";
+
 }

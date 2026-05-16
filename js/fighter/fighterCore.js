@@ -14,7 +14,7 @@ class Fighter {
 
         this.data.dashSpeed =
             Math.floor(
-                this.data.speed * 1.5
+                this.data.speed * 1.65
             );
 
         this.x = x;
@@ -37,27 +37,37 @@ class Fighter {
 
         this.onGround = false;
 
-        this.jumpCount = 0;
-
-        this.maxJumps =
-            this.data.maxJumps || 2;
+        /* =========================
+           ダッシュ
+        ========================= */
 
         this.isDashing = false;
         this.dashTimer = 0;
 
+        /* =========================
+           攻撃
+        ========================= */
+
         this.attackTimer = 0;
-        this.dashAttackTimer = 0;
-        this.airAttackTimer = 0;
         this.specialTimer = 0;
+
+        this.attackCharging = false;
+        this.attackCharge = 0;
+
+        this.coolAttack = 0;
+        this.coolSpecial = 0;
+
+        /* =========================
+           状態異常
+        ========================= */
 
         this.hitstun = 0;
         this.actionLock = 0;
         this.invincible = 0;
 
-        this.coolAttack = 0;
-        this.coolDashAttack = 0;
-        this.coolAirAttack = 0;
-        this.coolSpecial = 0;
+        /* =========================
+           ガード
+        ========================= */
 
         this.guardHeld = false;
         this.isGuarding = false;
@@ -65,8 +75,12 @@ class Fighter {
         this.guardHoldTimer = 0;
         this.guardBreakTimer = 0;
 
-        this.airDodgeTimer = 0;
-        this.airDodgeUsed = false;
+        /* =========================
+           前フレーム位置
+        ========================= */
+
+        this.prevX = x;
+        this.prevY = y;
     }
 
     reset(x, y) {
@@ -79,22 +93,35 @@ class Fighter {
 
         this.damage = 0;
 
+        this.onGround = false;
+
         this.hitstun = 0;
         this.actionLock = 0;
         this.invincible = 90;
 
+        /* =========================
+           ダッシュ
+        ========================= */
+
         this.isDashing = false;
         this.dashTimer = 0;
 
+        /* =========================
+           攻撃
+        ========================= */
+
         this.attackTimer = 0;
-        this.dashAttackTimer = 0;
-        this.airAttackTimer = 0;
         this.specialTimer = 0;
 
+        this.attackCharging = false;
+        this.attackCharge = 0;
+
         this.coolAttack = 0;
-        this.coolDashAttack = 0;
-        this.coolAirAttack = 0;
         this.coolSpecial = 0;
+
+        /* =========================
+           ガード
+        ========================= */
 
         this.guardHeld = false;
         this.isGuarding = false;
@@ -102,12 +129,11 @@ class Fighter {
         this.guardHoldTimer = 0;
         this.guardBreakTimer = 0;
 
-        this.jumpCount = 0;
+        /* =========================
+           前フレーム位置
+        ========================= */
 
-        this.maxJumps =
-            this.data.maxJumps || 2;
-
-        this.airDodgeTimer = 0;
-        this.airDodgeUsed = false;
+        this.prevX = x;
+        this.prevY = y;
     }
 }

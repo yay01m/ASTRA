@@ -3,7 +3,6 @@
 ========================= */
 
 const effectImages = {
-  airJumpRing: new Image(),
   hitStar: new Image(),
   koFlash: new Image(),
 
@@ -12,22 +11,35 @@ const effectImages = {
   novaBall: new Image()
 };
 
-effectImages.airJumpRing.src = "./img/effects/air_jump_ring.png";
-effectImages.hitStar.src = "./img/effects/hit_star.png";
-effectImages.koFlash.src = "./img/effects/ko_flash.png";
+effectImages.hitStar.src =
+  "./img/effects/hit_star.png";
 
-effectImages.fireBurst.src = "./img/effects/fire_burst.png";
-effectImages.lightningSlash.src = "./img/effects/lightning_slash.png";
-effectImages.novaBall.src = "./img/effects/nova_ball.png";
+effectImages.koFlash.src =
+  "./img/effects/ko_flash.png";
+
+effectImages.fireBurst.src =
+  "./img/effects/fire_burst.png";
+
+effectImages.lightningSlash.src =
+  "./img/effects/lightning_slash.png";
+
+effectImages.novaBall.src =
+  "./img/effects/nova_ball.png";
+
 
 /* =========================
    エフェクト更新
 ========================= */
 
 function updateEffects() {
-  effects = effects.filter(e => e.life > 0);
+
+  effects =
+    effects.filter(
+      e => e.life > 0
+    );
 
   for (const e of effects) {
+
     e.life--;
 
     if (e.type === "circle") {
@@ -64,7 +76,6 @@ function updateEffects() {
     }
 
     if (
-      e.type === "airJumpRing" ||
       e.type === "hitStar" ||
       e.type === "koFlash" ||
       e.type === "fireBurst" ||
@@ -79,42 +90,66 @@ function updateEffects() {
   }
 }
 
+
 /* =========================
    エフェクト描画
 ========================= */
 
 function drawEffects() {
-  for (const e of effects) {
-    const maxLife = e.maxLife || 20;
-    const alpha = Math.max(0, e.life / maxLife);
 
-    if (e.type === "airJumpRing") {
-      drawImageEffect(effectImages.airJumpRing, e, alpha);
-      continue;
-    }
+  for (const e of effects) {
+
+    const maxLife =
+      e.maxLife || 20;
+
+    const alpha =
+      Math.max(
+        0,
+        e.life / maxLife
+      );
 
     if (e.type === "hitStar") {
-      drawImageEffect(effectImages.hitStar, e, alpha);
+      drawImageEffect(
+        effectImages.hitStar,
+        e,
+        alpha
+      );
       continue;
     }
 
     if (e.type === "koFlash") {
-      drawImageEffect(effectImages.koFlash, e, alpha);
+      drawImageEffect(
+        effectImages.koFlash,
+        e,
+        alpha
+      );
       continue;
     }
 
     if (e.type === "fireBurst") {
-      drawImageEffect(effectImages.fireBurst, e, alpha);
+      drawImageEffect(
+        effectImages.fireBurst,
+        e,
+        alpha
+      );
       continue;
     }
 
     if (e.type === "lightningSlash") {
-      drawImageEffect(effectImages.lightningSlash, e, alpha);
+      drawImageEffect(
+        effectImages.lightningSlash,
+        e,
+        alpha
+      );
       continue;
     }
 
     if (e.type === "novaBall") {
-      drawImageEffect(effectImages.novaBall, e, alpha);
+      drawImageEffect(
+        effectImages.novaBall,
+        e,
+        alpha
+      );
       continue;
     }
 
@@ -152,18 +187,22 @@ function drawEffects() {
   }
 }
 
+
 /* =========================
    画像エフェクト共通描画
 ========================= */
 
 function drawImageEffect(img, e, alpha) {
+
   if (!img) return;
   if (!img.complete) return;
   if (img.naturalWidth === 0) return;
 
   ctx.save();
 
-  ctx.globalAlpha = alpha * (e.alpha || 1);
+  ctx.globalAlpha =
+    alpha * (e.alpha || 1);
+
   ctx.translate(e.x, e.y);
   ctx.rotate(e.rot || 0);
 
@@ -171,8 +210,11 @@ function drawImageEffect(img, e, alpha) {
     ctx.scale(-1, 1);
   }
 
-  const w = Math.abs(e.w || e.size);
-  const h = Math.abs(e.h || e.size);
+  const w =
+    Math.abs(e.w || e.size);
+
+  const h =
+    Math.abs(e.h || e.size);
 
   ctx.drawImage(
     img,
@@ -185,39 +227,62 @@ function drawImageEffect(img, e, alpha) {
   ctx.restore();
 }
 
+
 /* =========================
-   個別描画
+   通常ヒット円
 ========================= */
 
 function drawCircleHitEffect(e, alpha) {
-  ctx.beginPath();
-  ctx.arc(e.x, e.y, e.size, 0, Math.PI * 2);
-  ctx.fillStyle = colorAlpha(e.color, alpha * 0.45);
-  ctx.fill();
 
   ctx.beginPath();
-  ctx.arc(e.x, e.y, e.size * 0.45, 0, Math.PI * 2);
-  ctx.fillStyle = colorAlpha("#ffffff", alpha * 0.65);
-  ctx.fill();
 
-  for (let i = 0; i < 6; i++) {
-    const a = e.rot + i * Math.PI / 3;
+  ctx.arc(
+    e.x,
+    e.y,
+    e.size,
+    0,
+    Math.PI * 2
+  );
 
-    ctx.strokeStyle = colorAlpha(e.color, alpha * 0.9);
-    ctx.lineWidth = 3;
-
-    ctx.beginPath();
-    ctx.moveTo(e.x, e.y);
-    ctx.lineTo(
-      e.x + Math.cos(a) * e.size,
-      e.y + Math.sin(a) * e.size
+  ctx.fillStyle =
+    colorAlpha(
+      e.color,
+      alpha * 0.45
     );
-    ctx.stroke();
-  }
+
+  ctx.fill();
+
+  ctx.beginPath();
+
+  ctx.arc(
+    e.x,
+    e.y,
+    e.size * 0.45,
+    0,
+    Math.PI * 2
+  );
+
+  ctx.fillStyle =
+    colorAlpha(
+      "#ffffff",
+      alpha * 0.65
+    );
+
+  ctx.fill();
 }
 
+
+/* =========================
+   ダッシュ煙
+========================= */
+
 function drawDashEffect(e, alpha) {
-  ctx.fillStyle = colorAlpha(e.color, alpha * 0.45);
+
+  ctx.fillStyle =
+    colorAlpha(
+      e.color,
+      alpha * 0.45
+    );
 
   ctx.fillRect(
     e.x - e.size / 2,
@@ -226,7 +291,11 @@ function drawDashEffect(e, alpha) {
     7
   );
 
-  ctx.fillStyle = colorAlpha("#ffffff", alpha * 0.2);
+  ctx.fillStyle =
+    colorAlpha(
+      "#ffffff",
+      alpha * 0.2
+    );
 
   ctx.fillRect(
     e.x - e.size / 3,
@@ -236,149 +305,325 @@ function drawDashEffect(e, alpha) {
   );
 }
 
+
+/* =========================
+   攻撃スラッシュ
+========================= */
+
 function drawAttackSlashEffect(e, alpha) {
+
   ctx.save();
 
   ctx.translate(e.x, e.y);
   ctx.scale(e.dir || 1, 1);
 
-  ctx.strokeStyle = colorAlpha("#ffffff", alpha * 0.95);
+  ctx.strokeStyle =
+    colorAlpha(
+      "#ffffff",
+      alpha * 0.95
+    );
+
   ctx.lineWidth = 7;
   ctx.lineCap = "round";
 
   ctx.beginPath();
-  ctx.arc(0, 0, e.size, -0.8, 0.65);
+
+  ctx.arc(
+    0,
+    0,
+    e.size,
+    -0.8,
+    0.65
+  );
+
   ctx.stroke();
 
-  ctx.strokeStyle = colorAlpha(e.color, alpha * 0.9);
+  ctx.strokeStyle =
+    colorAlpha(
+      e.color,
+      alpha * 0.9
+    );
+
   ctx.lineWidth = 4;
 
   ctx.beginPath();
-  ctx.arc(0, 0, e.size * 0.8, -0.75, 0.6);
+
+  ctx.arc(
+    0,
+    0,
+    e.size * 0.8,
+    -0.75,
+    0.6
+  );
+
   ctx.stroke();
 
   ctx.restore();
 }
 
+
+/* =========================
+   ガード
+========================= */
+
 function drawGuardVisualEffect(e, alpha) {
-  ctx.strokeStyle = colorAlpha(e.color, alpha * 0.75);
+
+  ctx.strokeStyle =
+    colorAlpha(
+      e.color || "#b388ff",
+      alpha * 0.75
+    );
+
   ctx.lineWidth = 4;
 
   ctx.beginPath();
-  ctx.arc(e.x, e.y, e.size, 0, Math.PI * 2);
+
+  ctx.arc(
+    e.x,
+    e.y,
+    e.size,
+    0,
+    Math.PI * 2
+  );
+
   ctx.stroke();
 
-  ctx.strokeStyle = colorAlpha("#ffffff", alpha * 0.35);
+  ctx.strokeStyle =
+    colorAlpha(
+      "#ffffff",
+      alpha * 0.35
+    );
+
   ctx.lineWidth = 2;
 
   ctx.beginPath();
-  ctx.arc(e.x, e.y, e.size * 0.72, 0, Math.PI * 2);
+
+  ctx.arc(
+    e.x,
+    e.y,
+    e.size * 0.72,
+    0,
+    Math.PI * 2
+  );
+
   ctx.stroke();
 }
 
+
+/* =========================
+   ガードブレイク
+========================= */
+
 function drawGuardBreakVisualEffect(e, alpha) {
-  ctx.strokeStyle = colorAlpha("#ff77ff", alpha * 0.95);
+
+  ctx.strokeStyle =
+    colorAlpha(
+      "#ff77ff",
+      alpha * 0.95
+    );
+
   ctx.lineWidth = 6;
 
   ctx.beginPath();
-  ctx.arc(e.x, e.y, e.size, 0, Math.PI * 2);
+
+  ctx.arc(
+    e.x,
+    e.y,
+    e.size,
+    0,
+    Math.PI * 2
+  );
+
   ctx.stroke();
 
   for (let i = 0; i < 10; i++) {
-    const a = e.rot + i * Math.PI / 5;
 
-    ctx.strokeStyle = colorAlpha("#ffffff", alpha * 0.8);
+    const a =
+      (e.rot || 0) + i * Math.PI / 5;
+
+    ctx.strokeStyle =
+      colorAlpha(
+        "#ffffff",
+        alpha * 0.8
+      );
+
     ctx.lineWidth = 3;
 
     ctx.beginPath();
+
     ctx.moveTo(
       e.x + Math.cos(a) * e.size * 0.25,
       e.y + Math.sin(a) * e.size * 0.25
     );
+
     ctx.lineTo(
       e.x + Math.cos(a) * e.size,
       e.y + Math.sin(a) * e.size
     );
+
     ctx.stroke();
   }
 }
 
+
 /* =========================
-   キャラ別ヒット描画
+   NOVAヒット
 ========================= */
 
 function drawNovaHitEffect(e, alpha) {
+
   ctx.save();
 
   ctx.translate(e.x, e.y);
-  ctx.rotate(e.rot);
+  ctx.rotate(e.rot || 0);
 
-  ctx.strokeStyle = colorAlpha("#ffffff", alpha * 0.9);
+  ctx.strokeStyle =
+    colorAlpha(
+      "#ffffff",
+      alpha * 0.9
+    );
+
   ctx.lineWidth = 4;
   ctx.lineCap = "round";
 
   ctx.beginPath();
-  ctx.moveTo(-e.size, e.size * 0.3);
-  ctx.lineTo(e.size, -e.size * 0.3);
+
+  ctx.moveTo(
+    -e.size,
+    e.size * 0.3
+  );
+
+  ctx.lineTo(
+    e.size,
+    -e.size * 0.3
+  );
+
   ctx.stroke();
 
-  ctx.strokeStyle = colorAlpha(e.color, alpha * 0.8);
+  ctx.strokeStyle =
+    colorAlpha(
+      e.color,
+      alpha * 0.8
+    );
+
   ctx.lineWidth = 2;
 
   ctx.beginPath();
-  ctx.moveTo(-e.size * 0.7, e.size * 0.55);
-  ctx.lineTo(e.size * 0.7, -e.size * 0.55);
+
+  ctx.moveTo(
+    -e.size * 0.7,
+    e.size * 0.55
+  );
+
+  ctx.lineTo(
+    e.size * 0.7,
+    -e.size * 0.55
+  );
+
   ctx.stroke();
 
   ctx.restore();
 }
 
+
+/* =========================
+   BLAZEヒット
+========================= */
+
 function drawBlazeHitEffect(e, alpha) {
+
   ctx.save();
 
-  ctx.fillStyle = colorAlpha(e.color, alpha * 0.7);
+  ctx.fillStyle =
+    colorAlpha(
+      e.color,
+      alpha * 0.7
+    );
 
   ctx.beginPath();
-  ctx.arc(e.x, e.y, e.size, 0, Math.PI * 2);
+
+  ctx.arc(
+    e.x,
+    e.y,
+    e.size,
+    0,
+    Math.PI * 2
+  );
+
   ctx.fill();
 
-  ctx.fillStyle = colorAlpha("#ffffff", alpha * 0.45);
+  ctx.fillStyle =
+    colorAlpha(
+      "#ffffff",
+      alpha * 0.45
+    );
 
   ctx.beginPath();
-  ctx.arc(e.x, e.y, e.size * 0.35, 0, Math.PI * 2);
+
+  ctx.arc(
+    e.x,
+    e.y,
+    e.size * 0.35,
+    0,
+    Math.PI * 2
+  );
+
   ctx.fill();
 
   ctx.restore();
 }
 
+
+/* =========================
+   VOLTヒット
+========================= */
+
 function drawVoltHitEffect(e, alpha) {
+
   ctx.save();
 
-  ctx.strokeStyle = colorAlpha(e.color, alpha * 0.95);
+  ctx.strokeStyle =
+    colorAlpha(
+      e.color,
+      alpha * 0.95
+    );
+
   ctx.lineWidth = 3;
   ctx.lineCap = "round";
 
   ctx.beginPath();
+
   ctx.moveTo(e.x, e.y);
+
   ctx.lineTo(
-    e.x + Math.cos(e.rot) * e.size,
-    e.y + Math.sin(e.rot) * e.size
+    e.x + Math.cos(e.rot || 0) * e.size,
+    e.y + Math.sin(e.rot || 0) * e.size
   );
+
   ctx.lineTo(
-    e.x + Math.cos(e.rot + 1.4) * e.size * 0.55,
-    e.y + Math.sin(e.rot + 1.4) * e.size * 0.55
+    e.x + Math.cos((e.rot || 0) + 1.4) * e.size * 0.55,
+    e.y + Math.sin((e.rot || 0) + 1.4) * e.size * 0.55
   );
+
   ctx.stroke();
 
-  ctx.strokeStyle = colorAlpha("#ffffff", alpha * 0.7);
+  ctx.strokeStyle =
+    colorAlpha(
+      "#ffffff",
+      alpha * 0.7
+    );
+
   ctx.lineWidth = 1.5;
 
   ctx.beginPath();
+
   ctx.moveTo(e.x, e.y);
+
   ctx.lineTo(
-    e.x + Math.cos(e.rot) * e.size * 0.7,
-    e.y + Math.sin(e.rot) * e.size * 0.7
+    e.x + Math.cos(e.rot || 0) * e.size * 0.7,
+    e.y + Math.sin(e.rot || 0) * e.size * 0.7
   );
+
   ctx.stroke();
 
   ctx.restore();

@@ -2,22 +2,25 @@
    吹っ飛び・決定打演出
 ========================= */
 
+
 /* =========================
    吹っ飛びの強さ計算
 ========================= */
 
 function getKnockbackPower(target, finalKnock) {
 
-  // 25%を超えてから吹っ飛びが強くなる
-  const percentPower =
-    Math.max(0, target.damage - 25) * 0.22;
+  const d =
+    Math.max(0, target.damage - 40);
 
-  // 技ごとの基本吹っ飛びを少し弱める
+  const percentPower =
+    d * 0.07 + d * d * 0.0016;
+
   const basePower =
-    finalKnock * 0.88;
+    finalKnock * 0.58;
 
   return basePower + percentPower;
 }
+
 
 /* =========================
    決定打判定
@@ -32,7 +35,9 @@ function isFinishHit(target, finalKnock, isSpecial) {
       isSpecial
     )
   );
+
 }
+
 
 /* =========================
    吹っ飛び適用
@@ -42,7 +47,6 @@ function applyKnockback(
   attacker,
   target,
   power,
-  isAir,
   finishHit
 ) {
 
@@ -53,13 +57,13 @@ function applyKnockback(
     attacker.dir *
     power *
     boost /
-    (target.data.weight * 1.08);
+    (target.data.weight * 1.25);
 
   target.vy =
-    isAir
-      ? -(power * 0.60 * boost) / (target.data.weight * 1.08)
-      : -(power * 0.50 * boost) / (target.data.weight * 1.08);
+    -(power * 0.42 * boost) /
+    (target.data.weight * 1.25);
 }
+
 
 /* =========================
    ヒット感
@@ -67,18 +71,11 @@ function applyKnockback(
 
 function addHitFeel(
   isSpecial,
-  isAir,
   guarded
 ) {
 
   if (guarded) {
     addHitStop(2);
-    return;
-  }
-
-  if (isAir) {
-    addHitStop(5);
-    addScreenShake(1, 1.0);
     return;
   }
 
@@ -90,13 +87,17 @@ function addHitFeel(
 
   addHitStop(4);
   addScreenShake(1, 0.8);
+
 }
+
 
 /* =========================
    決定打ヒット感
 ========================= */
 
 function addFinishHitFeel() {
+
   addHitStop(16);
   addScreenShake(1, 2.0);
+
 }

@@ -7,23 +7,6 @@ function inside(x, y, bx, by, bw, bh) {
 }
 
 /* =========================
-   回避方向取得
-========================= */
-
-function getDodgeInput() {
-    let dodgeInput = 0;
-
-    if (keys["a"] || keys["A"] || keys["ArrowLeft"]) dodgeInput = -1;
-    if (keys["d"] || keys["D"] || keys["ArrowRight"]) dodgeInput = 1;
-
-    if (Math.abs(stickX) > 0.25) {
-        dodgeInput = stickX > 0 ? 1 : -1;
-    }
-
-    return dodgeInput;
-}
-
-/* =========================
    キーボード操作
 ========================= */
 
@@ -34,13 +17,40 @@ window.addEventListener("keydown", e => {
     if (e.code === "Space") e.preventDefault();
     if (gameState !== STATE.GAME) return;
 
+    /* 小ジャン */
     if (
         e.key === "w" ||
-        e.key === "W" ||
+        e.key === "W"
+    ) {
+        player.jump(0.62);
+    }
+
+    /* 大ジャン */
+    if (
         e.key === "ArrowUp" ||
         e.code === "Space"
     ) {
-        player.jump();
+        player.jump(1);
+    }
+
+    /* S = 足場降り */
+
+    if (
+        e.key === "s" ||
+        e.key === "S"
+    ) {
+
+        if (
+            player &&
+            player.onGround
+        ) {
+
+            player.dropPlatformTimer = 12;
+
+            player.y += 8;
+
+        }
+
     }
 
     if (e.key === "j" || e.key === "J") {
@@ -54,11 +64,6 @@ window.addEventListener("keydown", e => {
         player.special();
     }
 
-    if (e.key === "l" || e.key === "L") {
-        if (player && !player.onGround) {
-            player.airDodge(getDodgeInput());
-        }
-    }
 });
 
 window.addEventListener("keyup", e => {
@@ -160,12 +165,20 @@ canvas.addEventListener("touchmove", e => {
                地上でも空中でも使える
             */
             if (
-                dy < -55 &&
-                Math.abs(dx) < 70 &&
-                player &&
-                player.hitstun <= 0
+                dy < -90 &&
+                Math.abs(dx) < 70
             ) {
-                player.jump();
+                player.jump(1);
+
+                moveStartX = p.x;
+                moveStartY = p.y;
+            }
+
+            else if (
+                dy < -45 &&
+                Math.abs(dx) < 70
+            ) {
+                player.jump(0.62);
 
                 moveStartX = p.x;
                 moveStartY = p.y;

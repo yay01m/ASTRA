@@ -3,6 +3,7 @@
 ========================= */
 
 function addFireBurstEffect(x, y) {
+
     effects.push({
         x,
         y,
@@ -19,9 +20,12 @@ function addFireBurstEffect(x, y) {
         vx: 0,
         vy: 0
     });
+
 }
 
+
 function addLightningSlashEffect(x, y, dir = 1) {
+
     effects.push({
         x,
         y,
@@ -39,9 +43,12 @@ function addLightningSlashEffect(x, y, dir = 1) {
         vx: 0,
         vy: 0
     });
+
 }
 
+
 function addNovaBallEffect(x, y, size = 70) {
+
     effects.push({
         x,
         y,
@@ -58,23 +65,28 @@ function addNovaBallEffect(x, y, size = 70) {
         vx: 0,
         vy: 0
     });
+
 }
+
 
 /* =========================
    弾更新
 ========================= */
 
 function updateProjectiles() {
+
     projectiles =
-        projectiles.filter(p => p.life > 0);
+        projectiles.filter(
+            p => p.life > 0
+        );
 
     for (const p of projectiles) {
 
         p.x += p.vx;
         p.y += p.vy || 0;
+
         p.life--;
 
-        // 画面外に大きく出た弾は消す
         if (
             p.x < -300 ||
             p.x > GAME_W + 300 ||
@@ -100,11 +112,12 @@ function updateProjectiles() {
             p.y - p.r < target.y + target.h;
 
         if (hit) {
+
             applyHit(
                 p.owner,
                 target,
                 p.damage,
-                p.hitType || "special",
+                "special",
                 true,
                 false,
                 false
@@ -123,18 +136,24 @@ function updateProjectiles() {
                 p.y,
                 p.owner
             );
+
         }
+
     }
+
 }
+
 
 /* =========================
    弾描画
 ========================= */
 
 function drawProjectiles() {
+
     for (const p of projectiles) {
 
         if (p.type === "novaShot") {
+
             p.rot =
                 (p.rot || 0) + 0.08;
 
@@ -143,8 +162,8 @@ function drawProjectiles() {
                 {
                     x: p.x,
                     y: p.y,
-                    w: p.r * 4,
-                    h: p.r * 4,
+                    w: p.r * 2.2,
+                    h: p.r * 2.2,
                     alpha: 1,
                     rot: p.rot,
                     flipX: p.vx < 0
@@ -153,6 +172,7 @@ function drawProjectiles() {
             );
 
             continue;
+
         }
 
         ctx.beginPath();
@@ -165,7 +185,9 @@ function drawProjectiles() {
             Math.PI * 2
         );
 
-        ctx.fillStyle = p.color;
+        ctx.fillStyle =
+            p.color;
+
         ctx.fill();
 
         ctx.beginPath();
@@ -185,5 +207,7 @@ function drawProjectiles() {
             );
 
         ctx.fill();
+
     }
+
 }

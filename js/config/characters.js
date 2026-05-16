@@ -7,21 +7,17 @@ const CHARACTERS = {
         color: "#4cc9f0",
         subColor: "#bdefff",
 
-        speed: 11,
-        accel: 2,
+        speed: 8,
+        accel: 1.25,
 
-        jump: 16,
+        jump: 18,
         weight: 1.0,
-        maxJumps: 1,
 
         attackDamage: 8,
 
         smashCharge1: 20,
         smashCharge2: 40,
         smashCharge3: 60,
-
-        dashDamage: 10,
-        airDamage: 9,
 
         specialDamage: 20,
         specialCooldown: 180,
@@ -33,15 +29,7 @@ const CHARACTERS = {
 
         smashTime: 14,
         smashCooldown: 34,
-        smashLock: 24,
-
-        dashTime: 13,
-        dashCooldown: 34,
-        dashLock: 13,
-
-        airTime: 11,
-        airCooldown: 24,
-        airLock: 5
+        smashLock: 24
     },
 
     power: {
@@ -51,21 +39,17 @@ const CHARACTERS = {
         color: "#ff4d4d",
         subColor: "#ffd166",
 
-        speed: 8.5,
+        speed: 6,
         accel: 1,
 
-        jump: 13,
+        jump: 16,
         weight: 1.25,
-        maxJumps: 1,
 
         attackDamage: 9,
 
         smashCharge1: 40,
         smashCharge2: 80,
         smashCharge3: 120,
-
-        dashDamage: 12,
-        airDamage: 9,
 
         specialDamage: 35,
         specialCooldown: 480,
@@ -77,15 +61,7 @@ const CHARACTERS = {
 
         smashTime: 18,
         smashCooldown: 42,
-        smashLock: 32,
-
-        dashTime: 16,
-        dashCooldown: 46,
-        dashLock: 18,
-
-        airTime: 13,
-        airCooldown: 30,
-        airLock: 8
+        smashLock: 32
     },
 
     speed: {
@@ -95,12 +71,11 @@ const CHARACTERS = {
         color: "#ffe66d",
         subColor: "#ffffff",
 
-        speed: 14,
-        accel: 3,
+        speed: 10,
+        accel: 1.5,
 
-        jump: 16,
+        jump: 20,
         weight: 0.78,
-        maxJumps: 1,
 
         attackDamage: 6,
 
@@ -108,11 +83,8 @@ const CHARACTERS = {
         smashCharge2: 20,
         smashCharge3: 30,
 
-        dashDamage: 8,
-        airDamage: 7,
-
         specialDamage: 15,
-        specialCooldown: 120,
+        specialCooldown: 30,
         specialType: "voltSlash",
 
         normalTime: 6,
@@ -121,14 +93,6 @@ const CHARACTERS = {
 
         smashTime: 10,
         smashCooldown: 24,
-        smashLock: 16,
-
-        dashTime: 10,
-        dashCooldown: 24,
-        dashLock: 8,
-
-        airTime: 8,
-        airCooldown: 16,
-        airLock: 3
+        smashLock: 16
     }
 };

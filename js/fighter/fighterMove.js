@@ -14,21 +14,7 @@ Fighter.prototype.move = function (inputX, dashInput = false) {
 
     if (inputX !== 0) {
 
-        /* =========================
-   溜め中に移動したら解除
-   ただし一瞬の入力はダッシュ攻撃用に残す
-========================= */
-
-        if (
-            this.attackCharging &&
-            this.onGround &&
-            inputX !== 0 &&
-            this.attackCharge > 6
-        ) {
-            this.attackCharging = false;
-            this.attackCharge = 0;
-        }
-
+        // 溜め中でも移動できる
         this.dir = inputX > 0 ? 1 : -1;
 
         const guardRate =
@@ -77,11 +63,15 @@ Fighter.prototype.move = function (inputX, dashInput = false) {
     }
 };
 
+
 /* =========================
    ジャンプ
+   小ジャン対応
 ========================= */
 
-Fighter.prototype.jump = function () {
+Fighter.prototype.jump = function (
+    power = 1
+) {
 
     if (
         this.hitstun > 0 ||
@@ -90,62 +80,16 @@ Fighter.prototype.jump = function () {
         this.isGuarding
     ) return;
 
-    if (this.jumpCount >= this.maxJumps) return;
+    if (!this.onGround) return;
 
-    this.vy = -this.data.jump;
+    this.vy =
+        -this.data.jump *
+        power;
+
     this.onGround = false;
-    this.jumpCount++;
 
-    if (this.jumpCount >= 2) {
-        addAirJumpRingEffect(
-            this.x + this.w / 2,
-            this.y + this.h * 0.7,
-            this.dir
-        );
-
-        addHitStop(1);
-    }
 };
 
-/* =========================
-   空中回避
-========================= */
-
-Fighter.prototype.airDodge = function (inputX = 0) {
-
-    if (this.onGround) return;
-    if (this.airDodgeUsed) return;
-
-    if (
-        this.hitstun > 0 ||
-        this.guardBreakTimer > 0
-    ) return;
-
-    this.airDodgeUsed = true;
-    this.airDodgeTimer = 14;
-
-    this.invincible =
-        Math.max(this.invincible, 16);
-
-    this.actionLock =
-        Math.max(this.actionLock, 14);
-
-    const dodgeDir =
-        inputX !== 0
-            ? inputX > 0 ? 1 : -1
-            : this.dir;
-
-    this.vx = dodgeDir * 9;
-    this.vy = -2;
-
-    addDashEffect(
-        this.x + this.w / 2,
-        this.y + this.h / 2,
-        "#ffffff"
-    );
-
-    addHitStop(1);
-};
 
 /* =========================
    床・足場に乗る処理
@@ -192,8 +136,6 @@ Fighter.prototype.checkLandingOn = function (
             if (this.vy >= 0) {
                 this.y = s.y - this.h;
                 this.onGround = true;
-                this.jumpCount = 0;
-                this.airDodgeUsed = false;
             } else {
                 this.y = s.y + s.h;
                 this.onGround = false;
@@ -227,14 +169,13 @@ Fighter.prototype.checkLandingOn = function (
         this.y = s.y - this.h;
         this.vy = 0;
         this.onGround = true;
-        this.jumpCount = 0;
-        this.airDodgeUsed = false;
 
         return true;
     }
 
     return false;
 };
+
 
 /* =========================
    撃墜判定
@@ -295,6 +236,7 @@ Fighter.prototype.checkKO = function () {
     }
 };
 
+
 /* =========================
    更新
 ========================= */
@@ -308,15 +250,10 @@ Fighter.prototype.update = function () {
     this.updateAttackCharge();
 
     if (this.coolAttack > 0) this.coolAttack--;
-    if (this.coolDashAttack > 0) this.coolDashAttack--;
-    if (this.coolAirAttack > 0) this.coolAirAttack--;
     if (this.coolSpecial > 0) this.coolSpecial--;
 
     if (this.attackTimer > 0) this.attackTimer--;
-    if (this.dashAttackTimer > 0) this.dashAttackTimer--;
-    if (this.airAttackTimer > 0) this.airAttackTimer--;
     if (this.specialTimer > 0) this.specialTimer--;
-    if (this.airDodgeTimer > 0) this.airDodgeTimer--;
 
     if (this.hitstun > 0) this.hitstun--;
     if (this.actionLock > 0) this.actionLock--;
