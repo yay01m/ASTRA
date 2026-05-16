@@ -14,7 +14,7 @@ class Fighter {
 
         this.data.dashSpeed =
             Math.floor(
-                this.data.speed * 1.35
+                this.data.speed * 1.5
             );
 
         this.x = x;

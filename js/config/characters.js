@@ -8,11 +8,11 @@ const CHARACTERS = {
         subColor: "#bdefff",
 
         speed: 11,
-        accel: 0.75,
+        accel: 2,
 
         jump: 16,
         weight: 1.0,
-        maxJumps: 2,
+        maxJumps: 1,
 
         attackDamage: 8,
 
@@ -52,11 +52,11 @@ const CHARACTERS = {
         subColor: "#ffd166",
 
         speed: 8.5,
-        accel: 0.55,
+        accel: 1,
 
         jump: 13,
         weight: 1.25,
-        maxJumps: 2,
+        maxJumps: 1,
 
         attackDamage: 9,
 
@@ -96,11 +96,11 @@ const CHARACTERS = {
         subColor: "#ffffff",
 
         speed: 14,
-        accel: 0.95,
+        accel: 3,
 
         jump: 16,
         weight: 0.78,
-        maxJumps: 3,
+        maxJumps: 1,
 
         attackDamage: 6,
 
