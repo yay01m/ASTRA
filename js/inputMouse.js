@@ -2,32 +2,53 @@
 クリック座標変換
 ========================= */
 
-function getCanvasPoint(event) {
+function getCanvasPoint(event){
 
-    const rect = canvas.getBoundingClientRect();
+    const rect =
+        canvas.getBoundingClientRect();
 
-    const scaleX = GAME_W / rect.width;
-    const scaleY = GAME_H / rect.height;
+    const scaleX =
+        GAME_W / rect.width;
 
-    const rawX = (event.clientX - rect.left) * scaleX;
-    const rawY = (event.clientY - rect.top) * scaleY;
+    const scaleY =
+        GAME_H / rect.height;
 
-    const x = Math.max(
-        0,
-        Math.min(GAME_W, rawX)
-    );
+    const rawX =
+        (event.clientX - rect.left)
+        * scaleX;
 
-    const y = Math.max(
-        0,
-        Math.min(GAME_H, rawY)
-    );
+    const rawY =
+        (event.clientY - rect.top)
+        * scaleY;
+
+    let x =
+        Math.max(
+            -120,
+            Math.min(
+                GAME_W + 120,
+                rawX
+            )
+        );
+
+    let y =
+        Math.max(
+            -120,
+            Math.min(
+                GAME_H + 120,
+                rawY
+            )
+        );
 
     return {
+
         x,
         y,
+
         rawX,
         rawY
+
     };
+
 }
 
 /* =========================

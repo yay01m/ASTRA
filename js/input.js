@@ -177,11 +177,11 @@ window.addEventListener("touchstart", e => {
 
             stickVisible = true;
 
-            stickBaseX = p.x;
-            stickBaseY = p.y;
+            stickBaseX = p.rawX;
+            stickBaseY = p.rawY;
 
-            stickKnobX = p.x;
-            stickKnobY = p.y;
+            stickKnobX = p.rawX;
+            stickKnobY = p.rawY;
         }
 
         /* 右側：攻撃 */
@@ -235,8 +235,8 @@ window.addEventListener("touchmove", e => {
                     stickBaseY +
                     dy / len * maxR;
             } else {
-                stickKnobX = p.x;
-                stickKnobY = p.y;
+                stickKnobX = p.rawX;
+                stickKnobY = p.rawY;
             }
 
             stickX = Math.max(
