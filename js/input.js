@@ -139,6 +139,28 @@ window.addEventListener("touchstart", e => {
     for (const t of e.changedTouches) {
         const p = getCanvasPoint(t);
 
+        if (
+            typeof getPauseButtonRect === "function" &&
+            gameState === STATE.GAME
+        ) {
+            const b = getPauseButtonRect();
+
+            if (
+                inside(
+                    p.x,
+                    p.y,
+                    b.x,
+                    b.y,
+                    b.w,
+                    b.h
+                )
+            ) {
+                gameState = STATE.PAUSE;
+                e.preventDefault();
+                return;
+            }
+        }
+
         /* 左半分：移動 */
         if (
             p.x < GAME_W / 2 &&

@@ -137,3 +137,20 @@ const menuBg =
 
 menuBg.src =
     "img/ui/menu_bg.jpg";
+
+/* =========================
+宇宙船ドア
+========================= */
+
+const uiImages = {
+
+    doorLeft: new Image(),
+    doorRight: new Image()
+
+};
+
+uiImages.doorLeft.src =
+    "img/ui/door_left.png";
+
+uiImages.doorRight.src =
+    "img/ui/door_right.png";

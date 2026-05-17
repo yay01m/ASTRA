@@ -2,6 +2,15 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 /* =========================
+   固定ゲームサイズ
+========================= */
+
+const GAME_W = 1280;
+const GAME_H = 720;
+
+let frameCount = 0;
+
+/* =========================
    ゲーム状態
 ========================= */
 

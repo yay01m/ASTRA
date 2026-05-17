@@ -18,11 +18,13 @@
 
   <canvas id="gameCanvas"></canvas>
 
+  <!-- 基本設定 -->
   <script src="js/config/base.js"></script>
   <script src="js/config/images.js"></script>
   <script src="js/config/characters.js"></script>
   <script src="js/config/stage.js"></script>
 
+  <!-- エフェクト -->
   <script src="js/effects/effectUtils.js"></script>
   <script src="js/effects/hitEffects.js"></script>
   <script src="js/effects/movementEffects.js"></script>
@@ -30,20 +32,32 @@
   <script src="js/effects/projectileEffects.js"></script>
   <script src="js/effects/effectRenderer.js"></script>
 
+  <!-- 戦闘計算 -->
   <script src="js/combat/knockbackSystem.js"></script>
   <script src="js/combat/hitSystem.js"></script>
   <script src="js/combat/cpuAI.js"></script>
 
+  <!-- ファイター -->
   <script src="js/fighter/fighterCore.js"></script>
   <script src="js/fighter/fighterMove.js"></script>
   <script src="js/fighter/fighterAttack.js"></script>
   <script src="js/fighter/fighterGuard.js"></script>
   <script src="js/fighter/fighterDraw.js"></script>
 
+  <!-- バトル本体 -->
+  <script src="js/combat/battleSystem.js"></script>
+  <script src="js/combat/battleView.js"></script>
+
+  <!-- UI -->
   <script src="js/ui/background.js"></script>
   <script src="js/ui/stageView.js"></script>
   <script src="js/ui/hud.js"></script>
   <script src="js/ui/button.js"></script>
+
+  <script src="js/ui/fade.js"></script>
+  <script src="js/ui/backButton.js"></script>
+  <script src="js/ui/pauseButton.js"></script>
+
   <script src="js/ui/titleView.js"></script>
   <script src="js/ui/selectView.js"></script>
   <script src="js/ui/stageSelectView.js"></script>
@@ -51,7 +65,14 @@
   <script src="js/ui/pauseView.js"></script>
   <script src="js/ui/koView.js"></script>
 
+  <!-- 入力 -->
   <script src="js/input.js"></script>
+  <script src="js/inputMouse.js"></script>
+
+  <!-- リサイズ -->
+  <script src="js/ui/resize.js"></script>
+
+  <!-- メインループ -->
   <script src="js/main.js"></script>
 
 </body>
