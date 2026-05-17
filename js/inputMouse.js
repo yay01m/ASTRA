@@ -3,26 +3,47 @@
 ========================= */
 
 function getCanvasPoint(
-event
-){
+    event
+) {
 
-const screenW=
-window.innerWidth;
+    const rect =
+        canvas.getBoundingClientRect();
 
-const screenH=
-window.innerHeight;
+    const scaleX =
+        GAME_W / rect.width;
 
-return{
+    const scaleY =
+        GAME_H / rect.height;
 
-x:
-(event.clientX/screenW)
-*GAME_W,
+    let x =
+        (event.clientX - rect.left)
+        * scaleX;
 
-y:
-(event.clientY/screenH)
-*GAME_H
+    let y =
+        (event.clientY - rect.top)
+        * scaleY;
 
-};
+    // 余白も少し触れるようにする
+    x = Math.max(
+        -120,
+        Math.min(
+            GAME_W + 120,
+            x
+        ));
+
+    y = Math.max(
+        -120,
+        Math.min(
+            GAME_H + 120,
+            y
+        ));
+
+    return {
+
+        x,
+        y
+
+    };
 
 }
 
@@ -31,141 +52,141 @@ y:
 ========================= */
 
 canvas.addEventListener(
-"click",
-(event)=>{
+    "click",
+    (event) => {
 
-if(isFading)return;
+        if (isFading) return;
 
-const point=
-getCanvasPoint(
-event
-);
+        const point =
+            getCanvasPoint(
+                event
+            );
 
-const mouseX=
-point.x;
+        const mouseX =
+            point.x;
 
-const mouseY=
-point.y;
+        const mouseY =
+            point.y;
 
-if(
-isBackButtonHit(
-mouseX,
-mouseY
-)
-){
-goBackState();
-return;
-}
+        if (
+            isBackButtonHit(
+                mouseX,
+                mouseY
+            )
+        ) {
+            goBackState();
+            return;
+        }
 
-if(
-gameState===
-STATE.GAME
-){
+        if (
+            gameState ===
+            STATE.GAME
+        ) {
 
-const b=
-getPauseButtonRect();
+            const b =
+                getPauseButtonRect();
 
-if(
+            if (
 
-inside(
-mouseX,
-mouseY,
-b.x,
-b.y,
-b.w,
-b.h
-)
+                inside(
+                    mouseX,
+                    mouseY,
+                    b.x,
+                    b.y,
+                    b.w,
+                    b.h
+                )
 
-){
+            ) {
 
-gameState=
-STATE.PAUSE;
+                gameState =
+                    STATE.PAUSE;
 
-return;
+                return;
 
-}
+            }
 
-}
+        }
 
-if(
-gameState===
-STATE.TITLE
-){
+        if (
+            gameState ===
+            STATE.TITLE
+        ) {
 
-changeState(
-STATE.SELECT
-);
+            changeState(
+                STATE.SELECT
+            );
 
-return;
+            return;
 
-}
+        }
 
-if(
-gameState===
-STATE.SELECT
-){
+        if (
+            gameState ===
+            STATE.SELECT
+        ) {
 
-handleSelectClick(
-mouseX,
-mouseY
-);
+            handleSelectClick(
+                mouseX,
+                mouseY
+            );
 
-return;
+            return;
 
-}
+        }
 
-if(
-gameState===
-STATE.STAGE_SELECT
-){
+        if (
+            gameState ===
+            STATE.STAGE_SELECT
+        ) {
 
-handleStageSelectClick(
-mouseX,
-mouseY
-);
+            handleStageSelectClick(
+                mouseX,
+                mouseY
+            );
 
-return;
+            return;
 
-}
+        }
 
-if(
-gameState===
-STATE.CPU_LEVEL
-){
+        if (
+            gameState ===
+            STATE.CPU_LEVEL
+        ) {
 
-handleCpuLevelClick(
-mouseX,
-mouseY
-);
+            handleCpuLevelClick(
+                mouseX,
+                mouseY
+            );
 
-return;
+            return;
 
-}
+        }
 
-if(
-gameState===
-STATE.PAUSE
-){
+        if (
+            gameState ===
+            STATE.PAUSE
+        ) {
 
-handlePauseClick(
-mouseX,
-mouseY
-);
+            handlePauseClick(
+                mouseX,
+                mouseY
+            );
 
-return;
+            return;
 
-}
+        }
 
-if(
-gameState===
-STATE.KO
-){
+        if (
+            gameState ===
+            STATE.KO
+        ) {
 
-handleKoClick(
-mouseX,
-mouseY
-);
+            handleKoClick(
+                mouseX,
+                mouseY
+            );
 
-}
+        }
 
-});
+    });
