@@ -2,49 +2,20 @@
 クリック座標変換
 ========================= */
 
-function getCanvasPoint(
-    event
-) {
+function getCanvasPoint(event) {
 
-    const rect =
-        canvas.getBoundingClientRect();
+    const rect = canvas.getBoundingClientRect();
 
-    const scaleX =
-        GAME_W / rect.width;
+    const scaleX = GAME_W / rect.width;
+    const scaleY = GAME_H / rect.height;
 
-    const scaleY =
-        GAME_H / rect.height;
+    let x = (event.clientX - rect.left) * scaleX;
+    let y = (event.clientY - rect.top) * scaleY;
 
-    let x =
-        (event.clientX - rect.left)
-        * scaleX;
+    x = Math.max(0, Math.min(GAME_W, x));
+    y = Math.max(0, Math.min(GAME_H, y));
 
-    let y =
-        (event.clientY - rect.top)
-        * scaleY;
-
-    // 余白も少し触れるようにする
-    x = Math.max(
-        -120,
-        Math.min(
-            GAME_W + 120,
-            x
-        ));
-
-    y = Math.max(
-        -120,
-        Math.min(
-            GAME_H + 120,
-            y
-        ));
-
-    return {
-
-        x,
-        y
-
-    };
-
+    return { x, y };
 }
 
 /* =========================
