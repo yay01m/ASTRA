@@ -227,16 +227,39 @@ window.addEventListener("touchmove", e => {
             const maxR = 55;
 
             if (len > maxR) {
+
+                const nx = dx / len;
+                const ny = dy / len;
+
                 stickKnobX =
                     stickBaseX +
-                    dx / len * maxR;
+                    nx * maxR;
 
                 stickKnobY =
                     stickBaseY +
-                    dy / len * maxR;
+                    ny * maxR;
+
+                // 横移動が強い時だけ、中心も横に追従させる
+                if (Math.abs(dx) > Math.abs(dy)) {
+
+                    const overX =
+                        Math.abs(dx) - maxR;
+
+                    if (overX > 0) {
+
+                        const shiftX =
+                            Math.sign(dx) * overX;
+
+                        stickBaseX += shiftX;
+                        moveStartX += shiftX;
+                    }
+                }
+
             } else {
+
                 stickKnobX = p.rawX;
                 stickKnobY = p.rawY;
+
             }
 
             stickX = Math.max(
