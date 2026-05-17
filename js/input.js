@@ -129,6 +129,14 @@ let lastTapTime = 0;
 stickX = 0;
 guardButtonDown = false;
 
+let stickVisible = false;
+
+let stickBaseX = 0;
+let stickBaseY = 0;
+
+let stickKnobX = 0;
+let stickKnobY = 0;
+
 /* =========================
    タッチ開始
 ========================= */
@@ -184,6 +192,14 @@ window.addEventListener("touchstart", e => {
 
             moveStartX = p.x;
             moveStartY = p.y;
+
+            stickVisible = true;
+
+            stickBaseX = p.x;
+            stickBaseY = p.y;
+
+            stickKnobX = p.x;
+            stickKnobY = p.y;
         }
 
         /* 右半分：攻撃 */
@@ -221,6 +237,27 @@ window.addEventListener("touchmove", e => {
 
             const dx = p.x - moveStartX;
             const dy = p.y - moveStartY;
+
+            const len = Math.hypot(dx, dy);
+
+            const maxR = 55;
+
+            if (len > maxR) {
+
+                stickKnobX =
+                    stickBaseX +
+                    dx / len * maxR;
+
+                stickKnobY =
+                    stickBaseY +
+                    dy / len * maxR;
+
+            } else {
+
+                stickKnobX = p.x;
+                stickKnobY = p.y;
+
+            }
 
             stickX = Math.max(
                 -1,
@@ -319,8 +356,13 @@ window.addEventListener("touchend", e => {
     for (const t of e.changedTouches) {
 
         if (t.identifier === touchMoveId) {
+
             touchMoveId = null;
+
             stickX = 0;
+
+            stickVisible = false;
+
         }
 
         if (t.identifier === touchActionId) {
