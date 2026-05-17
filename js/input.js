@@ -247,7 +247,7 @@ window.addEventListener("touchmove", e => {
             /* 上フリック＝大ジャンプ */
             if (
                 dy < -95 &&
-                Math.abs(dx) < 85
+                Math.abs(dx) < 110
             ) {
                 player.jump(1);
 
