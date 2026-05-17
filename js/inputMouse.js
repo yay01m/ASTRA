@@ -9,155 +9,95 @@ function getCanvasPoint(event) {
     const scaleX = GAME_W / rect.width;
     const scaleY = GAME_H / rect.height;
 
-    let x = (event.clientX - rect.left) * scaleX;
-    let y = (event.clientY - rect.top) * scaleY;
+    const rawX = (event.clientX - rect.left) * scaleX;
+    const rawY = (event.clientY - rect.top) * scaleY;
 
-    x = Math.max(0, Math.min(GAME_W, x));
-    y = Math.max(0, Math.min(GAME_H, y));
+    const x = Math.max(
+        0,
+        Math.min(GAME_W, rawX)
+    );
 
-    return { x, y };
+    const y = Math.max(
+        0,
+        Math.min(GAME_H, rawY)
+    );
+
+    return {
+        x,
+        y,
+        rawX,
+        rawY
+    };
 }
 
 /* =========================
 クリック操作
 ========================= */
 
-canvas.addEventListener(
-    "click",
-    (event) => {
+canvas.addEventListener("click", event => {
 
-        if (isFading) return;
+    if (isFading) return;
 
-        const point =
-            getCanvasPoint(
-                event
-            );
+    const point = getCanvasPoint(event);
 
-        const mouseX =
-            point.x;
+    const mouseX = point.x;
+    const mouseY = point.y;
 
-        const mouseY =
-            point.y;
+    if (
+        isBackButtonHit(
+            mouseX,
+            mouseY
+        )
+    ) {
+        goBackState();
+        return;
+    }
+
+    if (gameState === STATE.GAME) {
+
+        const b = getPauseButtonRect();
 
         if (
-            isBackButtonHit(
+            inside(
                 mouseX,
-                mouseY
+                mouseY,
+                b.x,
+                b.y,
+                b.w,
+                b.h
             )
         ) {
-            goBackState();
+            gameState = STATE.PAUSE;
             return;
         }
+    }
 
-        if (
-            gameState ===
-            STATE.GAME
-        ) {
+    if (gameState === STATE.TITLE) {
+        changeState(STATE.SELECT);
+        return;
+    }
 
-            const b =
-                getPauseButtonRect();
+    if (gameState === STATE.SELECT) {
+        handleSelectClick(mouseX, mouseY);
+        return;
+    }
 
-            if (
+    if (gameState === STATE.STAGE_SELECT) {
+        handleStageSelectClick(mouseX, mouseY);
+        return;
+    }
 
-                inside(
-                    mouseX,
-                    mouseY,
-                    b.x,
-                    b.y,
-                    b.w,
-                    b.h
-                )
+    if (gameState === STATE.CPU_LEVEL) {
+        handleCpuLevelClick(mouseX, mouseY);
+        return;
+    }
 
-            ) {
+    if (gameState === STATE.PAUSE) {
+        handlePauseClick(mouseX, mouseY);
+        return;
+    }
 
-                gameState =
-                    STATE.PAUSE;
-
-                return;
-
-            }
-
-        }
-
-        if (
-            gameState ===
-            STATE.TITLE
-        ) {
-
-            changeState(
-                STATE.SELECT
-            );
-
-            return;
-
-        }
-
-        if (
-            gameState ===
-            STATE.SELECT
-        ) {
-
-            handleSelectClick(
-                mouseX,
-                mouseY
-            );
-
-            return;
-
-        }
-
-        if (
-            gameState ===
-            STATE.STAGE_SELECT
-        ) {
-
-            handleStageSelectClick(
-                mouseX,
-                mouseY
-            );
-
-            return;
-
-        }
-
-        if (
-            gameState ===
-            STATE.CPU_LEVEL
-        ) {
-
-            handleCpuLevelClick(
-                mouseX,
-                mouseY
-            );
-
-            return;
-
-        }
-
-        if (
-            gameState ===
-            STATE.PAUSE
-        ) {
-
-            handlePauseClick(
-                mouseX,
-                mouseY
-            );
-
-            return;
-
-        }
-
-        if (
-            gameState ===
-            STATE.KO
-        ) {
-
-            handleKoClick(
-                mouseX,
-                mouseY
-            );
-
-        }
-
-    });
+    if (gameState === STATE.KO) {
+        handleKoClick(mouseX, mouseY);
+    }
+});

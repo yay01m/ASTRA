@@ -395,7 +395,7 @@ function updateGame() {
   }
 
   if (cpuRespawnTimer <= 0) {
-    updateCPU();
+    //updateCPU();
   }
 
   if (playerRespawnTimer <= 0) {

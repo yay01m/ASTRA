@@ -17,7 +17,6 @@ window.addEventListener("keydown", e => {
     if (e.code === "Space") e.preventDefault();
     if (gameState !== STATE.GAME) return;
 
-    /* 小ジャン */
     if (
         e.key === "w" ||
         e.key === "W"
@@ -25,7 +24,6 @@ window.addEventListener("keydown", e => {
         player.jump(0.62);
     }
 
-    /* 大ジャン */
     if (
         e.key === "ArrowUp" ||
         e.code === "Space"
@@ -33,78 +31,65 @@ window.addEventListener("keydown", e => {
         player.jump(1);
     }
 
-    /* S = 足場降り */
-
     if (
         e.key === "s" ||
         e.key === "S"
     ) {
-
         if (
             player &&
             player.onGround
         ) {
-
             player.dropPlatformTimer = 12;
-
             player.y += 8;
-
         }
-
     }
 
-    if (e.key === "j" || e.key === "J") {
+    if (
+        e.key === "j" ||
+        e.key === "J"
+    ) {
         if (!keys.attackCharging) {
             keys.attackCharging = true;
             player.startAttackCharge();
         }
     }
 
-    if (e.key === "k" || e.key === "K") {
+    if (
+        e.key === "k" ||
+        e.key === "K"
+    ) {
         player.special();
     }
-
 });
 
 window.addEventListener("keyup", e => {
     keys[e.key] = false;
     keys[e.code] = false;
 
-    if (gameState !== STATE.GAME) return;
-
-    if (e.key === "j" || e.key === "J") {
-        keys.attackCharging = false;
-        player.releaseAttackCharge();
-    }
-
     if (
         e.key === "p" ||
         e.key === "P" ||
         e.key === "Escape"
     ) {
-
-        if (
-            gameState ===
-            STATE.GAME
-        ) {
-
-            gameState =
-                STATE.PAUSE;
-
+        if (gameState === STATE.GAME) {
+            gameState = STATE.PAUSE;
             return;
         }
 
-        if (
-            gameState ===
-            STATE.PAUSE
-        ) {
-
-            gameState =
-                STATE.GAME;
-
+        if (gameState === STATE.PAUSE) {
+            gameState = STATE.GAME;
             return;
         }
+    }
 
+    if (gameState !== STATE.GAME) return;
+
+    if (
+        e.key === "j" ||
+        e.key === "J"
+    ) {
+        keys.attackCharging = false;
+        player.releaseAttackCharge();
     }
 });
 
@@ -142,14 +127,15 @@ let stickKnobY = 0;
 ========================= */
 
 window.addEventListener("touchstart", e => {
+
     if (gameState !== STATE.GAME) return;
 
     for (const t of e.changedTouches) {
+
         const p = getCanvasPoint(t);
 
         if (
-            typeof getPauseButtonRect === "function" &&
-            gameState === STATE.GAME
+            typeof getPauseButtonRect === "function"
         ) {
             const b = getPauseButtonRect();
 
@@ -169,29 +155,25 @@ window.addEventListener("touchstart", e => {
             }
         }
 
-        /* 左半分：移動 */
+        /* 左側：透明スティック移動 */
         if (
-            p.x < GAME_W / 2 &&
+            p.rawX < GAME_W / 2 &&
             touchMoveId === null
         ) {
-
             const now = Date.now();
 
             if (
                 now - lastTapTime < 250
             ) {
-
-                // 小ジャン
                 player.jump(0.62);
-
             }
 
             lastTapTime = now;
 
             touchMoveId = t.identifier;
 
-            moveStartX = p.x;
-            moveStartY = p.y;
+            moveStartX = p.rawX;
+            moveStartY = p.rawY;
 
             stickVisible = true;
 
@@ -202,15 +184,15 @@ window.addEventListener("touchstart", e => {
             stickKnobY = p.y;
         }
 
-        /* 右半分：攻撃 */
+        /* 右側：攻撃 */
         else if (
-            p.x >= GAME_W / 2 &&
+            p.rawX >= GAME_W / 2 &&
             touchActionId === null
         ) {
             touchActionId = t.identifier;
 
-            actionStartX = p.x;
-            actionStartY = p.y;
+            actionStartX = p.rawX;
+            actionStartY = p.rawY;
 
             actionDidSpecial = false;
             actionDidGuard = false;
@@ -220,6 +202,7 @@ window.addEventListener("touchstart", e => {
     }
 
     e.preventDefault();
+
 }, { passive: false });
 
 /* =========================
@@ -227,23 +210,23 @@ window.addEventListener("touchstart", e => {
 ========================= */
 
 window.addEventListener("touchmove", e => {
+
     if (gameState !== STATE.GAME) return;
 
     for (const t of e.changedTouches) {
 
-        /* 左半分：移動・ジャンプ・足場降り */
+        /* 左側：透明スティック */
         if (t.identifier === touchMoveId) {
+
             const p = getCanvasPoint(t);
 
-            const dx = p.x - moveStartX;
-            const dy = p.y - moveStartY;
+            const dx = p.rawX - moveStartX;
+            const dy = p.rawY - moveStartY;
 
             const len = Math.hypot(dx, dy);
-
             const maxR = 55;
 
             if (len > maxR) {
-
                 stickKnobX =
                     stickBaseX +
                     dx / len * maxR;
@@ -251,59 +234,71 @@ window.addEventListener("touchmove", e => {
                 stickKnobY =
                     stickBaseY +
                     dy / len * maxR;
-
             } else {
-
                 stickKnobX = p.x;
                 stickKnobY = p.y;
-
             }
+
+            stickKnobX = Math.max(
+                0,
+                Math.min(GAME_W, stickKnobX)
+            );
+
+            stickKnobY = Math.max(
+                0,
+                Math.min(GAME_H, stickKnobY)
+            );
 
             stickX = Math.max(
                 -1,
                 Math.min(1, dx / 70)
             );
 
-            /*
-   上フリック＝ジャンプ
-*/
-
+            /* 上フリック＝大ジャンプ */
             if (
                 dy < -150 &&
-                Math.abs(dx) < 60
+                Math.abs(dx) < 70
             ) {
-
-                // 大ジャン
                 player.jump(1);
 
-                moveStartX = p.x;
-                moveStartY = p.y;
+                moveStartX = p.rawX;
+                moveStartY = p.rawY;
+
+                stickBaseX = p.x;
+                stickBaseY = p.y;
+
+                stickKnobX = p.x;
+                stickKnobY = p.y;
             }
 
-            /*
-               下フリック＝足場降り
-            */
+            /* 下フリック＝足場降り */
             if (
                 dy > 150 &&
-                Math.abs(dx) < 60 &&
+                Math.abs(dx) < 70 &&
                 player &&
                 player.onGround
             ) {
                 player.dropPlatformTimer = 12;
                 player.y += 8;
 
-                moveStartX = p.x;
-                moveStartY = p.y;
+                moveStartX = p.rawX;
+                moveStartY = p.rawY;
+
+                stickBaseX = p.x;
+                stickBaseY = p.y;
+
+                stickKnobX = p.x;
+                stickKnobY = p.y;
             }
         }
 
-        /* 右半分：必殺・ガード */
+        /* 右側：必殺・ガード */
         if (t.identifier === touchActionId) {
+
             const p = getCanvasPoint(t);
 
-            const dy = p.y - actionStartY;
+            const dy = p.rawY - actionStartY;
 
-            /* 上フリック＝必殺 */
             if (
                 dy < -60 &&
                 !actionDidSpecial
@@ -319,7 +314,6 @@ window.addEventListener("touchmove", e => {
                 player.special();
             }
 
-            /* 下フリック保持＝ガード */
             else if (
                 dy > 60 &&
                 !actionDidSpecial
@@ -344,6 +338,7 @@ window.addEventListener("touchmove", e => {
     }
 
     e.preventDefault();
+
 }, { passive: false });
 
 /* =========================
@@ -351,18 +346,16 @@ window.addEventListener("touchmove", e => {
 ========================= */
 
 window.addEventListener("touchend", e => {
+
     if (gameState !== STATE.GAME) return;
 
     for (const t of e.changedTouches) {
 
         if (t.identifier === touchMoveId) {
-
             touchMoveId = null;
 
             stickX = 0;
-
             stickVisible = false;
-
         }
 
         if (t.identifier === touchActionId) {
@@ -385,6 +378,7 @@ window.addEventListener("touchend", e => {
     }
 
     e.preventDefault();
+
 }, { passive: false });
 
 /* =========================
@@ -392,13 +386,18 @@ window.addEventListener("touchend", e => {
 ========================= */
 
 window.addEventListener("touchcancel", e => {
+
     touchMoveId = null;
     touchActionId = null;
 
     stickX = 0;
     guardButtonDown = false;
+    stickVisible = false;
 
-    if (player && player.attackCharging) {
+    if (
+        player &&
+        player.attackCharging
+    ) {
         player.attackCharging = false;
         player.attackCharge = 0;
     }
@@ -407,4 +406,5 @@ window.addEventListener("touchcancel", e => {
     actionDidGuard = false;
 
     e.preventDefault();
+
 }, { passive: false });
