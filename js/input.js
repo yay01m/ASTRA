@@ -239,16 +239,6 @@ window.addEventListener("touchmove", e => {
                 stickKnobY = p.y;
             }
 
-            stickKnobX = Math.max(
-                0,
-                Math.min(GAME_W, stickKnobX)
-            );
-
-            stickKnobY = Math.max(
-                0,
-                Math.min(GAME_H, stickKnobY)
-            );
-
             stickX = Math.max(
                 -1,
                 Math.min(1, dx / 70)
@@ -264,11 +254,10 @@ window.addEventListener("touchmove", e => {
                 moveStartX = p.rawX;
                 moveStartY = p.rawY;
 
-                stickBaseX = p.x;
-                stickBaseY = p.y;
-
-                stickKnobX = p.x;
-                stickKnobY = p.y;
+                stickBaseX = p.rawX;
+                stickBaseY = p.rawY;
+                stickKnobX = p.rawX;
+                stickKnobY = p.rawY;
             }
 
             /* 下フリック＝足場降り */
@@ -284,11 +273,10 @@ window.addEventListener("touchmove", e => {
                 moveStartX = p.rawX;
                 moveStartY = p.rawY;
 
-                stickBaseX = p.x;
-                stickBaseY = p.y;
-
-                stickKnobX = p.x;
-                stickKnobY = p.y;
+                stickBaseX = p.rawX;
+                stickBaseY = p.rawY;
+                stickKnobX = p.rawX;
+                stickKnobY = p.rawY;
             }
         }
 

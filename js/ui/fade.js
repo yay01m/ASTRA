@@ -57,7 +57,8 @@ function updateFade() {
     }
 
     if (fadeType === "snap") {
-        speed = fadeMode === "out" ? 0.40 : 0.012;
+        speed = fadeMode === "out" ? 0.33
+            : 0.012;
     }
 
     if (fadeMode === "out") {
@@ -128,26 +129,84 @@ function drawSnapFade() {
         const h = GAME_H / 2 * a;
 
         ctx.fillStyle = "#000";
-        ctx.fillRect(0, 0, GAME_W, h);
-        ctx.fillRect(0, GAME_H - h, GAME_W, h);
 
-        if (a > 0.75) {
-            const t = (a - 0.75) / 0.25;
-            const flash = Math.sin(t * Math.PI) * 0.75;
+        ctx.fillRect(
+            0,
+            0,
+            GAME_W,
+            h
+        );
 
-            ctx.fillStyle = `rgba(255,255,255,${flash})`;
-            ctx.fillRect(0, 0, GAME_W, GAME_H);
-        }
+        ctx.fillRect(
+            0,
+            GAME_H - h,
+            GAME_W,
+            h
+        );
 
-    } else if (fadeMode === "hold") {
+    }
+
+    else if (fadeMode === "hold") {
 
         ctx.fillStyle = "#000";
-        ctx.fillRect(0, 0, GAME_W, GAME_H);
 
-    } else {
+        ctx.fillRect(
+            0,
+            0,
+            GAME_W,
+            GAME_H
+        );
 
-        ctx.fillStyle = `rgba(0,0,0,${a})`;
-        ctx.fillRect(0, 0, GAME_W, GAME_H);
+        // ピカッをちゃんと感じるように
+        if (
+            fadeHoldCount < 10
+        ) {
+
+            const flash =
+
+                fadeHoldCount < 3
+
+                    ? 1
+
+                    : 1 -
+                    (
+                        fadeHoldCount - 3
+                    ) / 7;
+
+            ctx.fillStyle =
+                `rgba(
+                    255,
+                    255,
+                    255,
+                    ${flash}
+                )`;
+
+            ctx.fillRect(
+                0,
+                0,
+                GAME_W,
+                GAME_H
+            );
+        }
+
+    }
+
+    else {
+
+        ctx.fillStyle =
+            `rgba(
+                0,
+                0,
+                0,
+                ${a}
+            )`;
+
+        ctx.fillRect(
+            0,
+            0,
+            GAME_W,
+            GAME_H
+        );
     }
 
     ctx.restore();
